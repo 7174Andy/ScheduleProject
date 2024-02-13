@@ -46,6 +46,22 @@ export default function ProfileScreen() {
             </View>
           </View>
         </View>
+        <View style={styles.hashtagContainer}>
+          <View style={styles.oneHashTag}>
+            <Text style={styles.hashtagText}># Sixth College</Text>
+          </View>
+          <View style={styles.oneHashTag}>
+            <Text style={styles.hashtagText}># Bioinformatics Major</Text>
+          </View>
+        </View>
+        <View style={styles.hashtagContainerSecond}>
+          <View style={styles.oneHashTag}>
+            <Text style={styles.hashtagText}># Sophomore</Text>
+          </View>
+          <View style={styles.oneHashTag}>
+            <Text style={styles.hashtagText}># Data Science Minor</Text>
+          </View>
+        </View>
       </SafeAreaView>
     </View>
   );
@@ -56,11 +72,41 @@ const styles = StyleSheet.create({
     backgroundColor: colors.backgroundColor,
     flex: 1,
   },
+  hashtagContainer: {
+    flex: 0,
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 15,
+    marginLeft: 10,
+  },
+  hashtagContainerSecond: {
+    flex: 0,
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 5,
+    marginLeft: 10,
+  },
+  hashtagText: {
+    color: colors.textColor,
+  },
   myCalendarBtn: {
     marginTop: 10,
     marginLeft: 15,
     backgroundColor: colors.tagColor,
     borderRadius: 6,
+  },
+  oneHashTag: {
+    backgroundColor: colors.hashtag,
+    borderRadius: 10,
+    padding: 5,
+    margin: 5,
+    marginRight: 10,
+    shadowColor: colors.black,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    justifyContent: "center",
   },
   profileContainer: {
     alignItems: "center",
