@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
     },
     scheduleContainer: {
         borderWidth: 1,
-        borderColor: 'grey',
+        borderColor: 'white',
         borderRadius: 12,
         flexDirection: 'row',
         marginTop: 20,
@@ -87,7 +87,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         borderRightWidth: 1, // 모든 요일 컬럼 사이에 세로선 추가
-        borderColor: 'grey',
+        borderColor: 'white',
     },
     dayText: {
         fontWeight: 'bold',
