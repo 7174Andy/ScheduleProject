@@ -88,6 +88,7 @@ const styles = StyleSheet.create({
   },
   hashtagText: {
     color: colors.textColor,
+    fontSize: 15,
   },
   myCalendarBtn: {
     marginTop: 10,
@@ -116,9 +117,9 @@ const styles = StyleSheet.create({
     marginTop: colors.marginToProfile,
   },
   profileImage: {
-    height: 115,
-    width: 115,
-    marginRight: 10,
+    height: 120,
+    width: 120,
+    marginRight: 15,
   },
   profileName: {
     color: colors.textColor,
