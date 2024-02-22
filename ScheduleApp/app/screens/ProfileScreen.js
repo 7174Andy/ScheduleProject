@@ -6,9 +6,36 @@ import {
   Image,
   Button,
   Pressable,
+  ScrollView,
 } from "react-native";
 
 import colors from "../config/colors";
+
+const events = [
+  {
+    name: "ECE 109",
+    startTime: 9, // Start at 9 AM
+    duration: 1, // Duration of 1 hour
+    color: "orange",
+  },
+  {
+    name: "Math 154 Midterm",
+    startTime: 18, // Start at 6 PM
+    duration: 2, // Duration of 2 hours
+    color: "green",
+  },
+  // ... more events
+];
+
+const TimeSlot = ({ children, style }) => (
+  <View style={[styles.timeSlot, style]}>{children}</View>
+);
+
+const Event = ({ name, color, top, height }) => (
+  <View style={[styles.event, { backgroundColor: color, top, height }]}>
+    <Text style={styles.eventText}>{name}</Text>
+  </View>
+);
 
 export default function ProfileScreen() {
   return (
@@ -62,6 +89,25 @@ export default function ProfileScreen() {
             <Text style={styles.hashtagText}># Data Science Minor</Text>
           </View>
         </View>
+        <ScrollView
+          style={styles.calendarContainer}
+          alwaysBounceVertical={false}
+        >
+          {Array.from({ length: 24 }, (_, index) => (
+            <TimeSlot key={index}>
+              <Text>{`${index % 12 || 12} ${index < 12 ? "AM" : "PM"}`}</Text>
+            </TimeSlot>
+          ))}
+          {events.map((event, index) => (
+            <Event
+              key={index}
+              name={event.name}
+              color={event.color}
+              top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
+              height={event.duration * 60}
+            />
+          ))}
+        </ScrollView>
       </SafeAreaView>
     </View>
   );
@@ -70,17 +116,18 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   background: {
     backgroundColor: colors.backgroundColor,
-    flex: 1,
-  },
-  hashtagContainer: {
     flex: 0,
+  },
+  calendarContainer: { flex: 1, padding: 15, margin: 15 },
+  hashtagContainer: {
+    flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 15,
     marginLeft: 10,
   },
   hashtagContainerSecond: {
-    flex: 0,
+    flex: 1,
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 5,
@@ -132,5 +179,24 @@ const styles = StyleSheet.create({
     marginLeft: colors.marginToProfile,
     marginTop: 10,
     color: colors.tagColor,
+  },
+  timeSlot: {
+    height: 60, // Each slot is 60 pixels high
+    justifyContent: "center",
+    paddingLeft: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
+  },
+  event: {
+    position: "absolute",
+    left: "15%",
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    padding: 5,
+  },
+  eventText: {
+    color: "white",
   },
 });
