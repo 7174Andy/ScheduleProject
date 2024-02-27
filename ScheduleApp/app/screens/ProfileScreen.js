@@ -91,7 +91,8 @@ export default function ProfileScreen() {
         </View>
         <ScrollView
           style={styles.calendarContainer}
-          alwaysBounceVertical={false}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={true}
         >
           {Array.from({ length: 24 }, (_, index) => (
             <TimeSlot key={index}>
@@ -116,18 +117,24 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   background: {
     backgroundColor: colors.backgroundColor,
-    flex: 0,
-  },
-  calendarContainer: { flex: 1, padding: 15, margin: 15 },
-  hashtagContainer: {
     flex: 1,
+  },
+  calendarContainer: {
+    flex: 0,
+    padding: 15,
+    margin: 15,
+    borderRadius: 10,
+    backgroundColor: "white",
+  },
+  hashtagContainer: {
+    flex: 0,
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 15,
     marginLeft: 10,
   },
   hashtagContainerSecond: {
-    flex: 1,
+    flex: 0,
     flexDirection: "row",
     justifyContent: "center",
     marginTop: 5,
@@ -185,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingLeft: 10,
     borderBottomWidth: 1,
-    borderBottomColor: "white",
+    borderBottomColor: colors.black,
   },
   event: {
     position: "absolute",
