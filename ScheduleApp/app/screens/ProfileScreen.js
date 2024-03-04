@@ -39,78 +39,76 @@ const Event = ({ name, color, top, height }) => (
 
 export default function ProfileScreen() {
   return (
-    <View style={styles.background}>
-      <SafeAreaView>
-        <View style={styles.profileContainer}>
-          <Image
-            style={styles.profileImage}
-            source={require("../assets/user.png")}
+    <SafeAreaView style={styles.background}>
+      <View style={styles.profileContainer}>
+        <Image
+          style={styles.profileImage}
+          source={require("../assets/user.png")}
+        />
+        <View style={{ alignItems: "flex-start", flexDirection: "column" }}>
+          <Text style={styles.profileName}>Nathan Chang</Text>
+          <Text style={styles.profileTag}>@Jiwoong</Text>
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+            <Pressable
+              style={styles.myCalendarBtn}
+              onPress={() => console.log("My Calendar")}
+            >
+              <Text
+                style={{ fontSize: 15, padding: 7, color: colors.textColor }}
+              >
+                My Calendar
+              </Text>
+            </Pressable>
+            <Pressable
+              style={styles.myCalendarBtn}
+              onPress={() => console.log("Vibeee")}
+            >
+              <Text
+                style={{ fontSize: 15, padding: 7, color: colors.textColor }}
+              >
+                Vibe
+              </Text>
+            </Pressable>
+          </View>
+        </View>
+      </View>
+      <View style={styles.hashtagContainer}>
+        <View style={styles.oneHashTag}>
+          <Text style={styles.hashtagText}># Sixth College</Text>
+        </View>
+        <View style={styles.oneHashTag}>
+          <Text style={styles.hashtagText}># Bioinformatics Major</Text>
+        </View>
+      </View>
+      <View style={styles.hashtagContainerSecond}>
+        <View style={styles.oneHashTag}>
+          <Text style={styles.hashtagText}># Sophomore</Text>
+        </View>
+        <View style={styles.oneHashTag}>
+          <Text style={styles.hashtagText}># Data Science Minor</Text>
+        </View>
+      </View>
+      <ScrollView
+        style={styles.calendarContainer}
+        showsVerticalScrollIndicator={false}
+        scrollEnabled={true}
+      >
+        {Array.from({ length: 24 }, (_, index) => (
+          <TimeSlot key={index}>
+            <Text>{`${index % 12 || 12} ${index < 12 ? "AM" : "PM"}`}</Text>
+          </TimeSlot>
+        ))}
+        {events.map((event, index) => (
+          <Event
+            key={index}
+            name={event.name}
+            color={event.color}
+            top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
+            height={event.duration * 60}
           />
-          <View style={{ alignItems: "flex-start", flexDirection: "column" }}>
-            <Text style={styles.profileName}>Nathan Chang</Text>
-            <Text style={styles.profileTag}>@Jiwoong</Text>
-            <View style={{ flexDirection: "row", justifyContent: "center" }}>
-              <Pressable
-                style={styles.myCalendarBtn}
-                onPress={() => console.log("My Calendar")}
-              >
-                <Text
-                  style={{ fontSize: 15, padding: 7, color: colors.textColor }}
-                >
-                  My Calendar
-                </Text>
-              </Pressable>
-              <Pressable
-                style={styles.myCalendarBtn}
-                onPress={() => console.log("Vibeee")}
-              >
-                <Text
-                  style={{ fontSize: 15, padding: 7, color: colors.textColor }}
-                >
-                  Vibe
-                </Text>
-              </Pressable>
-            </View>
-          </View>
-        </View>
-        <View style={styles.hashtagContainer}>
-          <View style={styles.oneHashTag}>
-            <Text style={styles.hashtagText}># Sixth College</Text>
-          </View>
-          <View style={styles.oneHashTag}>
-            <Text style={styles.hashtagText}># Bioinformatics Major</Text>
-          </View>
-        </View>
-        <View style={styles.hashtagContainerSecond}>
-          <View style={styles.oneHashTag}>
-            <Text style={styles.hashtagText}># Sophomore</Text>
-          </View>
-          <View style={styles.oneHashTag}>
-            <Text style={styles.hashtagText}># Data Science Minor</Text>
-          </View>
-        </View>
-        <ScrollView
-          style={styles.calendarContainer}
-          showsVerticalScrollIndicator={false}
-          scrollEnabled={true}
-        >
-          {Array.from({ length: 24 }, (_, index) => (
-            <TimeSlot key={index}>
-              <Text>{`${index % 12 || 12} ${index < 12 ? "AM" : "PM"}`}</Text>
-            </TimeSlot>
-          ))}
-          {events.map((event, index) => (
-            <Event
-              key={index}
-              name={event.name}
-              color={event.color}
-              top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
-              height={event.duration * 60}
-            />
-          ))}
-        </ScrollView>
-      </SafeAreaView>
-    </View>
+        ))}
+      </ScrollView>
+    </SafeAreaView>
   );
 }
 
