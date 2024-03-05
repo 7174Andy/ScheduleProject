@@ -95,7 +95,9 @@ export default function ProfileScreen() {
       >
         {Array.from({ length: 24 }, (_, index) => (
           <TimeSlot key={index}>
-            <Text>{`${index % 12 || 12} ${index < 12 ? "AM" : "PM"}`}</Text>
+            <Text style={{ color: "white" }}>{`${index % 12 || 12} ${
+              index < 12 ? "AM" : "PM"
+            }`}</Text>
           </TimeSlot>
         ))}
         {events.map((event, index) => (
@@ -122,7 +124,7 @@ const styles = StyleSheet.create({
     padding: 15,
     margin: 15,
     borderRadius: 10,
-    backgroundColor: "white",
+    backgroundColor: colors.backgroundColor,
   },
   hashtagContainer: {
     flex: 0,
@@ -190,7 +192,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     paddingLeft: 10,
     borderBottomWidth: 1,
-    borderBottomColor: colors.black,
+    borderBottomColor: "white",
   },
   event: {
     position: "absolute",
