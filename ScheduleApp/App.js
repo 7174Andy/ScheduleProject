@@ -1,9 +1,9 @@
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import ProfileScreen from "./app/screens/ProfileScreen";
+import Schedule from "./app/screens/Schedule";
 
 export default function App() {
-  return <ProfileScreen />;
+  return <Schedule />;
 }
 
 const styles = StyleSheet.create({});
