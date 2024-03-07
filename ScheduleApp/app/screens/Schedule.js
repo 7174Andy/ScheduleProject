@@ -2,37 +2,49 @@ import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import colors from '../config/colors';
 
-const kColumnLength = 24; // 한 시간당 두 개의 슬롯으로 변경 (예: 30분 단위)
+const kColumnLength = 28; // 한 시간당 두 개의 슬롯으로 변경 (예: 30분 단위)
 const kBoxSize = 52; // 각 슬롯의 높이
-const week = ['월', '화', '수', '목', '금'];
+const week = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'];
 const startTime = 8; // 시작 시간 (8시)
-const endTime = 19; // 종료 시간 (19시)
+const endTime = 22; // 종료 시간 (19시)
+const classDetails = { day: 'Tue', slotIndex: 4 };
 
 export default function ProfileScreen() {
-    // 요일별 컬럼을 렌더링하는 함수
+
+    // This shows week
     const renderDayColumn = (day, index) => {
         return (
             <View key={index} style={styles.dayColumn}>
                 <Text style={styles.dayText}>{day}</Text>
-                {Array.from({ length: kColumnLength }, (_, idx) => (
-                    idx % 2 === 0 ? (
-                        <View key={`${day}-${idx}`} style={styles.divider} />
-                    ) : (
-                        <View key={`${day}-${idx}`} style={styles.timeSlot} />
-                    )
-                ))}
+                {Array.from({ length: kColumnLength }, (_, idx) => {
+                    if (day === classDetails.day && idx === classDetails.slotIndex) {
+                        return (
+                            <View key={`${day}-${idx}`} style={[styles.timeSlot, styles.classBox]}>
+                                <Text style={styles.classText}>Class Name</Text>
+                            </View>
+                        );
+                    } else {
+                        return (
+                            idx % 2 === 0 ? (
+                                <View key={`${day}-${idx}`} style={styles.divider} />
+                            ) : (
+                                <View key={`${day}-${idx}`} style={styles.timeSlot} />
+                            )
+                        );
+                    }
+                })}
             </View>
         );
     };
 
-    // 시간을 표시하는 컬럼을 렌더링하는 함수
+    // This shows times and time slots
     const renderTimeColumn = () => {
         const timeSlots = [];
 
         for (let time = startTime; time <= endTime; time++) {
             timeSlots.push(
                 <View key={time} style={styles.timeSlot}>
-                    <Text style={styles.timeText}>{`${time}시`}</Text>
+                    <Text style={styles.timeText}>{`${time} `}</Text>
                 </View>
             );
         }
@@ -49,7 +61,7 @@ export default function ProfileScreen() {
         <View style={styles.background}>
             <SafeAreaView>
                 <View style={styles.container}>
-                    <Text style={styles.title}>시간표 1</Text>
+                    <Text style={styles.title}>Time Table</Text>
                     <View style={styles.scheduleContainer}>
                         {renderTimeColumn()}
                         <View style={{ flexDirection: 'row', flex: 1 }}>
@@ -74,7 +86,7 @@ const styles = StyleSheet.create({
     title: {
         fontSize: 32,
         fontWeight: '700',
-        color: '#fff',
+        color: 'white',
     },
     scheduleContainer: {
         borderWidth: 1,
@@ -92,6 +104,7 @@ const styles = StyleSheet.create({
     dayText: {
         fontWeight: 'bold',
         marginBottom: 5,
+        color: 'white',
     },
     divider: {
         height: 1,
@@ -108,6 +121,14 @@ const styles = StyleSheet.create({
     },
     timeColumn: {
         justifyContent: 'center',
+
+    },
+    classBox: {
+        backgroundColor: 'blue', // Example color for class box
+    },
+    classText: {
+        color: 'white',
+        fontWeight: 'bold',
     },
     verticalDivider: {
         width: 1,
@@ -115,5 +136,6 @@ const styles = StyleSheet.create({
     },
     timeText: {
         textAlign: 'center',
+        color: 'white',
     },
 });
