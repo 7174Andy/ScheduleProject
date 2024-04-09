@@ -13,8 +13,8 @@ import colors from "../config/colors";
 
 export default function FriendsScreen() {
   return (
-    <View>
+    <SafeAreaView>
       <Text>Friends Screen</Text>
-    </View>
+    </SafeAreaView>
   );
 }
