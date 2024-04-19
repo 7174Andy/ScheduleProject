@@ -10,6 +10,8 @@ import {
 } from "react-native";
 
 import colors from "../config/colors";
+import { test, fetchTest } from '../util/http';
+import { useEffect } from "react";
 
 const events = [
   {
@@ -27,6 +29,10 @@ const events = [
   // ... more events
 ];
 
+function postTest() {
+  test();
+}
+
 const TimeSlot = ({ children, style }) => (
   <View style={[styles.timeSlot, style]}>{children}</View>
 );
@@ -38,6 +44,15 @@ const Event = ({ name, color, top, height }) => (
 );
 
 export default function ProfileScreen() {
+  useEffect(() => {
+    async function fetchTestData() {
+      const data = await fetchTest();  // Call fetchTest and handle data appropriately
+      console.log(data);  // Example: logging the fetched data
+    }
+    
+    fetchTestData();
+  }, []);
+
   return (
     <SafeAreaView style={styles.background}>
       <View style={styles.profileContainer}>
@@ -51,7 +66,7 @@ export default function ProfileScreen() {
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
               style={styles.myCalendarBtn}
-              onPress={() => console.log("My Calendar")}
+              onPress={postTest}
             >
               <Text
                 style={{ fontSize: 15, padding: 7, color: colors.textColor }}
@@ -61,7 +76,7 @@ export default function ProfileScreen() {
             </Pressable>
             <Pressable
               style={styles.myCalendarBtn}
-              onPress={() => console.log("Vibeee")}
+              onPress={() => console.log('Vibe')}
             >
               <Text
                 style={{ fontSize: 15, padding: 7, color: colors.textColor }}
