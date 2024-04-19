@@ -2,8 +2,8 @@ import { useContext } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-// import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-// import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 import ProfileScreen from "./app/screens/ProfileScreen";
 import Schedule from "./app/screens/Schedule";
@@ -18,6 +18,7 @@ import AuthContextProvider, { AuthContext } from "./app/store/auth-context";
 import IconButton from "./app/components/ui/IconButton";
 
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 function AuthStack() {
   return (
@@ -38,17 +39,74 @@ function AuthenticatedStack() {
   const authCtx = useContext(AuthContext);
 
   return (
-    <Stack.Navigator
-      screenOptions={{
-        headerStyle: { backgroundColor: Colors.primary500 },
-        headerTintColor: 'white',
-        contentStyle: { backgroundColor: Colors.primary100 },
-      }}
-    >
-      <Stack.Screen name="Welcome" component={WelcomeScreen} options={{
-        headerRight: ({tintColor}) => <IconButton icon="exit" color={tintColor} size={24} onPress={authCtx.logout}></IconButton>
-      }}/>
-    </Stack.Navigator>
+    <Tab.Navigator screenOptions={{
+      headerStyle: { backgroundColor: Colors.primary500 },
+      headerTintColor: 'white',
+      contentStyle: { backgroundColor: Colors.primary100 },
+    }}>
+           <Tab.Screen
+             name="Home"
+             component={Schedule}
+             options={{
+               tabBarLabel: "Home",
+               tabBarIcon: ({ color, size }) => (
+                 <MaterialCommunityIcons name="home" color={color} size={size} />
+               ),
+               headerRight: ({tintColor}) => (
+                <IconButton
+                  icon="exit"
+                  color={tintColor}
+                  size={24}
+                  onPress={authCtx.logout}
+                ></IconButton>
+              ),
+             }}
+           />
+           <Tab.Screen
+             name="Friends"
+             component={FriendsScreen}
+             options={{
+               tabBarLabel: "Friends",
+               tabBarIcon: ({ color, size }) => (
+                 <MaterialCommunityIcons
+                   name="account-multiple"
+                   color={color}
+                   size={size}
+                 />
+               ),
+               headerRight: ({tintColor}) => (
+                <IconButton
+                  icon="exit"
+                  color={tintColor}
+                  size={24}
+                  onPress={authCtx.logout}
+                ></IconButton>
+              ),
+             }}
+           />
+           <Tab.Screen
+             name="Profile"
+             component={ProfileScreen}
+             options={{
+               tabBarLabel: "Profile",
+               tabBarIcon: ({ color, size }) => (
+                 <MaterialCommunityIcons
+                   name="account"
+                   color={color}
+                   size={size}
+                 />
+               ),
+               headerRight: ({tintColor}) => (
+                <IconButton
+                  icon="exit"
+                  color={tintColor}
+                  size={24}
+                  onPress={authCtx.logout}
+                ></IconButton>
+              ),
+             }}
+           />
+         </Tab.Navigator>
   );
 }
 
@@ -73,9 +131,5 @@ export default function App() {
     </>
   );
 }
-
-// export default function App() {
-//   return <Schedule />;
-// }
 
 const styles = StyleSheet.create({});

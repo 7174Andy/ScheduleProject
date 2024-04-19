@@ -1,17 +1,16 @@
 import axios from 'axios';
-
-const BACKEND_URL = ''
+const config = require('../config/.config.js');
 
 export function test() {
     let testObj = {firstName: 'David', lastName: 'An'}
     axios.post(
-        BACKEND_URL + '/test.json',
+        config.BACKEND_URL + '/test.json',
         testObj
     );
 }
 
 export async function fetchTest() {
-    const response = await axios.get(BACKEND_URL + '/test.json');
+    const response = await axios.get(config.BACKEND_URL + '/test.json');
 
     const test = [];
     
