@@ -4,6 +4,7 @@ import { useContext, useState } from 'react';
 import LoadingOverlay from '../components/ui/LoadingOverlay';
 import { Alert } from 'react-native';
 import { AuthContext } from '../store/auth-context';
+import { addUser } from '../util/http';
 
 function SignupScreen() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -13,8 +14,9 @@ function SignupScreen() {
   async function signupHandler({email, password}) {
     setIsAuthenticating(true);
     try {
-        const token = await createUser(email, password);
+        const {token, userId} = await createUser(email, password);
         authCtx.authenticate(token);
+        await addUser(userId);  // TODO createUser and addUser should be atomic
     } catch (error) {
         Alert.alert(
             'Authentication failed',
