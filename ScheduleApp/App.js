@@ -1,9 +1,12 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+//import AppLoading from 'expo-app-loading';
+import * as SplashScreen from 'expo-splash-screen';
 
 import ProfileScreen from "./app/screens/ProfileScreen";
 import Schedule from "./app/screens/Schedule";
@@ -121,12 +124,53 @@ function Navigation() {
   );
 }
 
+function Root() {
+  const [appIsReady, setAppIsReady] = useState(false);
+  const authCtx = useContext(AuthContext);
+
+  useEffect(() => {
+    const fetchToken = async () => {
+      const storedToken = await AsyncStorage.getItem('token');
+      const storedUid = await AsyncStorage.getItem('uid');
+      if (storedToken) {
+        authCtx.authenticate(storedToken, storedUid);
+      }
+
+      setAppIsReady(true);
+    }
+
+    fetchToken();
+  }, []);
+
+  // if (isTryingLogin) {
+  //   return <AppLoading />;
+  // }
+
+  // return <Navigation />;
+  const onLayoutRootView = useCallback(async () => {
+    if (appIsReady) {
+      await SplashScreen.hideAsync();
+    }
+  }, [appIsReady]);
+ 
+  if (!appIsReady) {
+    return null;
+  }
+ 
+  return (
+    <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+      <Navigation />
+    </View>
+  );
+
+}
+
 export default function App() {
   return (
     <>
       <StatusBar style="light" />
       <AuthContextProvider>
-        <Navigation />
+        <Root />
       </AuthContextProvider>
     </>
   );

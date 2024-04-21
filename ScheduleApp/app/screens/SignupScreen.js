@@ -15,7 +15,7 @@ function SignupScreen() {
     setIsAuthenticating(true);
     try {
         const {token, userId} = await createUser(email, password);
-        authCtx.authenticate(token);
+        authCtx.authenticate(token, userId);
         await addUser(userId);  // TODO createUser and addUser should be atomic
     } catch (error) {
         Alert.alert(

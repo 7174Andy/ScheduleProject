@@ -10,8 +10,9 @@ import {
 } from "react-native";
 
 import colors from "../config/colors";
-import { test, fetchTest } from '../util/http';
 import { useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const events = [
   {
@@ -29,10 +30,6 @@ const events = [
   // ... more events
 ];
 
-function postTest() {
-  test();
-}
-
 const TimeSlot = ({ children, style }) => (
   <View style={[styles.timeSlot, style]}>{children}</View>
 );
@@ -44,14 +41,6 @@ const Event = ({ name, color, top, height }) => (
 );
 
 export default function ProfileScreen() {
-  useEffect(() => {
-    async function fetchTestData() {
-      const data = await fetchTest();  // Call fetchTest and handle data appropriately
-      console.log(data);  // Example: logging the fetched data
-    }
-    
-    fetchTestData();
-  }, []);
 
   return (
     <SafeAreaView style={styles.background}>
@@ -66,7 +55,18 @@ export default function ProfileScreen() {
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
               style={styles.myCalendarBtn}
-              onPress={postTest}
+              onPress={async () => {
+                try {
+                  const uid = await AsyncStorage.getItem('uid');
+                  if (uid !== null) {
+                    console.log('UID:', uid);
+                  } else {
+                    console.log('No UID found');
+                  }
+                } catch (error) {
+                  console.error('Failed to fetch UID from AsyncStorage:', error);
+                }
+              }}
             >
               <Text
                 style={{ fontSize: 15, padding: 7, color: colors.textColor }}
