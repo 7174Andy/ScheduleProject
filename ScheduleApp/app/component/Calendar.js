@@ -1,10 +1,13 @@
 import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import React, { useState } from "react";
+import Swiper from "react-native-swiper";
 import moment from "moment";
 
 function Calendar() {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [week, setWeek] = useState(0);
+
+  const swiper = React.useRef();
 
   const weeks = React.useMemo(() => {
     const start = moment(start).add(week, "weeks").startOf("week");
@@ -21,46 +24,74 @@ function Calendar() {
   }, [week]);
 
   return (
-    <View style={styles.picker}>
-      {weeks.map((dates, i) => (
-        <View style={styles.dateRow} key={i}>
-          {dates.map((item, dateIndex) => {
-            const isActive =
-              item.date.toDateString() === selectedDate.toDateString();
+    <>
+      <View style={styles.picker}>
+        <Swiper
+          index={1}
+          ref={swiper}
+          loop={false}
+          showsPagination={false}
+          onIndexChanged={(ind) => {
+            if (ind === 1) {
+              return;
+            }
+            setTimeout(() => {
+              const newIndex = ind - 1;
+              const newWeek = week + newIndex;
+              setWeek(newWeek);
+              setSelectedDate(
+                moment(selectedDate).add(newIndex, "week").toDate()
+              );
+              swiper.current.scrollTo(1, false);
+            }, 100);
+          }}
+        >
+          {weeks.map((dates, i) => (
+            <View style={styles.dateRow} key={i}>
+              {dates.map((item, dateIndex) => {
+                const isActive =
+                  item.date.toDateString() === selectedDate.toDateString();
 
-            return (
-              <TouchableWithoutFeedback
-                key={dateIndex}
-                onPress={() => setSelectedDate(item.date)}
-              >
-                <View style={[styles.date, isActive && styles.isActiveDate]}>
-                  <Text
-                    style={[
-                      styles.dateWeekday,
-                      isActive && {
-                        color: "black",
-                      },
-                    ]}
+                return (
+                  <TouchableWithoutFeedback
+                    key={dateIndex}
+                    onPress={() => setSelectedDate(item.date)}
                   >
-                    {item.weekday}
-                  </Text>
-                  <Text
-                    style={[
-                      styles.dateText,
-                      isActive && {
-                        color: "black",
-                      },
-                    ]}
-                  >
-                    {item.date.getDate()}
-                  </Text>
-                </View>
-              </TouchableWithoutFeedback>
-            );
-          })}
-        </View>
-      ))}
-    </View>
+                    <View
+                      style={[styles.date, isActive && styles.isActiveDate]}
+                    >
+                      <Text
+                        style={[
+                          styles.dateWeekday,
+                          isActive && {
+                            color: "black",
+                          },
+                        ]}
+                      >
+                        {item.weekday}
+                      </Text>
+                      <Text
+                        style={[
+                          styles.dateText,
+                          isActive && {
+                            color: "black",
+                          },
+                        ]}
+                      >
+                        {item.date.getDate()}
+                      </Text>
+                    </View>
+                  </TouchableWithoutFeedback>
+                );
+              })}
+            </View>
+          ))}
+        </Swiper>
+      </View>
+      <View>
+        <Text>{selectedDate.toDateString()}</Text>
+      </View>
+    </>
   );
 }
 
@@ -78,7 +109,6 @@ const styles = StyleSheet.create({
     marginButton: 10,
     flexDirection: "row",
     justifyContent: "space-between",
-    marginHorizontal: -4,
   },
   date: {
     flex: 1,
