@@ -7,7 +7,7 @@ export default function ProfileScreen() {
   return (
     <SafeAreaView style={styles.background}>
       <View style={styles.container}>
-        <Text style={styles.title}>Time Table</Text>
+        <Text style={styles.title}>Weekly Schedule</Text>
         <View style={styles.calendarContainer}>
           <Calendar />
         </View>
@@ -27,7 +27,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
   },
   title: {
-    fontSize: 32,
+    fontSize: 30,
     fontWeight: "700",
     color: "white",
   },

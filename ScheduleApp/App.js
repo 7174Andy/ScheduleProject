@@ -16,7 +16,7 @@ export default function App() {
     <>
       <StatusBar style="light" />
       <NavigationContainer>
-        <Tab.Navigator screenOptions={{ headerShown: false }}>
+        <Tab.Navigator>
           <Tab.Screen
             name="Home"
             component={Schedule}

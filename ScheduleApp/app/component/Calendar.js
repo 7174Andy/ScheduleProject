@@ -89,7 +89,9 @@ function Calendar() {
         </Swiper>
       </View>
       <View>
-        <Text>{selectedDate.toDateString()}</Text>
+        <Text style={styles.contentDateText}>
+          {selectedDate.toDateString()}
+        </Text>
       </View>
     </>
   );
@@ -131,5 +133,11 @@ const styles = StyleSheet.create({
   isActiveDate: {
     color: "black",
     backgroundColor: "white",
+  },
+  contentDateText: {
+    fontSize: 17,
+    fontWeight: "600",
+    color: "#999",
+    marginBottom: 10,
   },
 });
