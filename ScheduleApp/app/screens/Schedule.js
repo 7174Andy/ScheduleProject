@@ -4,12 +4,31 @@ import colors from "../config/colors";
 import Calendar from "../component/Calendar";
 
 export default function ProfileScreen() {
+  const events = {
+    mon: [
+      {
+        course: "ECE 109",
+        startTime: 9,
+        endTime: 10,
+        enrollmentStatus: "enrolled",
+        professor: "Prof. Smith",
+      },
+      {
+        course: "Math 154 Midterm",
+        startTime: 18,
+        endTime: 20,
+        enrollmentStatus: "enrolled",
+        professor: "Prof. Johnson",
+      },
+    ],
+  };
+
   return (
     <SafeAreaView style={styles.background}>
       <View style={styles.container}>
         <Text style={styles.title}>Weekly Schedule</Text>
         <View style={styles.calendarContainer}>
-          <Calendar />
+          <Calendar events={events} />
         </View>
       </View>
     </SafeAreaView>

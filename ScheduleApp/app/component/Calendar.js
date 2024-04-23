@@ -3,7 +3,16 @@ import React, { useState } from "react";
 import Swiper from "react-native-swiper";
 import moment from "moment";
 
-function Calendar() {
+function Calendar({ events }) {
+  const TimeSlot = ({ children, style }) => (
+    <View style={[styles.timeSlot, style]}>{children}</View>
+  );
+
+  const Event = ({ name, color, top, height }) => (
+    <View style={[styles.event, { backgroundColor: color, top, height }]}>
+      <Text style={styles.eventText}>{name}</Text>
+    </View>
+  );
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [week, setWeek] = useState(0);
 
@@ -88,15 +97,11 @@ function Calendar() {
           ))}
         </Swiper>
       </View>
-      <View style={{ flex: 1, paddingHorizontal: 10, paddingVertical: 18 }}>
+      <View style={{ flex: 1, paddingHorizontal: 5 }}>
         <Text style={styles.contentDateText}>
           {selectedDate.toDateString()}
         </Text>
-        <View>
-          <View>
-            <Text>This is the placeholder for events</Text>
-          </View>
-        </View>
+        <View style={styles.eventsContainer}></View>
       </View>
     </>
   );
@@ -144,5 +149,13 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: "#999",
     marginBottom: 10,
+  },
+  eventsContainer: {
+    borderWidth: 4,
+    borderColor: "white",
+    borderRadius: 10,
+    padding: 5,
+    flex: 1,
+    borderStyle: "dashed",
   },
 });
