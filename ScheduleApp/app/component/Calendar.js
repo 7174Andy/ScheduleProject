@@ -1,9 +1,15 @@
-import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  TouchableWithoutFeedback,
+  View,
+  ScrollView,
+} from "react-native";
 import React, { useState } from "react";
 import Swiper from "react-native-swiper";
 import moment from "moment";
 
-function Calendar({ events }) {
+function Calendar({ weeklyEvents }) {
   const TimeSlot = ({ children, style }) => (
     <View style={[styles.timeSlot, style]}>{children}</View>
   );
@@ -13,6 +19,7 @@ function Calendar({ events }) {
       <Text style={styles.eventText}>{name}</Text>
     </View>
   );
+
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [week, setWeek] = useState(0);
 
@@ -101,7 +108,28 @@ function Calendar({ events }) {
         <Text style={styles.contentDateText}>
           {selectedDate.toDateString()}
         </Text>
-        <View style={styles.eventsContainer}></View>
+        <ScrollView
+          style={styles.eventsContainer}
+          showsVerticalScrollIndicator={false}
+          scrollEnabled={true}
+        >
+          {Array.from({ length: 24 }, (_, index) => (
+            <TimeSlot key={index}>
+              <Text style={{ color: "white" }}>{`${index % 12 || 12} ${
+                index < 12 ? "AM" : "PM"
+              }`}</Text>
+            </TimeSlot>
+          ))}
+          {weeklyEvents.mon.map((event, index) => (
+            <Event
+              key={index}
+              name={event.course}
+              top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
+              height={(event.endTime - event.startTime) * 60}
+              color="blue"
+            />
+          ))}
+        </ScrollView>
       </View>
     </>
   );
@@ -157,5 +185,24 @@ const styles = StyleSheet.create({
     padding: 5,
     flex: 1,
     borderStyle: "dashed",
+  },
+  timeSlot: {
+    height: 60, // Each slot is 60 pixels high
+    justifyContent: "center",
+    paddingLeft: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "white",
+  },
+  event: {
+    position: "absolute",
+    left: "15%",
+    width: "80%",
+    justifyContent: "center",
+    alignItems: "center",
+    borderRadius: 10,
+    padding: 5,
+  },
+  eventText: {
+    color: "white",
   },
 });

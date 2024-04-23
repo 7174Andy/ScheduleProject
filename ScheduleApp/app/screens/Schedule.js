@@ -21,6 +21,7 @@ export default function ProfileScreen() {
         professor: "Prof. Johnson",
       },
     ],
+    tue: [],
   };
 
   return (
@@ -28,7 +29,7 @@ export default function ProfileScreen() {
       <View style={styles.container}>
         <Text style={styles.title}>Weekly Schedule</Text>
         <View style={styles.calendarContainer}>
-          <Calendar events={events} />
+          <Calendar weeklyEvents={events} />
         </View>
       </View>
     </SafeAreaView>
