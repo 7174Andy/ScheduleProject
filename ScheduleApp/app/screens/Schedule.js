@@ -5,14 +5,14 @@ import Calendar from "../component/Calendar";
 
 export default function ProfileScreen() {
   return (
-    <View style={styles.background}>
-      <SafeAreaView>
-        <View style={styles.container}>
-          <Text style={styles.title}>Time Table</Text>
+    <SafeAreaView style={styles.background}>
+      <View style={styles.container}>
+        <Text style={styles.title}>Time Table</Text>
+        <View style={styles.calendarContainer}>
           <Calendar />
         </View>
-      </SafeAreaView>
-    </View>
+      </View>
+    </SafeAreaView>
   );
 }
 
@@ -22,12 +22,17 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   container: {
-    paddingVertical: 10,
+    flex: 1,
+    paddingVertical: 40,
     paddingHorizontal: 16,
   },
   title: {
     fontSize: 32,
     fontWeight: "700",
     color: "white",
+  },
+  calendarContainer: {
+    flex: 1,
+    marginTop: 20,
   },
 });
