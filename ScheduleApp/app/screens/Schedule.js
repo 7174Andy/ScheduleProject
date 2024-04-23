@@ -1,6 +1,7 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import colors from "../config/colors";
+import Calendar from "../component/Calendar";
 
 export default function ProfileScreen() {
   return (
@@ -8,6 +9,7 @@ export default function ProfileScreen() {
       <SafeAreaView>
         <View style={styles.container}>
           <Text style={styles.title}>Time Table</Text>
+          <Calendar />
         </View>
       </SafeAreaView>
     </View>
