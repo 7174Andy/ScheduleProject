@@ -88,10 +88,15 @@ function Calendar() {
           ))}
         </Swiper>
       </View>
-      <View>
+      <View style={{ flex: 1, paddingHorizontal: 10, paddingVertical: 18 }}>
         <Text style={styles.contentDateText}>
           {selectedDate.toDateString()}
         </Text>
+        <View>
+          <View>
+            <Text>This is the placeholder for events</Text>
+          </View>
+        </View>
       </View>
     </>
   );
