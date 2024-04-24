@@ -74,16 +74,6 @@ export default function ProfileScreen() {
                 My Calendar
               </Text>
             </Pressable>
-            <Pressable
-              style={styles.myCalendarBtn}
-              onPress={() => console.log('Vibe')}
-            >
-              <Text
-                style={{ fontSize: 15, padding: 7, color: colors.textColor }}
-              >
-                Vibe
-              </Text>
-            </Pressable>
           </View>
         </View>
       </View>
@@ -136,7 +126,6 @@ const styles = StyleSheet.create({
   },
   calendarContainer: {
     flex: 0,
-    padding: 15,
     margin: 15,
     borderRadius: 10,
     backgroundColor: colors.backgroundColor,
