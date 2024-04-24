@@ -145,7 +145,7 @@ function Calendar({ weeklyEvents }) {
               name={event.course}
               top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
               height={(event.endTime - event.startTime) * 60}
-              color="blue"
+              color={event.color}
             />
           ))}
         </ScrollView>
@@ -223,6 +223,7 @@ const styles = StyleSheet.create({
   },
   eventText: {
     color: "white",
+    fontSize: 17,
   },
   contentContainer: {
     paddingBottom: 20,

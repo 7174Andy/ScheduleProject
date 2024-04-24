@@ -4,14 +4,17 @@ import colors from "../config/colors";
 import Calendar from "../component/Calendar";
 
 export default function ProfileScreen() {
+  // Dummy Data
   const events = [
+    [],
     [
       {
-        course: "ECE 109",
-        startTime: 9,
-        endTime: 10,
+        course: "CSE 102",
+        startTime: 8,
+        endTime: 8.5,
         enrollmentStatus: "enrolled",
         professor: "Prof. Smith",
+        color: "purple",
       },
       {
         course: "Math 154 Midterm",
@@ -19,12 +22,47 @@ export default function ProfileScreen() {
         endTime: 20,
         enrollmentStatus: "enrolled",
         professor: "Prof. Johnson",
+        color: "orange",
       },
     ],
-    [],
-    [],
-    [],
-    [],
+    [
+      {
+        course: "Math 154",
+        startTime: 14,
+        endTime: 15,
+        enrollmentStatus: "enrolled",
+        professor: "Prof. Johnson",
+        color: "orange",
+      },
+    ],
+    [
+      {
+        course: "CSE 102",
+        startTime: 8,
+        endTime: 9.5,
+        enrollmentStatus: "enrolled",
+        professor: "Prof. Smith",
+        color: "purple",
+      },
+    ],
+    [
+      {
+        course: "ECE 109",
+        startTime: 9,
+        endTime: 10,
+        enrollmentStatus: "enrolled",
+        professor: "Prof. Smith",
+        color: "blue",
+      },
+      {
+        course: "Math 154",
+        startTime: 14,
+        endTime: 15,
+        enrollmentStatus: "enrolled",
+        professor: "Prof. Johnson",
+        color: "orange",
+      },
+    ],
     [],
     [],
   ];
