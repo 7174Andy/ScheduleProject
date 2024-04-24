@@ -4,8 +4,8 @@ import colors from "../config/colors";
 import Calendar from "../component/Calendar";
 
 export default function ProfileScreen() {
-  const events = {
-    mon: [
+  const events = [
+    [
       {
         course: "ECE 109",
         startTime: 9,
@@ -21,8 +21,13 @@ export default function ProfileScreen() {
         professor: "Prof. Johnson",
       },
     ],
-    tue: [],
-  };
+    [],
+    [],
+    [],
+    [],
+    [],
+    [],
+  ];
 
   return (
     <SafeAreaView style={styles.background}>

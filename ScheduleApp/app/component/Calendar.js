@@ -10,6 +10,12 @@ import Swiper from "react-native-swiper";
 import moment from "moment";
 
 function Calendar({ weeklyEvents }) {
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [week, setWeek] = useState(0);
+  const [selectedWeekDay, setSelectedWeekDay] = useState(new Date().getDay());
+
+  const swiper = React.useRef();
+
   const TimeSlot = ({ children, style }) => (
     <View style={[styles.timeSlot, style]}>{children}</View>
   );
@@ -20,10 +26,10 @@ function Calendar({ weeklyEvents }) {
     </View>
   );
 
-  const [selectedDate, setSelectedDate] = useState(new Date());
-  const [week, setWeek] = useState(0);
-
-  const swiper = React.useRef();
+  const handleSelectDate = (date) => {
+    setSelectedDate(date);
+    setSelectedWeekDay(date.getDay());
+  };
 
   const weeks = React.useMemo(() => {
     const start = moment(start).add(week, "weeks").startOf("week");
@@ -71,7 +77,7 @@ function Calendar({ weeklyEvents }) {
                 return (
                   <TouchableWithoutFeedback
                     key={dateIndex}
-                    onPress={() => setSelectedDate(item.date)}
+                    onPress={() => handleSelectDate(item.date)}
                   >
                     <View
                       style={[styles.date, isActive && styles.isActiveDate]}
@@ -121,7 +127,7 @@ function Calendar({ weeklyEvents }) {
               }`}</Text>
             </TimeSlot>
           ))}
-          {weeklyEvents.mon.map((event, index) => (
+          {weeklyEvents[selectedWeekDay].map((event, index) => (
             <Event
               key={index}
               name={event.course}
