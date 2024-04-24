@@ -12,6 +12,8 @@ import {
 import colors from "../config/colors";
 import { useEffect } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from "react";
+import { getUserData } from "../util/http";
 
 
 const events = [
@@ -41,6 +43,23 @@ const Event = ({ name, color, top, height }) => (
 );
 
 export default function ProfileScreen() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const uid = await AsyncStorage.getItem('uid');
+        // Assume getUserData is an async function that fetches user data
+        const data = await getUserData(uid);
+        setUser(data); // Save the fetched data to state
+        console.log('User data fetched:', data);
+      } catch (error) {
+        console.error('Failed to fetch user data:', error);
+      }
+    };
+
+    fetchUserData();
+  }, []); 
 
   return (
     <SafeAreaView style={styles.background}>
@@ -50,8 +69,8 @@ export default function ProfileScreen() {
           source={require("../assets/user.png")}
         />
         <View style={{ alignItems: "flex-start", flexDirection: "column" }}>
-          <Text style={styles.profileName}>Nathan Chang</Text>
-          <Text style={styles.profileTag}>@Jiwoong</Text>
+          <Text style={styles.profileName}>{user.firstName},{user.lastName}</Text>
+          <Text style={styles.profileTag}>@{user.nickname}</Text>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
               style={styles.myCalendarBtn}
@@ -89,10 +108,10 @@ export default function ProfileScreen() {
       </View>
       <View style={styles.hashtagContainer}>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}># Sixth College</Text>
+          <Text style={styles.hashtagText}>{user.college}</Text>
         </View>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}># Bioinformatics Major</Text>
+          <Text style={styles.hashtagText}>{user.majors.map(element => '# ' + element).join(' ')}</Text>
         </View>
       </View>
       <View style={styles.hashtagContainerSecond}>
@@ -100,7 +119,7 @@ export default function ProfileScreen() {
           <Text style={styles.hashtagText}># Sophomore</Text>
         </View>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}># Data Science Minor</Text>
+          <Text style={styles.hashtagText}>{user.minors.map(element => '# ' + element).join(' ')}</Text>
         </View>
       </View>
       <ScrollView
@@ -116,7 +135,7 @@ export default function ProfileScreen() {
           </TimeSlot>
         ))}
         {events.map((event, index) => (
-          <Event
+          <Event  // Render each event as a colored box
             key={index}
             name={event.name}
             color={event.color}
