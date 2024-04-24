@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import colors from "../config/colors";
 import Calendar from "../component/Calendar";
 
-export default function ProfileScreen() {
+export default function Schedule() {
   // Dummy Data
   const events = [
     [],
