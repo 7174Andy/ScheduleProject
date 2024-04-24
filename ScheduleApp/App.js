@@ -42,58 +42,74 @@ function AuthenticatedStack() {
   const authCtx = useContext(AuthContext);
 
   return (
-    <>
-      <StatusBar style="light" />
-      <NavigationContainer>
-        <Tab.Navigator>
-          <Tab.Screen
-            name="Home"
-            component={Schedule}
-            options={{
-              tabBarLabel: "Home",
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons name="home" color={color} size={size} />
+    <Tab.Navigator screenOptions={{
+      headerStyle: { backgroundColor: Colors.primary500 },
+      headerTintColor: 'white',
+      contentStyle: { backgroundColor: Colors.primary100 },
+    }}>
+           <Tab.Screen
+             name="Home"
+             component={Schedule}
+             options={{
+               tabBarLabel: "Home",
+               tabBarIcon: ({ color, size }) => (
+                 <MaterialCommunityIcons name="home" color={color} size={size} />
+               ),
+               headerRight: ({tintColor}) => (
+                <IconButton
+                  icon="exit"
+                  color={tintColor}
+                  size={24}
+                  onPress={authCtx.logout}
+                ></IconButton>
               ),
-              headerRight: ({tintColor}) => (
-              <IconButton
-                icon="exit"
-                color={tintColor}
-                size={24}
-                onPress={authCtx.logout}
-              ></IconButton>
-            }}
-          />
-          <Tab.Screen
-            name="Friends"
-            component={FriendsScreen}
-            options={{
-              tabBarLabel: "Friends",
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons
-                  name="account-multiple"
-                  color={color}
-                  size={size}
-                />
+             }}
+           />
+           <Tab.Screen
+             name="Friends"
+             component={FriendsScreen}
+             options={{
+               tabBarLabel: "Friends",
+               tabBarIcon: ({ color, size }) => (
+                 <MaterialCommunityIcons
+                   name="account-multiple"
+                   color={color}
+                   size={size}
+                 />
+               ),
+               headerRight: ({tintColor}) => (
+                <IconButton
+                  icon="exit"
+                  color={tintColor}
+                  size={24}
+                  onPress={authCtx.logout}
+                ></IconButton>
               ),
-            }}
-          />
-          <Tab.Screen
-            name="Profile"
-            component={ProfileScreen}
-            options={{
-              tabBarLabel: "Profile",
-              tabBarIcon: ({ color, size }) => (
-                <MaterialCommunityIcons
-                  name="account"
-                  color={color}
-                  size={size}
-                />
+             }}
+           />
+           <Tab.Screen
+             name="Profile"
+             component={ProfileScreen}
+             options={{
+               tabBarLabel: "Profile",
+               tabBarIcon: ({ color, size }) => (
+                 <MaterialCommunityIcons
+                   name="account"
+                   color={color}
+                   size={size}
+                 />
+               ),
+               headerRight: ({tintColor}) => (
+                <IconButton
+                  icon="exit"
+                  color={tintColor}
+                  size={24}
+                  onPress={authCtx.logout}
+                ></IconButton>
               ),
-            }}
-          />
-        </Tab.Navigator>
-      </NavigationContainer>
-    </>
+             }}
+           />
+         </Tab.Navigator>
   );
 }
 
