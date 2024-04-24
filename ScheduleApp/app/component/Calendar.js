@@ -5,17 +5,21 @@ import {
   View,
   ScrollView,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import Swiper from "react-native-swiper";
 import moment from "moment";
 
 function Calendar({ weeklyEvents }) {
+  // States
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [week, setWeek] = useState(0);
   const [selectedWeekDay, setSelectedWeekDay] = useState(new Date().getDay());
 
+  // Refs
   const swiper = React.useRef();
+  const scrollViewRef = useRef(null);
 
+  // Components
   const TimeSlot = ({ children, style }) => (
     <View style={[styles.timeSlot, style]}>{children}</View>
   );
@@ -26,11 +30,18 @@ function Calendar({ weeklyEvents }) {
     </View>
   );
 
+  // Helper Functions
   const handleSelectDate = (date) => {
     setSelectedDate(date);
     setSelectedWeekDay(date.getDay());
+    scrollTop();
   };
 
+  const scrollTop = () => {
+    scrollViewRef.current.scrollTo({ y: 0, animated: true });
+  };
+
+  // Memoized Values
   const weeks = React.useMemo(() => {
     const start = moment(start).add(week, "weeks").startOf("week");
     return [-1, 0, 1].map((adj) => {
@@ -119,6 +130,7 @@ function Calendar({ weeklyEvents }) {
           contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}
           scrollEnabled={true}
+          ref={scrollViewRef}
         >
           {Array.from({ length: 24 }, (_, index) => (
             <TimeSlot key={index}>
