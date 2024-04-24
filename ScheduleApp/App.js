@@ -7,7 +7,7 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import ProfileScreen from "./app/screens/ProfileScreen";
 import Schedule from "./app/screens/Schedule";
 import FriendsScreen from "./app/screens/FriendsScreen";
-import CalendarScreen from "./app/screens/CalendarScreen";
+import ManageCalendarScreen from "./app/screens/ManageCalendarScreen";
 
 const Tab = createBottomTabNavigator();
 

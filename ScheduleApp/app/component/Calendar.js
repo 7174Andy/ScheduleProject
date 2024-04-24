@@ -110,6 +110,7 @@ function Calendar({ weeklyEvents }) {
         </Text>
         <ScrollView
           style={styles.eventsContainer}
+          contentContainerStyle={styles.contentContainer}
           showsVerticalScrollIndicator={false}
           scrollEnabled={true}
         >
@@ -182,21 +183,21 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: "white",
     borderRadius: 10,
-    padding: 5,
+    paddingHorizontal: 10,
     flex: 1,
     borderStyle: "dashed",
   },
   timeSlot: {
     height: 60, // Each slot is 60 pixels high
     justifyContent: "center",
-    paddingLeft: 10,
+    paddingLeft: 5,
     borderBottomWidth: 1,
     borderBottomColor: "white",
   },
   event: {
     position: "absolute",
     left: "15%",
-    width: "80%",
+    width: "85%",
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
@@ -204,5 +205,8 @@ const styles = StyleSheet.create({
   },
   eventText: {
     color: "white",
+  },
+  contentContainer: {
+    paddingBottom: 20,
   },
 });
