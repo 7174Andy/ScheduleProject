@@ -10,6 +10,9 @@ import {
 } from "react-native";
 
 import colors from "../config/colors";
+import { useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const events = [
   {
@@ -38,6 +41,7 @@ const Event = ({ name, color, top, height }) => (
 );
 
 export default function ProfileScreen() {
+
   return (
     <SafeAreaView style={styles.background}>
       <View style={styles.profileContainer}>
@@ -51,7 +55,18 @@ export default function ProfileScreen() {
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
               style={styles.myCalendarBtn}
-              onPress={() => console.log("My Calendar")}
+              onPress={async () => {
+                try {
+                  const uid = await AsyncStorage.getItem('uid');
+                  if (uid !== null) {
+                    console.log('UID:', uid);
+                  } else {
+                    console.log('No UID found');
+                  }
+                } catch (error) {
+                  console.error('Failed to fetch UID from AsyncStorage:', error);
+                }
+              }}
             >
               <Text
                 style={{ fontSize: 15, padding: 7, color: colors.textColor }}
