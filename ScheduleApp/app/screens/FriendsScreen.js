@@ -40,20 +40,24 @@ export default function FriendsScreen() {
 
   const handleSearchInputChange = async (text) => {
     const searchText = text.toLowerCase();
+    const currentUserUid = await AsyncStorage.getItem("uid");
     setSearchInput(searchText);
     if (searchText.trim().length > 0) {
+      console.log(currentUserUid);
       try {
         const queryRef = query(ref(db, 'db'), orderByChild('nickname'), startAt(searchText), endAt(searchText + '\uf8ff'));
         const snapshot = await get(queryRef);
         const fetchedUsers = [];
         snapshot.forEach((childSnapshot) => {
           const userData = childSnapshot.val();
-          fetchedUsers.push({
-            nickname: userData.nickname,
-            firstName: userData.firstName,
-            lastName: userData.lastName,
-            uid: childSnapshot.key
-          });
+          if (childSnapshot.key !== currentUserUid) { // Check if user is not the current user
+            fetchedUsers.push({
+              nickname: userData.nickname,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              uid: childSnapshot.key // Use userData.uid instead of childSnapshot.key
+            });
+          }
         });
         setUsers(fetchedUsers);
       } catch (error) {
