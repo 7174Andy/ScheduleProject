@@ -13,7 +13,6 @@ import Schedule from "./app/screens/Schedule";
 import FriendsScreen from "./app/screens/FriendsScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
-import WelcomeScreen from "./app/screens/WelcomeScreen";
 
 import { Colors } from "./app/constants/styles";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";

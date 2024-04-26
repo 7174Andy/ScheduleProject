@@ -10,13 +10,13 @@ export async function addUser(userId) {
         college: 'college',
         classLvl: 'Sophomore',
         minors: ['minor1', 'minor2'],
-        friends: ['friendId1', 'friendId2'],
+        friends: [],
         Mon: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
         Tue: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
         Wed: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
         Thu: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
         Fri: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
-        friendRequests: ['friendId1', 'friendId2'],
+        friendRequests: [],
     });
 }
 
