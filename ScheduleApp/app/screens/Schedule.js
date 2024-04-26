@@ -1,7 +1,7 @@
 import React from "react";
 import { SafeAreaView, StyleSheet, Text, View } from "react-native";
 import colors from "../config/colors";
-import Calendar from "../components/Calendar";
+import Calendar from "../components/calendarComponents/Calendar";
 
 export default function Schedule() {
   // Dummy Data
