@@ -58,12 +58,15 @@ function AuthenticatedStack() {
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
           headerRight: ({ tintColor }) => (
-            <IconButton
-              icon="exit"
-              color={tintColor}
-              size={24}
-              onPress={authCtx.logout}
-            ></IconButton>
+            <View style={{ flexDirection: "row" }}>
+              <IconButton
+                icon="exit"
+                color={tintColor}
+                size={24}
+                onPress={authCtx.logout}
+              />
+              <IconButton icon="add" color={tintColor} size={24} />
+            </View>
           ),
         }}
       />
