@@ -15,22 +15,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from "react";
 import { getUserData } from "../util/http";
 
+const currentDate = new Date();
+const dayOfWeek = currentDate.getDay();
+const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const dayName = dayOfWeek[dayOfWeek];
 
-const events = [
-  {
-    name: "ECE 109",
-    startTime: 9, // Start at 9 AM
-    duration: 1, // Duration of 1 hour
-    color: "orange",
-  },
-  {
-    name: "Math 154 Midterm",
-    startTime: 18, // Start at 6 PM
-    duration: 2, // Duration of 2 hours
-    color: "green",
-  },
-  // ... more events
-];
+const events = user[dayName]
 
 const TimeSlot = ({ children, style }) => (
   <View style={[styles.timeSlot, style]}>{children}</View>
@@ -121,10 +111,10 @@ export default function ProfileScreen() {
         {events.map((event, index) => (
           <Event  // Render each event as a colored box
             key={index}
-            name={event.name}
+            name={event.course}
             color={event.color}
             top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
-            height={event.duration * 60}
+            height={(event.endTime - event.startTime) * 60}
           />
         ))}
       </ScrollView>
