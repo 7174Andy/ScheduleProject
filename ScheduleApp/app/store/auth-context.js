@@ -15,7 +15,10 @@ function AuthContextProvider({ children }) {
     setAuthToken(token);
     AsyncStorage.setItem('token', token);
     AsyncStorage.setItem('uid', uid);
+    
   }
+  
+
 
   function logout() {
     setAuthToken(null);

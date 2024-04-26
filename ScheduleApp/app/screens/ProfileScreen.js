@@ -1,33 +1,38 @@
 import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Button,
-  Pressable,
-  ScrollView,
-} from "react-native";
+  SafeAreaView, View, Text, Image, Pressable, Modal, TextInput, Button, StyleSheet, ScrollView
+} from 'react-native';
 
 import colors from "../config/colors";
 import { useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useState } from "react";
+import { getUserData } from "../util/http";
 
-const events = [
-  {
-    name: "ECE 109",
-    startTime: 9, // Start at 9 AM
-    duration: 1, // Duration of 1 hour
-    color: "orange",
-  },
-  {
-    name: "Math 154 Midterm",
-    startTime: 18, // Start at 6 PM
-    duration: 2, // Duration of 2 hours
-    color: "green",
-  },
-  // ... more events
-];
+const currentDate = new Date();
+const today = currentDate.getDay();
+const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const dayName = dayOfWeek[today];
+
+//const events = user[dayName]
+// const events = [
+//   {
+//     course: "ECE 109",
+//     startTime: 9, // Start at 9 AM
+//     endTime: 10,
+//     color: "orange",
+//     enrollmentStatus: "enrolled",
+//     professor: "p1",
+//   },
+//   {
+//     course: "Math 154 Midterm",
+//     startTime: 18, // Start at 6 PM
+//     endTime: 20,
+//     color: "green",
+//     enrollmentStatus: "enrolled",
+//     professor: "p1",
+//   },
+//   // ... more events
+// ];
 
 const TimeSlot = ({ children, style }) => (
   <View style={[styles.timeSlot, style]}>{children}</View>
@@ -40,34 +45,134 @@ const Event = ({ name, color, top, height }) => (
 );
 
 export default function ProfileScreen() {
+  const [user, setUser] = useState(null);
+  const [isModalVisible, setModalVisible] = useState(false);
+  const [editData, setEditData] = useState({
+    firstName: '',
+    lastName: '',
+    nickname: '',
+    college: '',
+    majors: [],
+    minors: [],
+    classLvl: ''
+  });
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDataJson = await AsyncStorage.getItem('userData');
+        if (userDataJson !== null) {
+          const userData = JSON.parse(userDataJson);
+          setUser(userData);
+          console.log(userData[dayName]);
+        }
+      } catch (error) {
+        console.error('Failed to load user data from storage', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  const openEditModal = () => {
+    if (user) {
+      setEditData({
+        firstName: user.firstName,
+        lastName: user.lastName,
+        nickname: user.nickname,
+        college: user.college,
+        majors: user.majors,
+        minors: user.minors,
+        classLvl: user.classLvl
+      });
+    }
+    setModalVisible(true);
+  };
+
+  const handleSave = async () => {
+    const updatedUser = { ...user, ...editData };
+    await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
+    setUser(updatedUser);
+    setModalVisible(false);
+    // TODO 수정이 백엔드에도 저장되게
+  };
+
+  const handleChange = (name, value) => {
+    if (name === 'majors' || name === 'minors') {
+      value = value.split(',').map(v => v.trim());  // Assuming input is comma-separated
+    }
+    setEditData(prev => ({ ...prev, [name]: value }));
+  };
+
   return (
     <SafeAreaView style={styles.background}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('firstName', text)}
+              value={editData.firstName}
+              placeholder="First Name"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('lastName', text)}
+              value={editData.lastName}
+              placeholder="Last Name"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('nickname', text)}
+              value={editData.nickname}
+              placeholder="Nickname"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('college', text)}
+              value={editData.college}
+              placeholder="College"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('majors', text)}
+              value={editData.majors.join(', ')}
+              placeholder="Majors (comma separated)"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('minors', text)}
+              value={editData.minors.join(', ')}
+              placeholder="Minors (comma separated)"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('classLvl', text)}
+              value={editData.classLvl}
+              placeholder="Class Level"
+            />
+            <Button title="Save Changes" onPress={handleSave} />
+            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
       <View style={styles.profileContainer}>
         <Image
           style={styles.profileImage}
           source={require("../assets/user.png")}
         />
         <View style={{ alignItems: "flex-start", flexDirection: "column" }}>
-          <Text style={styles.profileName}>Nathan Chang</Text>
-          <Text style={styles.profileTag}>@Jiwoong</Text>
+          <Text style={styles.profileName}>{user ? user.firstName + " " + user.lastName : " "}</Text>
+          <Text style={styles.profileTag}>@{user ? user.nickname : " "}</Text>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
               style={styles.myCalendarBtn}
-              onPress={async () => {
-                try {
-                  const uid = await AsyncStorage.getItem("uid");
-                  if (uid !== null) {
-                    console.log("UID:", uid);
-                  } else {
-                    console.log("No UID found");
-                  }
-                } catch (error) {
-                  console.error(
-                    "Failed to fetch UID from AsyncStorage:",
-                    error
-                  );
-                }
-              }}
+              onPress={openEditModal}
             >
               <Text
                 style={{ fontSize: 15, padding: 7, color: colors.textColor }}
@@ -80,18 +185,18 @@ export default function ProfileScreen() {
       </View>
       <View style={styles.hashtagContainer}>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}># Sixth College</Text>
+          <Text style={styles.hashtagText}># {user ? user.college : ""}</Text>
         </View>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}># Bioinformatics Major</Text>
+          <Text style={styles.hashtagText}>{user ? user.majors.map(element => '# ' + element).join(' ') : ""}</Text>
         </View>
       </View>
       <View style={styles.hashtagContainerSecond}>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}># Sophomore</Text>
+          <Text style={styles.hashtagText}># {user ? user.classLvl : ""}</Text>
         </View>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}># Data Science Minor</Text>
+          <Text style={styles.hashtagText}>{user ? user.minors.map(element => '# ' + element).join(' ') : ""}</Text>
         </View>
       </View>
       <ScrollView
@@ -106,21 +211,77 @@ export default function ProfileScreen() {
             }`}</Text>
           </TimeSlot>
         ))}
-        {events.map((event, index) => (
-          <Event
+        {user ? user[dayName].map((event, index) => (
+          <Event  // Render each event as a colored box
             key={index}
-            name={event.name}
+            name={event.course}
             color={event.color}
             top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
-            height={event.duration * 60}
+            height={(event.endTime - event.startTime) * 60}
           />
-        ))}
+        )) : ""}
       </ScrollView>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
+  // background: {
+  //   flex: 1,
+  //   alignItems: 'center',
+  //   justifyContent: 'center',
+  // },
+  profileContainer: {
+    padding: 20,
+    alignItems: 'center',
+  },
+  profileImage: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+  },
+  profileName: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  profileTag: {
+    color: 'grey',
+  },
+  editButton: {
+    marginTop: 10,
+    padding: 10,
+    backgroundColor: 'lightgrey',
+    borderRadius: 5,
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5
+  },
+  input: {
+    width: '100%',
+    marginBottom: 10,
+    padding: 10,
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 5,
+  },
   background: {
     backgroundColor: colors.backgroundColor,
     flex: 1,

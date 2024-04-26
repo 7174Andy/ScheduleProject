@@ -1,6 +1,8 @@
-import React from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
-import colors from "../config/colors";
+import React from 'react';
+import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
+import colors from '../config/colors';
+import { useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Calendar from "../components/Calendar";
 
 export default function Schedule() {
@@ -73,6 +75,7 @@ export default function Schedule() {
         <Text style={styles.title}>Weekly Schedule</Text>
         <View style={styles.calendarContainer}>
           <Calendar weeklyEvents={events} />
+
         </View>
       </View>
     </SafeAreaView>
