@@ -43,23 +43,7 @@ const Event = ({ name, color, top, height }) => (
 );
 
 export default function ProfileScreen() {
-  const [user, setUser] = useState(null);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const uid = await AsyncStorage.getItem('uid');
-        // Assume getUserData is an async function that fetches user data
-        const data = await getUserData(uid);
-        setUser(data); // Save the fetched data to state
-        console.log('User data fetched:', data);
-      } catch (error) {
-        console.error('Failed to fetch user data:', error);
-      }
-    };
-
-    fetchUserData();
-  }, []); 
 
   return (
     <SafeAreaView style={styles.background}>
@@ -69,7 +53,7 @@ export default function ProfileScreen() {
           source={require("../assets/user.png")}
         />
         <View style={{ alignItems: "flex-start", flexDirection: "column" }}>
-          <Text style={styles.profileName}>{user.firstName},{user.lastName}</Text>
+          <Text style={styles.profileName}>{user ? user.firstName : " "}</Text>
           <Text style={styles.profileTag}>@{user.nickname}</Text>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
