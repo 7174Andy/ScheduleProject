@@ -1,6 +1,9 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, Text, View } from 'react-native';
 import colors from '../config/colors';
+import { useState, useEffect } from "react";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 
 const kColumnLength = 28; // 한 시간당 두 개의 슬롯으로 변경 (예: 30분 단위)
 const kBoxSize = 52; // 각 슬롯의 높이
@@ -10,6 +13,24 @@ const endTime = 22; // 종료 시간 (19시)
 const classDetails = { day: 'Tue', slotIndex: 4 };
 
 export default function ProfileScreen() {
+    const [user, setUser] = useState(null);  // State to hold user data
+
+    useEffect(() => {
+        const fetchUserData = async () => {
+        try {
+            const userDataJson = await AsyncStorage.getItem('userData');
+            if (userDataJson !== null) {
+            const userData = JSON.parse(userDataJson);
+            setUser(userData);
+            }
+            console.log(user);
+        } catch (error) {
+            console.error('Failed to load user data from storage', error);
+        }
+        };
+
+        fetchUserData();
+    }, []);
 
     // This shows week
     const renderDayColumn = (day, index) => {
