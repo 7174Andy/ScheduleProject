@@ -104,7 +104,6 @@ export default function ProfileScreen() {
     setEditData(prev => ({ ...prev, [name]: value }));
   };
 
-
   return (
     <SafeAreaView style={styles.background}>
       <Modal
@@ -314,7 +313,7 @@ const styles = StyleSheet.create({
   },
   myCalendarBtn: {
     marginTop: 10,
-    marginLeft: 15,
+    marginLeft: 20,
     backgroundColor: colors.tagColor,
     borderRadius: 6,
   },
