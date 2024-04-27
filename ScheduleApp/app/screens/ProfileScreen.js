@@ -13,27 +13,6 @@ const today = currentDate.getDay();
 const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const dayName = dayOfWeek[today];
 
-//const events = user[dayName]
-// const events = [
-//   {
-//     course: "ECE 109",
-//     startTime: 9, // Start at 9 AM
-//     endTime: 10,
-//     color: "orange",
-//     enrollmentStatus: "enrolled",
-//     professor: "p1",
-//   },
-//   {
-//     course: "Math 154 Midterm",
-//     startTime: 18, // Start at 6 PM
-//     endTime: 20,
-//     color: "green",
-//     enrollmentStatus: "enrolled",
-//     professor: "p1",
-//   },
-//   // ... more events
-// ];
-
 const TimeSlot = ({ children, style }) => (
   <View style={[styles.timeSlot, style]}>{children}</View>
 );
@@ -64,7 +43,6 @@ export default function ProfileScreen() {
         if (userDataJson !== null) {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
-          console.log(userData[dayName]);
         }
       } catch (error) {
         console.error('Failed to load user data from storage', error);
@@ -211,8 +189,8 @@ export default function ProfileScreen() {
             }`}</Text>
           </TimeSlot>
         ))}
-        {user ? user[dayName].map((event, index) => (
-          <Event  // Render each event as a colored box
+        {user ? user.hasOwnProperty(dayName) && user[dayName].map((event, index) => (
+          <Event
             key={index}
             name={event.course}
             color={event.color}
