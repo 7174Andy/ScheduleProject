@@ -13,7 +13,7 @@ import Schedule from "./app/screens/Schedule";
 import FriendsScreen from "./app/screens/FriendsScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
-import WelcomeScreen from "./app/screens/WelcomeScreen";
+import ManageScheduleScreen from "./app/screens/ManageScheduleScreen";
 
 import { Colors } from "./app/constants/styles";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -38,7 +38,7 @@ function AuthStack() {
   );
 }
 
-function AuthenticatedStack() {
+function ScheduleOverview() {
   const authCtx = useContext(AuthContext);
 
   return (
@@ -52,7 +52,7 @@ function AuthenticatedStack() {
       <Tab.Screen
         name="Home"
         component={Schedule}
-        options={{
+        options={({ navigation }) => ({
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
@@ -65,10 +65,15 @@ function AuthenticatedStack() {
                 size={24}
                 onPress={authCtx.logout}
               />
-              <IconButton icon="add" color={tintColor} size={24} />
+              <IconButton
+                icon="add"
+                color={tintColor}
+                size={24}
+                onPress={() => navigation.navigate("ManageSchedule")}
+              />
             </View>
           ),
-        }}
+        })}
       />
       <Tab.Screen
         name="Friends"
@@ -111,6 +116,27 @@ function AuthenticatedStack() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+function ManageSchedule() {
+  return <ManageScheduleScreen />;
+}
+
+function AuthenticatedStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ScheduleOverview"
+        component={ScheduleOverview}
+        options={{ headerShown: false, headerBackTitleVisible: true }}
+      />
+      <Stack.Screen
+        name="ManageSchedule"
+        component={ManageSchedule}
+        options={{ presentation: "modal" }}
+      />
+    </Stack.Navigator>
   );
 }
 
