@@ -154,6 +154,13 @@ export default function FriendsScreen() {
   
       // Update local state
       setFriends(prevFriends => prevFriends.filter(user => user.uid !== friend.uid));
+
+      // Update AsyncStorage
+      const userDataJson = await AsyncStorage.getItem('userData')
+      const userData = JSON.parse(userDataJson);
+      userData.friends = friends;
+      AsyncStorage.setItem('userData', JSON.stringify(userData));
+      
   
       console.log("Friend removed:", friend);
     } catch (error) {
@@ -202,6 +209,13 @@ export default function FriendsScreen() {
       // Update local state
       setFriendRequests(prev => prev.filter(user => user.uid !== request.uid));
       setFriends(prev => [...prev, { ...request }]);
+
+      // Update AsyncStorage
+      const userDataJson = await AsyncStorage.getItem('userData')
+      const userData = JSON.parse(userDataJson);
+      userData.friends = friends;
+      userData.friendRequests = friendRequests;
+      AsyncStorage.setItem('userData', JSON.stringify(userData));
   
       console.log("Friend request accepted.");
     } catch (error) {
@@ -229,6 +243,12 @@ export default function FriendsScreen() {
 
       // Update local state
       setFriendRequests(prev => prev.filter(user => user.uid !== request.uid));
+
+      // Update AsyncStorage
+      const userDataJson = await AsyncStorage.getItem('userData')
+      const userData = JSON.parse(userDataJson);
+      userData.friendRequests = friendRequests;
+      AsyncStorage.setItem('userData', JSON.stringify(userData));
   
       console.log("Friend request declined.");
     } catch (error) {

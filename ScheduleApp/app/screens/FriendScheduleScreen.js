@@ -28,7 +28,6 @@ export default function FriendScheduleScreen({ route, navigation }) {
             const tempSchedule = [];
             days.forEach(day => {
                 if (friendData[day] && friendData[day].length > 0) {
-                    console.log(friendData[day]);
                     tempSchedule.push(friendData[day]);
                 } else {
                 tempSchedule.push([]);
