@@ -9,7 +9,7 @@ export default function FriendScheduleScreen({ route, navigation }) {
     const [friendData, setFriendData] = useState(null);
     const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const [schedule, setSchedule] = useState(null);
-  
+
     useEffect(() => {
       const fetchData = async () => {
         try {

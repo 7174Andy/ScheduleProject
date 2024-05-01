@@ -28,8 +28,8 @@ const FriendsStack = createNativeStackNavigator();
 function FriendsStackNavigator() {
   return (
     <FriendsStack.Navigator>
-      <FriendsStack.Screen name="FriendsMain" component={FriendsScreen} />
-      <FriendsStack.Screen name="FriendSchedule" component={FriendScheduleScreen} />
+      <FriendsStack.Screen name="FriendsMain" component={FriendsScreen} options={{ headerShown: false }}/>
+      <FriendsStack.Screen name="FriendSchedule" component={FriendScheduleScreen} options={{ headerShown: false }}/>
     </FriendsStack.Navigator>
   );
 }
