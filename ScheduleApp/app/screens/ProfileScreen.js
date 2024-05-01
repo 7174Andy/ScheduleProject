@@ -127,7 +127,7 @@ const styles = StyleSheet.create({
   },
   calendarContainer: {
     flex: 0,
-    padding: 15,
+    paddingHorizontal: 15,
     margin: 15,
     borderRadius: 10,
     backgroundColor: colors.backgroundColor,

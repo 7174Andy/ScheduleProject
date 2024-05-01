@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -19,6 +19,7 @@ import { Colors } from "./app/constants/styles";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthContextProvider, { AuthContext } from "./app/store/auth-context";
 import IconButton from "./app/components/ui/IconButton";
+import Button from "./app/components/ui/Button";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -129,12 +130,14 @@ function AuthenticatedStack() {
       <Stack.Screen
         name="ScheduleOverview"
         component={ScheduleOverview}
-        options={{ headerShown: false, headerBackTitleVisible: true }}
+        options={{ headerShown: false }}
       />
       <Stack.Screen
         name="ManageSchedule"
         component={ManageSchedule}
-        options={{ presentation: "modal" }}
+        options={{
+          presentation: "modal",
+        }}
       />
     </Stack.Navigator>
   );
