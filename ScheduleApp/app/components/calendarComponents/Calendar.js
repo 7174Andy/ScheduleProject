@@ -190,12 +190,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   eventsContainer: {
-    borderWidth: 4,
-    borderColor: "white",
-    borderRadius: 10,
     paddingHorizontal: 10,
     flex: 1,
-    borderStyle: "dashed",
   },
   contentContainer: {
     paddingBottom: 20,
