@@ -11,6 +11,7 @@ import * as SplashScreen from "expo-splash-screen";
 import ProfileScreen from "./app/screens/ProfileScreen";
 import Schedule from "./app/screens/Schedule";
 import FriendsScreen from "./app/screens/FriendsScreen";
+import FriendScheduleScreen from "./app/screens/FriendScheduleScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
 
@@ -21,6 +22,17 @@ import IconButton from "./app/components/ui/IconButton";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const FriendsStack = createNativeStackNavigator();
+
+
+function FriendsStackNavigator() {
+  return (
+    <FriendsStack.Navigator>
+      <FriendsStack.Screen name="FriendsMain" component={FriendsScreen} />
+      <FriendsStack.Screen name="FriendSchedule" component={FriendScheduleScreen} />
+    </FriendsStack.Navigator>
+  );
+}
 
 function AuthStack() {
   return (
@@ -68,7 +80,7 @@ function AuthenticatedStack() {
       />
       <Tab.Screen
         name="Friends"
-        component={FriendsScreen}
+        component={FriendsStackNavigator}
         options={{
           tabBarLabel: "Friends",
           tabBarIcon: ({ color, size }) => (

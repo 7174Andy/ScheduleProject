@@ -15,6 +15,8 @@ import { useState, useEffect } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ref, get, orderByChild, startAt, endAt, query, update, transaction } from 'firebase/database';
 import db from '../config/firebaseConfig';
+import { useNavigation } from '@react-navigation/native';
+
 
 
 export default function FriendsScreen() {
@@ -23,6 +25,8 @@ export default function FriendsScreen() {
   const [users, setUsers] = useState([]);
   const [friends, setFriends] = useState([]); // State for friends list
   const [friendRequests, setFriendRequests] = useState([]);
+  const navigation = useNavigation();
+
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -117,7 +121,10 @@ export default function FriendsScreen() {
     <View key={friend.uid} style={styles.userContainer}>
       <Text>{friend.firstName} {friend.lastName}</Text>
       <Button title="Remove" onPress={() => handleRemoveFriend(friend)} />
-      <Button title="View Schedule"></Button>
+      <Button 
+        title="View Schedule"
+        onPress={() => navigation.navigate('FriendSchedule', { friendId: friend.uid })}
+      ></Button>
     </View>
   );
 
