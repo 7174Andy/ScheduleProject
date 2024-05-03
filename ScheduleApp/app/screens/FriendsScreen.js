@@ -16,7 +16,6 @@ import IconButton from "../components/ui/IconButton";
 export default function FriendsScreen() {
   return (
     <SafeAreaView style={styles.background}>
-      {/* <Text style={styles.title}>Friends Screen</Text> */}
       <View style={styles.inputContainer}>
       <TextInput style={styles.hashtagInput} 
       placeholder='#hashtag'
@@ -60,7 +59,7 @@ const styles = StyleSheet.create({
   hashtagInput: {
     marginLeft: 10,
     marginBottom: 10,
-    marginTop: 20,
+    marginTop: 25,
     padding: 8,
     borderWidth: 1,
     borderColor: 'white',
@@ -109,9 +108,9 @@ const styles = StyleSheet.create({
   },
   searchButton:{
     marginBottom: 10,
-    marginRight: 12,
-    marginLeft: 2,
-    marginTop: 20,
+    marginRight: 10,
+    marginLeft: 1,
+    marginTop: 25,
     padding: 0,
     flex: 1,
   },
