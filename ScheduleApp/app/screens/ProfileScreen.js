@@ -72,13 +72,11 @@ export default function ProfileScreen() {
 
   const handleSave = async () => {
     const updatedUser = { ...user, ...editData };
-    console.log(updatedUser);
     await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
     setUser(updatedUser);
     setModalVisible(false);
     const userId = await AsyncStorage.getItem("uid")
     const res = await axios.put(`${config.BACKEND_URL}/db/${userId}.json`,updatedUser)
-    console.log(res);
   };
 
   const handleChange = (name, value) => {

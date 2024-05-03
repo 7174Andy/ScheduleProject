@@ -12,6 +12,7 @@ import ProfileScreen from "./app/screens/ProfileScreen";
 import Schedule from "./app/screens/Schedule";
 import FriendsScreen from "./app/screens/FriendsScreen";
 import FriendScheduleScreen from "./app/screens/FriendScheduleScreen";
+import SearchResultsScreen from "./app/screens/SearchResultsScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
 
@@ -30,6 +31,7 @@ function FriendsStackNavigator() {
     <FriendsStack.Navigator>
       <FriendsStack.Screen name="FriendsMain" component={FriendsScreen} options={{ headerShown: false }}/>
       <FriendsStack.Screen name="FriendSchedule" component={FriendScheduleScreen} options={{ headerShown: false }}/>
+      <FriendsStack.Screen name="SearchResults" component={SearchResultsScreen} options={{ headerShown: false}}/>
     </FriendsStack.Navigator>
   );
 }

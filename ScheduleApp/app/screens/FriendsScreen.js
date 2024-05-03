@@ -2,7 +2,6 @@ import {
   SafeAreaView,
   StyleSheet,
   Text,
-  TextInput,
   View,
   Image,
   Button,
@@ -100,22 +99,17 @@ export default function FriendsScreen() {
           }
         });
         setUsers(fetchedUsers);
+
+        setSearchInput('');
+        // NOTE also setUsers([]); ?
+        navigation.navigate('SearchResults', { searchText: searchText, results: fetchedUsers });
       } catch (error) {
         console.error('Error querying nicknames:', error);
       }
     } else {
       setUsers([]); // Reset users array if search text is empty
+      navigation.navigate('Friends');
     }
-  };
-
-  const renderUser = (user) => {
-    return (
-      <View key={user.uid} style={styles.userContainer}>
-        <Text>{user.nickname}</Text>
-        <Text>{user.firstName} {user.lastName}</Text>
-        <Button title="Click" onPress={() => handleButtonClick(user)} />
-      </View>
-    );
   };
 
   const renderFriend = friend => (
@@ -256,75 +250,35 @@ export default function FriendsScreen() {
       console.error('Error declining friend request:', error);
     }
   };
-
-  const handleButtonClick = async (clickedUser) => {
-    try {
-      const currentUserUid = await AsyncStorage.getItem("uid");
-  
-      // Construct the path to the clicked user's friendRequests list in the database
-      const friendRequestsRef = ref(db, `db/${clickedUser.uid}/friendRequests`);
-  
-      // Check if the current user's UID already exists in the clicked user's friendRequests list
-      const friendRequestsSnapshot = await get(friendRequestsRef);
-      const friendRequests = friendRequestsSnapshot.val() || [];
-  
-      if (!friendRequests.includes(currentUserUid)) {
-        // If the current user's UID is not already in the clicked user's friendRequests list,
-        // add it to the list
-        friendRequests.push(currentUserUid);
-  
-        // Update the friendRequests list in the database using the update method
-        await update(ref(db, `db/${clickedUser.uid}`), { friendRequests });
-  
-        console.log("Friend request sent to user:", clickedUser);
-      } else {
-        console.log("Friend request already sent to user:", clickedUser);
-      }
-    } catch (error) {
-      console.error('Error sending friend request:', error);
-    }
-  };
   
 
   return (
-    // <SafeAreaView style={styles.container}>
-    //   <TextInput
-    //     style={styles.input}
-    //     placeholder="Search for friends"
-    //     value={searchInput}
-    //     onChangeText={handleSearchInputChange}
-    //   />
-    //   <ScrollView>
-    //     {users.map(renderUser)}
-    //   </ScrollView>
-    //   <ScrollView style={{ flex: 1 }}>
-    //     <Text style={styles.sectionTitle}>Friends</Text>
-    //     {friends.map(renderFriend)}
-    //   </ScrollView>
-    //   <ScrollView style={{ flex: 1 }}>
-    //     <Text style={styles.sectionTitle}>Friend Requests</Text>
-    //     {friendRequests.map(renderFriendRequest)}
-    //   </ScrollView>
     <SafeAreaView style={styles.background}>
       <View style={styles.inputContainer}>
         <TextInput
           style={styles.hashtagInput}
           placeholder="#hashtag"
+          value={searchInput}
           placeholderTextColor="white"
+          onChangeText={handleSearchInputChange}
         />
         <Pressable style={styles.searchButton}>
           <IconButton icon="search" color="white" size={20} />
         </Pressable>
       </View>
       <View style={styles.containerContainer}>
-        <View style={styles.container}>
+        {/* <View style={styles.container}> */}
+        <ScrollView style={styles.container}>
           <Text style={styles.containerTitle}>Friends</Text>
           <View style={styles.containerLine} />
-        </View>
-        <View style={styles.container}>
+          {friends.map(renderFriend)}
+        {/* </View> */}
+        </ScrollView>
+        <ScrollView style={styles.container}>
           <Text style={styles.containerTitle}>Requests</Text>
           <View style={styles.containerLine} />
-        </View>
+          {friendRequests.map(renderFriendRequest)}
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
