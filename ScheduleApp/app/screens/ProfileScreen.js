@@ -7,6 +7,8 @@ import { useEffect } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from "react";
 import { getUserData } from "../util/http";
+import axios from 'axios';
+const config = require('../config/.config.js');
 
 const currentDate = new Date();
 const today = currentDate.getDay();
@@ -17,9 +19,10 @@ const TimeSlot = ({ children, style }) => (
   <View style={[styles.timeSlot, style]}>{children}</View>
 );
 
-const Event = ({ name, color, top, height }) => (
+const Event = ({ name, color, top, height, professorName }) => (
   <View style={[styles.event, { backgroundColor: color, top, height }]}>
     <Text style={styles.eventText}>{name}</Text>
+    <Text style={styles.eventText}>{professorName}</Text>
   </View>
 );
 
@@ -69,10 +72,13 @@ export default function ProfileScreen() {
 
   const handleSave = async () => {
     const updatedUser = { ...user, ...editData };
+    console.log(updatedUser);
     await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
     setUser(updatedUser);
     setModalVisible(false);
-    // TODO 수정이 백엔드에도 저장되게
+    const userId = await AsyncStorage.getItem("uid")
+    const res = await axios.put(`${config.BACKEND_URL}/db/${userId}.json`,updatedUser)
+    console.log(res);
   };
 
   const handleChange = (name, value) => {
@@ -196,6 +202,7 @@ export default function ProfileScreen() {
             color={event.color}
             top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
             height={(event.endTime - event.startTime) * 60}
+            professorName = {event.professor}
           />
         )) : ""}
       </ScrollView>
