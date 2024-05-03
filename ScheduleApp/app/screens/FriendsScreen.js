@@ -13,22 +13,22 @@ import {
 import colors from "../config/colors";
 import IconButton from "../components/ui/IconButton";
 import { useState, useEffect } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function FriendsScreen() {
-  const [user, setUser] = useState(null);  // State to hold user data
+  const [user, setUser] = useState(null); // State to hold user data
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userDataJson = await AsyncStorage.getItem('userData');
+        const userDataJson = await AsyncStorage.getItem("userData");
         if (userDataJson !== null) {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
         }
         console.log(user);
       } catch (error) {
-        console.error('Failed to load user data from storage', error);
+        console.error("Failed to load user data from storage", error);
       }
     };
 
@@ -38,44 +38,43 @@ export default function FriendsScreen() {
   return (
     <SafeAreaView style={styles.background}>
       <View style={styles.inputContainer}>
-      <TextInput style={styles.hashtagInput} 
-      placeholder='#hashtag'
-      placeholderTextColor= 'white'/>
-      <Pressable style={styles.searchButton}>
-      <IconButton
-                icon="search"
-                color='white'
-                size={20}/>
-      </Pressable>
+        <TextInput
+          style={styles.hashtagInput}
+          placeholder="#hashtag"
+          placeholderTextColor="white"
+        />
+        <Pressable style={styles.searchButton}>
+          <IconButton icon="search" color="white" size={20} />
+        </Pressable>
       </View>
-    <View style={styles.containerContainer}>
-      <View style={styles.container}>
-        <Text style={styles.containerTitle}>Friends</Text>
-        <View style={styles.containerLine}/>
+      <View style={styles.containerContainer}>
+        <View style={styles.container}>
+          <Text style={styles.containerTitle}>Friends</Text>
+          <View style={styles.containerLine} />
         </View>
-      <View style={styles.container}>
-        <Text style={styles.containerTitle}>Requests</Text>
-        <View style={styles.containerLine}/>
+        <View style={styles.container}>
+          <Text style={styles.containerTitle}>Requests</Text>
+          <View style={styles.containerLine} />
+        </View>
       </View>
-    </View>
     </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  background:{
+  background: {
     backgroundColor: colors.backgroundColor,
     flex: 1,
   },
   title: {
-    color: 'white',
+    color: "white",
     fontSize: 32,
-    fontWeight: '700',
+    fontWeight: "700",
     margin: 16,
-    paddingBottom:0,
+    paddingBottom: 0,
   },
-  inputContainer:{
-    flexDirection: 'row',
+  inputContainer: {
+    flexDirection: "row",
   },
   hashtagInput: {
     marginLeft: 10,
@@ -83,51 +82,51 @@ const styles = StyleSheet.create({
     marginTop: 25,
     padding: 8,
     borderWidth: 1,
-    borderColor: 'white',
+    borderColor: "white",
     borderRadius: 25,
-    color: 'white',
+    color: "white",
     flex: 7,
   },
-  containerContainer:{
-    flexDirection: 'column',
-    width: '100%',
-    height: '85%',
+  containerContainer: {
+    flexDirection: "column",
+    width: "100%",
+    height: "85%",
   },
-  container:{
+  container: {
     margin: 10,
-    backgroundColor: 'white',
-    width: '5',
-    height: '40%',
+    backgroundColor: "white",
+    width: "5",
+    height: "40%",
     paddingTop: 10,
     paddingHorizontal: 5,
     borderRadius: 15,
     flex: 1,
   },
-  containerTitle:{
-    color: 'black',
+  containerTitle: {
+    color: "black",
     fontSize: 16,
-    fontWeight: '700',
+    fontWeight: "700",
     marginTop: 2,
     marginLeft: 12,
   },
-  containerLine:{
+  containerLine: {
     marginHorizontal: 10,
     marginVertical: 5,
     height: 1,
-    backgroundColor: 'grey',
-    width: '92%',
+    backgroundColor: "grey",
+    width: "92%",
   },
-  friendContainer:{
+  friendContainer: {
     marginHorizontal: 10,
     marginVertical: 5,
   },
-  friendName:{
-    color: 'black',
+  friendName: {
+    color: "black",
     fontSize: 14,
-    fontWeight: '500',
+    fontWeight: "500",
     marginLeft: 12,
   },
-  searchButton:{
+  searchButton: {
     marginBottom: 10,
     marginRight: 10,
     marginLeft: 1,
