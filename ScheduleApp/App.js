@@ -23,7 +23,7 @@ import IconButton from "./app/components/ui/IconButton";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
-function AuthStack() {
+function  AuthStack() {
   return (
     <Stack.Navigator
       screenOptions={{
