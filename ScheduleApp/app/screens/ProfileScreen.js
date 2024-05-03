@@ -46,7 +46,6 @@ export default function ProfileScreen() {
         if (userDataJson !== null) {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
-          console.log(userData[dayName]);
         }
       } catch (error) {
         console.error('Failed to load user data from storage', error);
@@ -73,13 +72,11 @@ export default function ProfileScreen() {
 
   const handleSave = async () => {
     const updatedUser = { ...user, ...editData };
-    console.log(updatedUser);
     await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
     setUser(updatedUser);
     setModalVisible(false);
     const userId = await AsyncStorage.getItem("uid")
     const res = await axios.put(`${config.BACKEND_URL}/db/${userId}.json`,updatedUser)
-    console.log(res);
   };
 
   const handleChange = (name, value) => {
@@ -196,8 +193,8 @@ export default function ProfileScreen() {
             }`}</Text>
           </TimeSlot>
         ))}
-        {user ? user[dayName].map((event, index) => (
-          <Event  // Render each event as a colored box
+        {user ? user.hasOwnProperty(dayName) && user[dayName].map((event, index) => (
+          <Event
             key={index}
             name={event.course}
             color={event.color}

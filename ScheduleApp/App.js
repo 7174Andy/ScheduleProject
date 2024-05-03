@@ -11,9 +11,10 @@ import * as SplashScreen from "expo-splash-screen";
 import ProfileScreen from "./app/screens/ProfileScreen";
 import Schedule from "./app/screens/Schedule";
 import FriendsScreen from "./app/screens/FriendsScreen";
+import FriendScheduleScreen from "./app/screens/FriendScheduleScreen";
+import SearchResultsScreen from "./app/screens/SearchResultsScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
-import WelcomeScreen from "./app/screens/WelcomeScreen";
 
 import { Colors } from "./app/constants/styles";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -22,6 +23,18 @@ import IconButton from "./app/components/ui/IconButton";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
+const FriendsStack = createNativeStackNavigator();
+
+
+function FriendsStackNavigator() {
+  return (
+    <FriendsStack.Navigator>
+      <FriendsStack.Screen name="FriendsMain" component={FriendsScreen} options={{ headerShown: false }}/>
+      <FriendsStack.Screen name="FriendSchedule" component={FriendScheduleScreen} options={{ headerShown: false }}/>
+      <FriendsStack.Screen name="SearchResults" component={SearchResultsScreen} options={{ headerShown: false}}/>
+    </FriendsStack.Navigator>
+  );
+}
 
 function AuthStack() {
   return (
@@ -69,7 +82,7 @@ function AuthenticatedStack() {
       />
       <Tab.Screen
         name="Friends"
-        component={FriendsScreen}
+        component={FriendsStackNavigator}
         options={{
           tabBarLabel: "Friends",
           tabBarIcon: ({ color, size }) => (
