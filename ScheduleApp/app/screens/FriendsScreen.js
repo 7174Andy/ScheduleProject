@@ -13,16 +13,25 @@ import {
 import colors from "../config/colors";
 import IconButton from "../components/ui/IconButton";
 import { useState, useEffect } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ref, get, orderByChild, startAt, endAt, query, update, transaction } from 'firebase/database';
-import db from '../config/firebaseConfig';
-import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  ref,
+  get,
+  orderByChild,
+  startAt,
+  endAt,
+  query,
+  update,
+  transaction,
+} from "firebase/database";
+import db from "../config/firebaseConfig";
+import { useNavigation } from "@react-navigation/native";
 
-
+import FriendList from "../components/ui/FriendList";
 
 export default function FriendsScreen() {
   const [user, setUser] = useState(null);
-  const [searchInput, setSearchInput] = useState('');
+  const [searchInput, setSearchInput] = useState("");
   const [users, setUsers] = useState([]);
   const [friends, setFriends] = useState([]); // State for friends list
   const [friendRequests, setFriendRequests] = useState([]);
@@ -84,50 +93,71 @@ export default function FriendsScreen() {
     setSearchInput(searchText);
     if (searchText.trim().length > 0) {
       try {
-        const queryRef = query(ref(db, 'db'), orderByChild('nickname'), startAt(searchText), endAt(searchText + '\uf8ff'));
+        const queryRef = query(
+          ref(db, "db"),
+          orderByChild("nickname"),
+          startAt(searchText),
+          endAt(searchText + "\uf8ff")
+        );
         const snapshot = await get(queryRef);
         const fetchedUsers = [];
         snapshot.forEach((childSnapshot) => {
           const userData = childSnapshot.val();
-          if (childSnapshot.key !== currentUserUid) { // Check if user is not the current user
+          if (childSnapshot.key !== currentUserUid) {
+            // Check if user is not the current user
             fetchedUsers.push({
               nickname: userData.nickname,
               firstName: userData.firstName,
               lastName: userData.lastName,
-              uid: childSnapshot.key // Use userData.uid instead of childSnapshot.key
+              uid: childSnapshot.key, // Use userData.uid instead of childSnapshot.key
             });
           }
         });
         setUsers(fetchedUsers);
 
-        setSearchInput('');
+        setSearchInput("");
         // NOTE also setUsers([]); ?
-        navigation.navigate('SearchResults', { searchText: searchText, results: fetchedUsers });
+        navigation.navigate("SearchResults", {
+          searchText: searchText,
+          results: fetchedUsers,
+        });
       } catch (error) {
-        console.error('Error querying nicknames:', error);
+        console.error("Error querying nicknames:", error);
       }
     } else {
       setUsers([]); // Reset users array if search text is empty
-      navigation.navigate('Friends');
+      navigation.navigate("Friends");
     }
   };
 
-  const renderFriend = friend => (
+  const renderFriend = (friend) => (
     <View key={friend.uid} style={styles.userContainer}>
-      <Text>{friend.firstName} {friend.lastName}</Text>
+      <Text>
+        {friend.firstName} {friend.lastName}
+      </Text>
       <Button title="Remove" onPress={() => handleRemoveFriend(friend)} />
-      <Button 
+      <Button
         title="View Schedule"
-        onPress={() => navigation.navigate('FriendSchedule', { friendId: friend.uid })}
+        onPress={() =>
+          navigation.navigate("FriendSchedule", { friendId: friend.uid })
+        }
       ></Button>
     </View>
   );
 
-  const renderFriendRequest = request => (
+  const renderFriendRequest = (request) => (
     <View key={request.uid} style={styles.userContainer}>
-      <Text>{request.firstName} {request.lastName}</Text>
-      <Button title="Accept" onPress={() => handleAcceptFriendRequest(request)} />
-      <Button title="Decline" onPress={() => handleDeclineFriendRequest(request)} />
+      <Text>
+        {request.firstName} {request.lastName}
+      </Text>
+      <Button
+        title="Accept"
+        onPress={() => handleAcceptFriendRequest(request)}
+      />
+      <Button
+        title="Decline"
+        onPress={() => handleDeclineFriendRequest(request)}
+      />
     </View>
   );
 
@@ -136,30 +166,31 @@ export default function FriendsScreen() {
       const currentUserUid = await AsyncStorage.getItem("uid");
       const currentUserRef = ref(db, `db/${currentUserUid}`);
       const friendRef = ref(db, `db/${friend.uid}`);
-  
+
       // Update current user's data
       await update(currentUserRef, {
-        friends: friends.filter(user => user.uid !== friend.uid)
+        friends: friends.filter((user) => user.uid !== friend.uid),
       });
-  
+
       // Update friend's data
       await update(friendRef, {
-        friends: friend.friends.filter(uid => uid !== currentUserUid)
+        friends: friend.friends.filter((uid) => uid !== currentUserUid),
       });
-  
+
       // Update local state
-      setFriends(prevFriends => prevFriends.filter(user => user.uid !== friend.uid));
+      setFriends((prevFriends) =>
+        prevFriends.filter((user) => user.uid !== friend.uid)
+      );
 
       // Update AsyncStorage
-      const userDataJson = await AsyncStorage.getItem('userData')
+      const userDataJson = await AsyncStorage.getItem("userData");
       const userData = JSON.parse(userDataJson);
       userData.friends = friends;
-      AsyncStorage.setItem('userData', JSON.stringify(userData));
-      
-  
+      AsyncStorage.setItem("userData", JSON.stringify(userData));
+
       console.log("Friend removed:", friend);
     } catch (error) {
-      console.error('Error removing friend:', error);
+      console.error("Error removing friend:", error);
     }
   };
 
@@ -168,53 +199,57 @@ export default function FriendsScreen() {
       const currentUserUid = await AsyncStorage.getItem("uid");
       const currentUserRef = ref(db, `db/${currentUserUid}`);
       const requestingUserRef = ref(db, `db/${request.uid}`);
-  
+
       const currentUserSnapshot = await get(currentUserRef);
       const requestingUserSnapshot = await get(requestingUserRef);
-  
+
       const currentUserData = currentUserSnapshot.val();
       const requestingUserData = requestingUserSnapshot.val();
-  
+
       // Remove request from current user's friendRequests
       if (currentUserData.friendRequests) {
-        currentUserData.friendRequests = currentUserData.friendRequests.filter(uid => uid !== request.uid);
+        currentUserData.friendRequests = currentUserData.friendRequests.filter(
+          (uid) => uid !== request.uid
+        );
       }
-  
+
       // Add to current user's friends list
       if (!currentUserData.friends) {
         currentUserData.friends = [];
       }
       currentUserData.friends.push(request.uid);
-  
+
       // Add to requesting user's friends list
       if (!requestingUserData.friends) {
         requestingUserData.friends = [];
       }
       requestingUserData.friends.push(currentUserUid);
-  
+
       // Update both users
-      await update(currentUserRef, { 
+      await update(currentUserRef, {
         friendRequests: currentUserData.friendRequests,
-        friends: currentUserData.friends 
+        friends: currentUserData.friends,
       });
-      await update(requestingUserRef, { 
-        friends: requestingUserData.friends 
+      await update(requestingUserRef, {
+        friends: requestingUserData.friends,
       });
 
       // Update local state
-      setFriendRequests(prev => prev.filter(user => user.uid !== request.uid));
-      setFriends(prev => [...prev, { ...request }]);
+      setFriendRequests((prev) =>
+        prev.filter((user) => user.uid !== request.uid)
+      );
+      setFriends((prev) => [...prev, { ...request }]);
 
       // Update AsyncStorage
-      const userDataJson = await AsyncStorage.getItem('userData')
+      const userDataJson = await AsyncStorage.getItem("userData");
       const userData = JSON.parse(userDataJson);
       userData.friends = friends;
       userData.friendRequests = friendRequests;
-      AsyncStorage.setItem('userData', JSON.stringify(userData));
-  
+      AsyncStorage.setItem("userData", JSON.stringify(userData));
+
       console.log("Friend request accepted.");
     } catch (error) {
-      console.error('Error accepting friend request:', error);
+      console.error("Error accepting friend request:", error);
     }
   };
 
@@ -222,35 +257,38 @@ export default function FriendsScreen() {
     try {
       const currentUserUid = await AsyncStorage.getItem("uid");
       const currentUserRef = ref(db, `db/${currentUserUid}`);
-  
+
       const currentUserSnapshot = await get(currentUserRef);
       const currentUserData = currentUserSnapshot.val();
-  
+
       // Remove request from current user's friendRequests
       if (currentUserData.friendRequests) {
-        currentUserData.friendRequests = currentUserData.friendRequests.filter(uid => uid !== request.uid);
+        currentUserData.friendRequests = currentUserData.friendRequests.filter(
+          (uid) => uid !== request.uid
+        );
       }
-  
+
       // Update the user
-      await update(currentUserRef, { 
-        friendRequests: currentUserData.friendRequests 
+      await update(currentUserRef, {
+        friendRequests: currentUserData.friendRequests,
       });
 
       // Update local state
-      setFriendRequests(prev => prev.filter(user => user.uid !== request.uid));
+      setFriendRequests((prev) =>
+        prev.filter((user) => user.uid !== request.uid)
+      );
 
       // Update AsyncStorage
-      const userDataJson = await AsyncStorage.getItem('userData')
+      const userDataJson = await AsyncStorage.getItem("userData");
       const userData = JSON.parse(userDataJson);
       userData.friendRequests = friendRequests;
-      AsyncStorage.setItem('userData', JSON.stringify(userData));
-  
+      AsyncStorage.setItem("userData", JSON.stringify(userData));
+
       console.log("Friend request declined.");
     } catch (error) {
-      console.error('Error declining friend request:', error);
+      console.error("Error declining friend request:", error);
     }
   };
-  
 
   return (
     <SafeAreaView style={styles.background}>
@@ -272,7 +310,9 @@ export default function FriendsScreen() {
           <Text style={styles.containerTitle}>Friends</Text>
           <View style={styles.containerLine} />
           {friends.map(renderFriend)}
-        {/* </View> */}
+          <FriendList friends={friends} />
+          <FriendList friends={friends} />
+          {/* </View> */}
         </ScrollView>
         <ScrollView style={styles.container}>
           <Text style={styles.containerTitle}>Requests</Text>
