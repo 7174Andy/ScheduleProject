@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import colors from "../../config/colors";
 
-function FriendList({ friends }) {
+function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
   function onPressFunction() {
     console.log("unfollowed");
   }
@@ -25,11 +25,13 @@ function FriendList({ friends }) {
             source={require("../../assets/user.png")}
           />
           <View style={styles.userNameID}>
-            <Text style={styles.userName}>First Last</Text>
-            <Text style={styles.userTag}>@username</Text>
+            <Text style={styles.userName}>
+              {friend.firstName + " " + friend.lastName}
+            </Text>
+            <Text style={styles.userTag}>{"@" + friend.nickname}</Text>
           </View>
 
-          <Pressable style={styles.unfollowBtn} onPress={onPressFunction}>
+          <Pressable style={styles.unfollowBtn} onPress={handleUnfollow}>
             <Text
               style={{
                 fontSize: 12,
@@ -37,7 +39,21 @@ function FriendList({ friends }) {
                 paddingHorizontal: 5,
               }}
             >
-              unfollow
+              Unfollow
+            </Text>
+          </Pressable>
+          <Pressable
+            style={styles.viewScheduleBtn}
+            onPress={handleViewSchedule}
+          >
+            <Text
+              style={{
+                fontSize: 12,
+                color: colors.textColor,
+                paddingHorizontal: 5,
+              }}
+            >
+              Schedule
             </Text>
           </Pressable>
         </View>
@@ -71,7 +87,6 @@ const styles = StyleSheet.create({
   userImage: {
     height: 45,
     width: 45,
-    alignItems: "left",
     padding: 5,
     marginRight: 10,
   },
@@ -96,7 +111,15 @@ const styles = StyleSheet.create({
     backgroundColor: colors.greyBtn,
     padding: 7,
     justifyContent: "center",
-    marginLeft: "40%",
+    marginLeft: "15%",
+  },
+
+  viewScheduleBtn: {
+    borderRadius: 15,
+    backgroundColor: colors.greyBtn,
+    padding: 7,
+    justifyContent: "center",
+    marginHorizontal: 10,
   },
 });
 

@@ -131,18 +131,13 @@ export default function FriendsScreen() {
   };
 
   const renderFriend = (friend) => (
-    <View key={friend.uid} style={styles.userContainer}>
-      <Text>
-        {friend.firstName} {friend.lastName}
-      </Text>
-      <Button title="Remove" onPress={() => handleRemoveFriend(friend)} />
-      <Button
-        title="View Schedule"
-        onPress={() =>
-          navigation.navigate("FriendSchedule", { friendId: friend.uid })
-        }
-      ></Button>
-    </View>
+    <FriendList
+      friend={friend}
+      handleUnfollow={handleRemoveFriend}
+      handleViewSchedule={() =>
+        navigation.navigate("FriendSchedule", { friendId: friend.uid })
+      }
+    />
   );
 
   const renderFriendRequest = (request) => (
@@ -310,8 +305,6 @@ export default function FriendsScreen() {
           <Text style={styles.containerTitle}>Friends</Text>
           <View style={styles.containerLine} />
           {friends.map(renderFriend)}
-          <FriendList friends={friends} />
-          <FriendList friends={friends} />
           {/* </View> */}
         </ScrollView>
         <ScrollView style={styles.container}>
