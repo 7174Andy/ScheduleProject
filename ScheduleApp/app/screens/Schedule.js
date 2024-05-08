@@ -1,5 +1,5 @@
 import React from "react";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { Pressable, SafeAreaView, StyleSheet, Text, View } from "react-native";
 import colors from "../config/colors";
 import Calendar from "../components/calendarComponents/Calendar";
 

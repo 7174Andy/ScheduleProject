@@ -9,8 +9,6 @@ import {
   ScrollView,
 } from "react-native";
 
-import colors from "../config/colors";
-
 export default function FriendsScreen() {
   return (
     <SafeAreaView>
