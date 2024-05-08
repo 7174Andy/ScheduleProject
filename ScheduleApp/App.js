@@ -15,6 +15,7 @@ import FriendScheduleScreen from "./app/screens/FriendScheduleScreen";
 import SearchResultsScreen from "./app/screens/SearchResultsScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
+import EditProfileScreen from "./app/screens/EditProfileScreen";
 
 import { Colors } from "./app/constants/styles";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -120,6 +121,7 @@ function AuthenticatedStack() {
           ),
         }}
       />
+      <Tab.Screen name="ProfileEdit" component={EditProfileScreen}/>
     </Tab.Navigator>
   );
 }
