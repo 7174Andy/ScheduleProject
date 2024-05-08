@@ -12,10 +12,6 @@ import {
 import colors from "../../config/colors";
 
 function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
-  function onPressFunction() {
-    console.log("unfollowed");
-  }
-
   return (
     <View style={styles.friendListContainer}>
       <View style={styles.friendListInfo}>
