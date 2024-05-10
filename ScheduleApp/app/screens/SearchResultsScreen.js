@@ -1,12 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { ScrollView, Pressable, SafeAreaView, View, Text, TextInput, StyleSheet, Button } from 'react-native';
+import React, { useState, useEffect } from "react";
+import {
+  ScrollView,
+  Pressable,
+  SafeAreaView,
+  View,
+  Text,
+  TextInput,
+  StyleSheet,
+  Button,
+  Image,
+} from "react-native";
 import colors from "../config/colors";
 import IconButton from "../components/ui/IconButton";
-import { useNavigation } from '@react-navigation/native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ref, get, orderByChild, startAt, endAt, query, update, transaction } from 'firebase/database';
-import db from '../config/firebaseConfig';
-
+import { useNavigation } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  ref,
+  get,
+  orderByChild,
+  startAt,
+  endAt,
+  query,
+  update,
+  transaction,
+} from "firebase/database";
+import db from "../config/firebaseConfig";
 
 export default function SearchResultsScreen({ route }) {
   const navigation = useNavigation();
@@ -19,87 +37,102 @@ export default function SearchResultsScreen({ route }) {
     const currentUserUid = await AsyncStorage.getItem("uid");
     setSearchInput(searchText);
     if (searchText.trim().length > 0) {
-        try {
-            const queryRef = query(ref(db, 'db'), orderByChild('nickname'), startAt(searchText), endAt(searchText + '\uf8ff'));
-            const snapshot = await get(queryRef);
-            const fetchedUsers = [];
-            snapshot.forEach((childSnapshot) => {
-            const userData = childSnapshot.val();
-            if (childSnapshot.key !== currentUserUid) { // Check if user is not the current user
-                fetchedUsers.push({
-                nickname: userData.nickname,
-                firstName: userData.firstName,
-                lastName: userData.lastName,
-                uid: childSnapshot.key // Use userData.uid instead of childSnapshot.key
-                });
-            }
+      try {
+        const queryRef = query(
+          ref(db, "db"),
+          orderByChild("nickname"),
+          startAt(searchText),
+          endAt(searchText + "\uf8ff")
+        );
+        const snapshot = await get(queryRef);
+        const fetchedUsers = [];
+        snapshot.forEach((childSnapshot) => {
+          const userData = childSnapshot.val();
+          if (childSnapshot.key !== currentUserUid) {
+            // Check if user is not the current user
+            fetchedUsers.push({
+              nickname: userData.nickname,
+              firstName: userData.firstName,
+              lastName: userData.lastName,
+              uid: childSnapshot.key, // Use userData.uid instead of childSnapshot.key
             });
-            setUsers(fetchedUsers);
-        } catch (error) {
-            console.error('Error querying nicknames:', error);
-        }
+          }
+        });
+        setUsers(fetchedUsers);
+      } catch (error) {
+        console.error("Error querying nicknames:", error);
+      }
     }
     if (text.length === 0) {
-      navigation.navigate('FriendsMain', { searchText: '' });
+      navigation.navigate("FriendsMain", { searchText: "" });
     }
   };
 
   const renderUser = (user) => {
     return (
-      <View key={user.uid} style={styles.userCard}>
-        <Text>{user.nickname}</Text>
-        <Text>{user.firstName} {user.lastName}</Text>
-        <Button title="Click" onPress={() => handleButtonClick(user)} />
-      </View>
+      <>
+        <View key={user.uid} style={styles.userCard}>
+          <Image
+            style={styles.userCardImage}
+            source={require("../assets/user.png")}
+          />
+          <View style={styles.userCardText}>
+            <Text style={styles.userNickname}>{user.nickname}</Text>
+            <Text style={styles.userFullName}>
+              {user.firstName} {user.lastName}
+            </Text>
+          </View>
+          <Button title="Add" onPress={() => handleButtonClick(user)} />
+        </View>
+      </>
     );
   };
 
   const handleButtonClick = async (clickedUser) => {
     try {
       const currentUserUid = await AsyncStorage.getItem("uid");
-  
+
       // Construct the path to the clicked user's friendRequests list in the database
       const friendRequestsRef = ref(db, `db/${clickedUser.uid}/friendRequests`);
-  
+
       // Check if the current user's UID already exists in the clicked user's friendRequests list
       const friendRequestsSnapshot = await get(friendRequestsRef);
       const friendRequests = friendRequestsSnapshot.val() || [];
-  
+
       if (!friendRequests.includes(currentUserUid)) {
         // If the current user's UID is not already in the clicked user's friendRequests list,
         // add it to the list
         friendRequests.push(currentUserUid);
-  
+
         // Update the friendRequests list in the database using the update method
         await update(ref(db, `db/${clickedUser.uid}`), { friendRequests });
-  
+
         console.log("Friend request sent to user:", clickedUser);
       } else {
         console.log("Friend request already sent to user:", clickedUser);
       }
     } catch (error) {
-      console.error('Error sending friend request:', error);
+      console.error("Error sending friend request:", error);
     }
   };
 
   return (
     <SafeAreaView style={styles.background}>
-        <View style={styles.inputContainer}>
-            <TextInput
-            style={styles.hashtagInput}
-            placeholder="#hashtag"
-            placeholderTextColor="white"
-            value={searchInput}
-            onChangeText={handleSearchInputChange}
-            autoFocus={true}
-            />
-            <Pressable style={styles.searchButton}>
-                <IconButton icon="search" color="white" size={20} />
-            </Pressable>
-        </View>
-        <ScrollView>
-         {users.map(renderUser)}
-       </ScrollView>
+      <View style={styles.inputContainer}>
+        <TextInput
+          style={styles.hashtagInput}
+          placeholder="#hashtag"
+          placeholderTextColor="white"
+          value={searchInput}
+          onChangeText={handleSearchInputChange}
+          autoFocus={true}
+        />
+        <Pressable style={styles.searchButton}>
+          <IconButton icon="search" color="white" size={20} />
+        </Pressable>
+      </View>
+
+      <ScrollView>{users.map(renderUser)}</ScrollView>
     </SafeAreaView>
   );
 }
@@ -107,15 +140,15 @@ export default function SearchResultsScreen({ route }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   input: {
     height: 40,
     margin: 12,
     borderWidth: 1,
     padding: 10,
-    width: '80%',
+    width: "80%",
   },
   background: {
     backgroundColor: colors.backgroundColor,
@@ -144,10 +177,12 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   userCard: {
+    margin: 8,
     padding: 10,
     marginVertical: 5,
-    backgroundColor: 'white',
-    borderRadius: 10,
+    borderBottomWidth: 1.5,
+    borderColor: "lightgray",
+    flexDirection: "row",
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -156,6 +191,30 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    alignItems: 'center',
+    alignItems: "center",
+  },
+
+  userCardImage: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    marginRight: 15,
+    marginLeft: 5,
+  },
+
+  userCardText: {
+    flexDirection: "column",
+    flex: 1,
+  },
+
+  userNickname: {
+    fontWeight: "bold",
+    fontSize: 17,
+    color: "white",
+  },
+
+  userFullName: {
+    color: "lightgray",
+    paddingTop: 1,
   },
 });
