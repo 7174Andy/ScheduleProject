@@ -1,14 +1,4 @@
-import {
-  SafeAreaView,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  Button,
-  Pressable,
-  ScrollView,
-  TextInput,
-} from "react-native";
+import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import colors from "../../config/colors";
 
 function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
