@@ -7,13 +7,21 @@ import { useEffect } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useState } from "react";
 import { getUserData } from "../util/http";
+import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
-const config = require('../config/.config.js');
+import { FontAwesome } from '@expo/vector-icons';
+import { launchImageLibraryAsync } from 'expo-image-picker';
+import placeholder from '../assets/user.png';
+import { getStorage, ref, uploadBytes, deleteObject } from "firebase/storage";
+import { app } from "../config/firebaseConfig";
 
+
+const config = require('../config/.config.js');
 const currentDate = new Date();
 const today = currentDate.getDay();
 const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const dayName = dayOfWeek[today];
+const storage = getStorage(app);
 
 const TimeSlot = ({ children, style }) => (
   <View style={[styles.timeSlot, style]}>{children}</View>
@@ -29,6 +37,7 @@ const Event = ({ name, color, top, height, professorName }) => (
 export default function ProfileScreen() {
   const [user, setUser] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isPicModalVisible, setPicModalVisible] = useState(false);
   const [editData, setEditData] = useState({
     firstName: '',
     lastName: '',
@@ -38,6 +47,77 @@ export default function ProfileScreen() {
     minors: [],
     classLvl: ''
   });
+  const [profileImage, setProfileImage] = useState();
+  
+
+  const uploadImage = async (mode) => {
+    try{
+      let result = {};
+
+      if (mode === 'gallery') {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      } else {
+        // https://stackoverflow.com/questions/25486080/how-to-access-ios-simulator-camera
+        // Can't simulate using a camera
+        await ImagePicker.requestCameraPermissionsAsync();
+        result = await ImagePicker.launchCameraAsync({
+          // cameraType: ImagePicker.cameraType.front,
+          allowsEditing: true,
+          aspect: [1,1],
+          quality: 1,
+        });
+      }
+
+      if (!result.canceled) {
+        await saveImage(result.assets[0].uri)
+      }
+    } catch (error) {
+      console.error(error);
+      setPicModalVisible(false);
+    }
+  };
+
+  const saveImage = async (image) => {
+    try {
+      setProfileImage(image);
+      
+      const response = await fetch(image);
+      const blob = await response.blob();
+
+      const userUid = await AsyncStorage.getItem('uid');
+      const storageRef = ref(storage, userUid);
+
+      uploadBytes(storageRef, blob).then((snapshot) => {
+        console.log('Upload successful');
+      }).catch((error) => {
+        console.error('Error uploading:', error);
+      });
+
+      
+      setPicModalVisible(false);
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const deleteImage = async () => {
+    setProfileImage(null);
+    const userId = await AsyncStorage.getItem('uid');
+    const storageRef = ref(storage, userId);
+    deleteObject(storageRef).then(() => {
+      console.log('delete');
+    }).catch((error) => {
+      console.log(error);
+    })
+    setPicModalVisible(false);
+  }
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -47,6 +127,8 @@ export default function ProfileScreen() {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
         }
+        const profilePicUri = await AsyncStorage.getItem('profileUri');
+        setProfileImage(profilePicUri);
       } catch (error) {
         console.error('Failed to load user data from storage', error);
       }
@@ -143,11 +225,58 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isPicModalVisible}
+        onRequestClose={() => setPicModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.buttonsContainer}>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={() => uploadImage('gallery')}
+                >
+                  <FontAwesome name="image" size={24} color="black" />
+                </Pressable>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={() => uploadImage('camera')}
+                >
+                  <FontAwesome name="camera" size={24} color="black" />
+                </Pressable>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={() => {
+                    deleteImage()
+                  }}
+                >
+                  <FontAwesome name="trash" size={24} color="black" />
+                </Pressable>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={() => setPicModalVisible(false)}
+                >
+                  <FontAwesome name="times" size={24} color="black" />
+                </Pressable>
+              </View>
+          </View>
+        </View>
+      </Modal>
       <View style={styles.profileContainer}>
-        <Image
-          style={styles.profileImage}
-          source={require("../assets/user.png")}
-        />
+        <View style={styles.imageContainer}>
+          <Image
+            style={[styles.profileImage, { borderRadius: styles.profileImage.width / 2 }]}
+            source={profileImage ? { uri: profileImage } : placeholder}
+          />
+          <Pressable
+            style={styles.uploadButton}
+            onPress={() => setPicModalVisible(true)}
+          >
+            <FontAwesome name="camera" size={20} color="white" />
+          </Pressable>
+        </View>
         <View style={{ alignItems: "flex-start", flexDirection: "column" }}>
           <Text style={styles.profileName}>{user ? user.firstName + " " + user.lastName : " "}</Text>
           <Text style={styles.profileTag}>@{user ? user.nickname : " "}</Text>
@@ -355,5 +484,40 @@ const styles = StyleSheet.create({
   },
   eventText: {
     color: "white",
+  },
+  uploadButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 10,
+    backgroundColor: colors.tagColor,
+    borderRadius: 50,
+    padding: 6,
+  },
+  imageContainer: {
+    position: 'relative',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+  },
+  buttonsContainer: {
+    flexDirection: 'row', // Align buttons horizontally
+    justifyContent: 'center', // Center buttons horizontally
+    marginTop: 10,
+  },
+  modalButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'lightgray',
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 5, // Add some horizontal margin between buttons
   },
 });
