@@ -4,12 +4,10 @@ import {
   StyleSheet,
   TextInput,
   Pressable,
-  Modal,
+  TouchableOpacity,
   Platform,
 } from "react-native";
 import React, { useState } from "react";
-import DateTimePicker from "@react-native-community/datetimepicker";
-import { MaterialIcons } from "@expo/vector-icons";
 
 import TimeSetter from "../components/ui/TimeSetter";
 
@@ -47,9 +45,11 @@ function ManageScheduleScreen() {
       </View>
       <View style={styles.startTimeContainer}>
         <Text style={styles.timeLabel}>Starts: </Text>
-        <Pressable style={styles.showBtn} onPress={showStartTime}>
-          <Text>{moment(startTime).format("H:mm")}</Text>
-        </Pressable>
+        <TouchableOpacity style={styles.showBtn} onPress={showStartTime}>
+          <Text style={{ fontSize: 18 }} d>
+            {moment(startTime).format("H:mm")}
+          </Text>
+        </TouchableOpacity>
         <TimeSetter
           time={startTime}
           visibleHandler={showStartTime}
@@ -59,15 +59,20 @@ function ManageScheduleScreen() {
       </View>
       <View style={styles.endTimeContainer}>
         <Text style={styles.timeLabel}>Ends: </Text>
-        <Pressable style={styles.showBtn} onPress={showEndTime}>
-          <Text>{moment(endTime).format("H:mm")}</Text>
-        </Pressable>
+        <TouchableOpacity style={styles.showBtn} onPress={showEndTime}>
+          <Text style={{ fontSize: 18 }}>{moment(endTime).format("H:mm")}</Text>
+        </TouchableOpacity>
         <TimeSetter
           time={endTime}
           visibleHandler={showEndTime}
           visiblility={endShow}
           twentyfourHour={twentyfourHour}
         />
+      </View>
+      <View style={styles.timeTextContainer}>
+        <Text style={styles.timeText}>
+          {moment(startTime).format("H:mm")} -{moment(endTime).format("H:mm")}{" "}
+        </Text>
       </View>
     </View>
   );
@@ -89,6 +94,7 @@ const styles = StyleSheet.create({
   },
   timeLabel: {
     fontSize: 20,
+    fontWeight: "bold",
   },
   startTimeContainer: {
     flexDirection: "row",
@@ -106,7 +112,16 @@ const styles = StyleSheet.create({
   },
   showBtn: {
     padding: 10,
-    borderRadius: 5,
-    backgroundColor: "grey",
+    paddingHorizontal: 25,
+    borderRadius: 7,
+    backgroundColor: "white",
+    borderWidth: 1,
+  },
+  timeTextContainer: {
+    padding: 10,
+    alignItems: "flex-end",
+  },
+  timeText: {
+    fontSize: 18,
   },
 });
