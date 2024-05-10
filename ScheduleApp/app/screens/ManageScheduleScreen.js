@@ -1,6 +1,17 @@
-import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
+import {
+  View,
+  Text,
+  StyleSheet,
+  TextInput,
+  Pressable,
+  Modal,
+  Platform,
+} from "react-native";
 import React, { useState } from "react";
 import DateTimePicker from "@react-native-community/datetimepicker";
+import { MaterialIcons } from "@expo/vector-icons";
+
+import TimeSetter from "../components/ui/TimeSetter";
 
 function ManageScheduleScreen() {
   const [startShow, setStartShow] = useState(false);
@@ -11,11 +22,21 @@ function ManageScheduleScreen() {
 
   const moment = require("moment");
 
-  const showStartTime = () => {
+  const showStartTime = ({ type }, date) => {
+    if (type == "set") {
+      setStartShow(!startShow);
+      setStartTime(date);
+      return;
+    }
     setStartShow(!startShow);
   };
 
-  const showEndTime = () => {
+  const showEndTime = ({ type }, date) => {
+    if (type == "set") {
+      setEndShow(!endShow);
+      setEndTime(date);
+      return;
+    }
     setEndShow(!endShow);
   };
 
@@ -26,41 +47,27 @@ function ManageScheduleScreen() {
       </View>
       <View style={styles.startTimeContainer}>
         <Text style={styles.timeLabel}>Starts: </Text>
-        {!startShow && (
-          <Pressable style={styles.showBtn} onPress={showStartTime}>
-            <Text>{moment(startTime).format("H:mm")}</Text>
-          </Pressable>
-        )}
-        {startShow && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={startTime}
-            mode="time"
-            is24Hour={twentyfourHour}
-            minuteInterval={10}
-            display="spinner"
-            onChange={showStartTime}
-          />
-        )}
+        <Pressable style={styles.showBtn} onPress={showStartTime}>
+          <Text>{moment(startTime).format("H:mm")}</Text>
+        </Pressable>
+        <TimeSetter
+          time={startTime}
+          visibleHandler={showStartTime}
+          visiblility={startShow}
+          twentyfourHour={twentyfourHour}
+        />
       </View>
       <View style={styles.endTimeContainer}>
         <Text style={styles.timeLabel}>Ends: </Text>
-        {!endShow && (
-          <Pressable style={styles.showBtn} onPress={showEndTime}>
-            <Text>{moment(endTime).format("H:mm")}</Text>
-          </Pressable>
-        )}
-        {endShow && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={endTime}
-            mode="time"
-            is24Hour={twentyfourHour}
-            minuteInterval={10}
-            display="spinner"
-            onChange={showEndTime}
-          />
-        )}
+        <Pressable style={styles.showBtn} onPress={showEndTime}>
+          <Text>{moment(endTime).format("H:mm")}</Text>
+        </Pressable>
+        <TimeSetter
+          time={endTime}
+          visibleHandler={showEndTime}
+          visiblility={endShow}
+          twentyfourHour={twentyfourHour}
+        />
       </View>
     </View>
   );
