@@ -74,6 +74,12 @@ function ManageScheduleScreen() {
           {moment(startTime).format("H:mm")} -{moment(endTime).format("H:mm")}{" "}
         </Text>
       </View>
+      <View style={styles.textInputContainer}>
+        <TextInput placeholder="Location" style={styles.eventNameInput} />
+      </View>
+      <View style={styles.textInputContainer}>
+        <TextInput placeholder="Professor Name" style={styles.eventNameInput} />
+      </View>
     </View>
   );
 }
@@ -123,5 +129,8 @@ const styles = StyleSheet.create({
   },
   timeText: {
     fontSize: 18,
+  },
+  textInputContainer: {
+    marginVertical: 10,
   },
 });

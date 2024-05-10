@@ -7,18 +7,20 @@ function TimeSetter({ time, visiblility, visibleHandler, twentyfourHour }) {
   return (
     <>
       {Platform.OS === "ios" ? (
-        <Modal visible={visiblility} animationType="slide">
+        <Modal visible={visiblility} animationType="slide" transparent={true}>
           <SafeAreaView style={styles.centeredVdiew}>
-            <MaterialIcons name="close" size={24} onPress={visibleHandler} />
-            <DateTimePicker
-              testID="dateTimePicker"
-              value={time}
-              mode="time"
-              is24Hour={twentyfourHour}
-              minuteInterval={10}
-              display="spinner"
-              onChange={visibleHandler}
-            />
+            <View style={styles.modalView}>
+              <MaterialIcons name="close" size={24} onPress={visibleHandler} />
+              <DateTimePicker
+                testID="dateTimePicker"
+                value={time}
+                mode="time"
+                is24Hour={twentyfourHour}
+                minuteInterval={10}
+                display="spinner"
+                onChange={visibleHandler}
+              />
+            </View>
           </SafeAreaView>
         </Modal>
       ) : (
@@ -43,6 +45,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
+    marginTop: 22,
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
   },
 });
 
