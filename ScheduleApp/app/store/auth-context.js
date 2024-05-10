@@ -24,6 +24,8 @@ function AuthContextProvider({ children }) {
     setAuthToken(null);
     AsyncStorage.removeItem('token');
     AsyncStorage.removeItem('uid');
+    AsyncStorage.removeItem('userData');
+    AsyncStorage.removeItem('profileUri');
   }
 
   const value = {

@@ -29,7 +29,6 @@ function LoginScreen() {
         AsyncStorage.setItem('userData', JSON.stringify(data));
 
         const pathReference = ref(storage, userId);
-        console.log(pathReference);
         getDownloadURL(pathReference)
           .then((url) => {
             AsyncStorage.setItem('profileUri', url);

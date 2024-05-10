@@ -44,6 +44,7 @@ export default function FriendsScreen() {
         if (userDataJson !== null) {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
+
           if (userData.friends) {
             fetchFriends(userData.friends); // Fetch friends using the list of UIDs
           } else {
@@ -88,7 +89,7 @@ export default function FriendsScreen() {
   };
 
   const handleSearchInputChange = async (text) => {
-    const searchText = text.toLowerCase();
+    const searchText = text;
     const currentUserUid = await AsyncStorage.getItem("uid");
     setSearchInput(searchText);
     if (searchText.trim().length > 0) {
@@ -132,6 +133,7 @@ export default function FriendsScreen() {
 
   const renderFriend = (friend) => (
     <FriendList
+      key={friend.uid}
       friend={friend}
       handleUnfollow={handleRemoveFriend}
       handleViewSchedule={() =>
@@ -296,6 +298,7 @@ export default function FriendsScreen() {
           value={searchInput}
           placeholderTextColor="white"
           onChangeText={handleSearchInputChange}
+          autoCapitalize="none"
         />
         <Pressable style={styles.searchButton}>
           <IconButton icon="search" color="white" size={20} />

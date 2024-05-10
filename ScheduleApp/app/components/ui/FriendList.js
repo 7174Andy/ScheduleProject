@@ -4,7 +4,7 @@ import colors from "../../config/colors";
 function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
   function onPressFunction() {
     handleUnfollow(friend);
-    // console.log('d');
+  
   }
 
   return (
