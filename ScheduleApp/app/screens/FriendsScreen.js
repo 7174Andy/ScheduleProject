@@ -24,7 +24,7 @@ import {
   update,
   transaction,
 } from "firebase/database";
-import db from "../config/firebaseConfig";
+import { db } from "../config/firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
 
 import FriendList from "../components/ui/FriendList";
@@ -157,6 +157,8 @@ export default function FriendsScreen() {
   );
 
   const handleRemoveFriend = async (friend) => {
+    // console.log(friend.uid);
+    // console.log(friend.friends);
     try {
       const currentUserUid = await AsyncStorage.getItem("uid");
       const currentUserRef = ref(db, `db/${currentUserUid}`);

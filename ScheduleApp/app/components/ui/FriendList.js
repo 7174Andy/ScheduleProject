@@ -13,7 +13,8 @@ import colors from "../../config/colors";
 
 function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
   function onPressFunction() {
-    console.log("unfollowed");
+    handleUnfollow(friend);
+    // console.log('d');
   }
 
   return (
@@ -31,7 +32,7 @@ function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
             <Text style={styles.userTag}>{"@" + friend.nickname}</Text>
           </View>
 
-          <Pressable style={styles.unfollowBtn} onPress={handleUnfollow}>
+          <Pressable style={styles.unfollowBtn} onPress={() => handleUnfollow(friend)}>
             <Text
               style={{
                 fontSize: 12,

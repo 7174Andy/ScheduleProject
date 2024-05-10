@@ -12,12 +12,16 @@ import axios from 'axios';
 import { FontAwesome } from '@expo/vector-icons';
 import { launchImageLibraryAsync } from 'expo-image-picker';
 import placeholder from '../assets/user.png';
+import { getStorage, ref, uploadBytes } from "firebase/storage";
+import { app } from "../config/firebaseConfig";
+
 
 const config = require('../config/.config.js');
 const currentDate = new Date();
 const today = currentDate.getDay();
 const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const dayName = dayOfWeek[today];
+const storage = getStorage(app);
 
 const TimeSlot = ({ children, style }) => (
   <View style={[styles.timeSlot, style]}>{children}</View>
@@ -82,7 +86,20 @@ export default function ProfileScreen() {
   const saveImage = async (image) => {
     try {
       setProfileImage(image);
-      // 백엔드 추가
+      
+      const response = await fetch(image);
+      const blob = await response.blob();
+      // TODO test가 아니라 uid로 저장
+      const storageRef = ref(storage, 'test');
+      
+
+      uploadBytes(storageRef, blob).then((snapshot) => {
+        console.log('Upload successful');
+      }).catch((error) => {
+        console.error('Error uploading:', error);
+      });
+
+      
       setPicModalVisible(false);
 
     } catch (error) {
@@ -93,7 +110,7 @@ export default function ProfileScreen() {
   const deleteImage = async () => {
     setProfileImage(null);
     setPicModalVisible(false);
-    // 백엔드 추가
+    // 백엔드 추가 : TODO 이미지 지우기
   }
 
   useEffect(() => {
