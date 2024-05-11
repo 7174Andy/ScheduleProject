@@ -19,6 +19,7 @@
     "expo": "~50.0.5",
     "expo-app-loading": "^2.1.1",
     "expo-file-system": "^17.0.1",
+    "expo-image-manipulator": "~11.8.0",
     "expo-image-picker": "^14.7.1",
     "expo-media-library": "^16.0.3",
     "expo-permissions": "^14.4.0",

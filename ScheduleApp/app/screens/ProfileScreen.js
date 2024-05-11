@@ -14,7 +14,7 @@ import { launchImageLibraryAsync } from 'expo-image-picker';
 import placeholder from '../assets/user.png';
 import { getStorage, ref, uploadBytes, deleteObject } from "firebase/storage";
 import { app } from "../config/firebaseConfig";
-
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 
 const config = require('../config/.config.js');
 const currentDate = new Date();
@@ -87,7 +87,13 @@ export default function ProfileScreen() {
     try {
       setProfileImage(image);
       
-      const response = await fetch(image);
+      const compressedImage = await manipulateAsync(
+        image,
+        [],
+        { compress: 0.1, format: SaveFormat.JPEG } // Compress the image and set the format to JPEG
+      );
+
+      const response = await fetch(compressedImage.uri);
       const blob = await response.blob();
 
       const userUid = await AsyncStorage.getItem('uid');

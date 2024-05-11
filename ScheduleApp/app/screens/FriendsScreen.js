@@ -26,6 +26,7 @@ import {
 } from "firebase/database";
 import { db } from "../config/firebaseConfig";
 import { useNavigation } from "@react-navigation/native";
+import { getUserProfilePic } from "../util/http";
 
 import FriendList from "../components/ui/FriendList";
 

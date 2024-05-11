@@ -1,7 +1,25 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import colors from "../../config/colors";
+import { getUserProfilePic } from "../../util/http";
+import React, { useState, useEffect } from "react";
+
 
 function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await getUserProfilePic(friend.uid);
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [friend.uid]);
+
   function onPressFunction() {
     handleUnfollow(friend);
   
@@ -12,8 +30,8 @@ function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
       <View style={styles.friendListInfo}>
         <View style={styles.friendsUserContainer}>
           <Image
-            style={styles.userImage}
-            source={require("../../assets/user.png")}
+            style={[styles.userImage, { borderRadius: styles.userImage.width / 2 }]}
+            source={userData ? { uri: userData } : require("../../assets/user.png")}
           />
           <View style={styles.userNameID}>
             <Text style={styles.userName}>
