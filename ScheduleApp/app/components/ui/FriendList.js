@@ -2,6 +2,11 @@ import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import colors from "../../config/colors";
 
 function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
+  function onPressFunction() {
+    handleUnfollow(friend);
+  
+  }
+
   return (
     <View style={styles.friendListContainer}>
       <View style={styles.friendListInfo}>
@@ -17,7 +22,7 @@ function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
             <Text style={styles.userTag}>{"@" + friend.nickname}</Text>
           </View>
 
-          <Pressable style={styles.unfollowBtn} onPress={handleUnfollow}>
+          <Pressable style={styles.unfollowBtn} onPress={() => handleUnfollow(friend)}>
             <Text
               style={{
                 fontSize: 12,

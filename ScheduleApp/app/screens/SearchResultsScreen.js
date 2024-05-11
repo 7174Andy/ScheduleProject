@@ -12,19 +12,11 @@ import {
 } from "react-native";
 import colors from "../config/colors";
 import IconButton from "../components/ui/IconButton";
-import { useNavigation } from "@react-navigation/native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import {
-  ref,
-  get,
-  orderByChild,
-  startAt,
-  endAt,
-  query,
-  update,
-  transaction,
-} from "firebase/database";
-import db from "../config/firebaseConfig";
+import { useNavigation } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { ref, get, orderByChild, startAt, endAt, query, update, transaction } from 'firebase/database';
+import { db } from '../config/firebaseConfig';
+
 
 export default function SearchResultsScreen({ route }) {
   const navigation = useNavigation();
@@ -33,7 +25,7 @@ export default function SearchResultsScreen({ route }) {
   const [searchInput, setSearchInput] = useState(searchText);
 
   const handleSearchInputChange = async (text) => {
-    const searchText = text.toLowerCase();
+    const searchText = text;
     const currentUserUid = await AsyncStorage.getItem("uid");
     setSearchInput(searchText);
     if (searchText.trim().length > 0) {
