@@ -1,28 +1,39 @@
 import React, { useState, useEffect } from "react";
-import {
-  ScrollView,
-  Pressable,
-  SafeAreaView,
-  View,
-  Text,
-  TextInput,
-  StyleSheet,
-  Button,
-  Image,
-} from "react-native";
+import { ScrollView, Pressable, SafeAreaView, View, Text, TextInput, StyleSheet, Button, Image } from "react-native";
 import colors from "../config/colors";
 import IconButton from "../components/ui/IconButton";
 import { useNavigation } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ref, get, orderByChild, startAt, endAt, query, update, transaction } from 'firebase/database';
-import { db } from '../config/firebaseConfig';
+import { app } from '../config/firebaseConfig';
+import { getDatabase } from 'firebase/database';
+import { getUserProfilePic } from '../util/http';
 
+const db = getDatabase(app);
 
 export default function SearchResultsScreen({ route }) {
   const navigation = useNavigation();
   const { searchText, results } = route.params;
   const [users, setUsers] = useState(results);
   const [searchInput, setSearchInput] = useState(searchText);
+
+  useEffect(() => {
+    // Function to fetch profile picture URLs for all users in results
+    const fetchProfilePicUrls = async () => {
+      const profilePicPromises = results.map(async (user) => {
+        const profilePicUrl = await getUserProfilePic(user.uid);
+        return { ...user, profilePicUrl };
+      });
+  
+      // Wait for all promises to resolve
+      const fetchedUsers = await Promise.all(profilePicPromises);
+      setUsers(fetchedUsers);
+    };
+  
+    // Call the function when the component mounts
+    fetchProfilePicUrls();
+  }, [results]);
+
 
   const handleSearchInputChange = async (text) => {
     const searchText = text;
@@ -37,19 +48,24 @@ export default function SearchResultsScreen({ route }) {
           endAt(searchText + "\uf8ff")
         );
         const snapshot = await get(queryRef);
-        const fetchedUsers = [];
+        //const fetchedUsers = [];
+
+        const promises = [];
         snapshot.forEach((childSnapshot) => {
           const userData = childSnapshot.val();
           if (childSnapshot.key !== currentUserUid) {
-            // Check if user is not the current user
-            fetchedUsers.push({
+            const promise = getUserProfilePic(childSnapshot.key).then((profilePicUrl) => ({
               nickname: userData.nickname,
               firstName: userData.firstName,
               lastName: userData.lastName,
-              uid: childSnapshot.key, // Use userData.uid instead of childSnapshot.key
-            });
+              uid: childSnapshot.key,
+              profilePicUrl: profilePicUrl,
+            }));
+            promises.push(promise);
           }
         });
+        const fetchedUsers = await Promise.all(promises);
+
         setUsers(fetchedUsers);
       } catch (error) {
         console.error("Error querying nicknames:", error);
@@ -62,11 +78,10 @@ export default function SearchResultsScreen({ route }) {
 
   const renderUser = (user) => {
     return (
-      <>
         <View key={user.uid} style={styles.userCard}>
           <Image
-            style={styles.userCardImage}
-            source={require("../assets/user.png")}
+            style={[styles.userCardImage, { borderRadius: styles.userCardImage.width / 2 }]}
+            source={user.profilePicUrl ? { uri: user.profilePicUrl } : require("../assets/user.png")}
           />
           <View style={styles.userCardText}>
             <Text style={styles.userNickname}>{user.nickname}</Text>
@@ -76,7 +91,6 @@ export default function SearchResultsScreen({ route }) {
           </View>
           <Button title="Add" onPress={() => handleButtonClick(user)} />
         </View>
-      </>
     );
   };
 
