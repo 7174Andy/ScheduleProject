@@ -10,6 +10,7 @@ import {
 import React, { useState } from "react";
 
 import TimeSetter from "../components/ui/TimeSetter";
+import { Picker } from "@react-native-picker/picker";
 
 function ManageScheduleScreen() {
   const [startShow, setStartShow] = useState(false);
@@ -18,7 +19,26 @@ function ManageScheduleScreen() {
   const [endTime, setEndTime] = useState(new Date());
   const [twentyfourHour, setTwentyfourHour] = useState(true);
 
+  const placeholder = {
+    label: "Select an option...",
+    value: null,
+  };
+
   const moment = require("moment");
+  const enrollmentStatusOptions = [
+    {
+      label: "Enrolled",
+      value: "enrolled",
+    },
+    {
+      label: "Waitlisted",
+      value: "waitlisted",
+    },
+    {
+      label: "Planned",
+      value: "planned",
+    },
+  ];
 
   const showStartTime = ({ type }, date) => {
     if (type == "set") {
@@ -79,6 +99,9 @@ function ManageScheduleScreen() {
       </View>
       <View style={styles.textInputContainer}>
         <TextInput placeholder="Professor Name" style={styles.eventNameInput} />
+      </View>
+      <View>
+        <Picker placeholder={placeholder} item={enrollmentStatusOptions} />
       </View>
     </View>
   );
