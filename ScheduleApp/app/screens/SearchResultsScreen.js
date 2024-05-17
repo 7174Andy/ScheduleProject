@@ -98,7 +98,10 @@ export default function SearchResultsScreen({ route }) {
               {user.firstName} {user.lastName}
             </Text>
           </View>
-          <Button title={user.state === 'Friend' ? 'Friend' : user.state === 'Requested' ? 'Requested' : 'Add'} onPress={() => handleButtonClick(user)} />
+          <Pressable>
+            <IconButton icon={user.state === 'Friend' ? 'people-outline' : user.state === 'Requested' ? 'push-outline' : 'add-circle-outline'} 
+              onPress={() => handleButtonClick(user)} color='white' size={20}/>
+          </Pressable>
         </View>
     );
   };
@@ -124,6 +127,12 @@ export default function SearchResultsScreen({ route }) {
           await update(ref(db, `db/${clickedUser.uid}`), { friendRequests });
 
           console.log("Friend request sent to user:", clickedUser);
+
+          // users 리스트에서 clickedUser와 일치하는 element를 uid를 통해서 찾고, 그 유저의 state를 Requested로 변경
+          const updatedUsers = users.map(user =>
+            user.uid === clickedUser.uid ? { ...user, state: 'Requested' } : user
+          );
+          setUsers(updatedUsers);
         } else {
           console.log("Friend request already sent to user:", clickedUser);
         }
