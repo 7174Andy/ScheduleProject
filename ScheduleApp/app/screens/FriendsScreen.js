@@ -155,30 +155,15 @@ export default function FriendsScreen() {
   );
 
   const renderFriendRequest = (request) => (
-    <FriendList
-    key={request.uid}
-    friend={request}
-    Add={handleAcceptFriendRequest}
-    Reject={handleDeclineFriendRequest}
-  />
-    // <View key={request.uid} style={styles.userContainer}>
-    //   <Text>
-    //     {request.firstName} {request.lastName}
-    //   </Text>
-    //   <Button
-    //     title="Accept"
-    //     onPress={() => handleAcceptFriendRequest(request)}
-    //   />
-    //   <Button
-    //     title="Decline"
-    //     onPress={() => handleDeclineFriendRequest(request)}
-    //   />
-    // </View>
+    <RequestFriends
+      key={request.uid}
+      friend={request}
+      Add={handleAcceptFriendRequest}
+      Reject={handleDeclineFriendRequest}
+    />
   );
 
   const handleRemoveFriend = async (friend) => {
-    // console.log(friend.uid);
-    // console.log(friend.friends);
     try {
       const currentUserUid = await AsyncStorage.getItem("uid");
       const currentUserRef = ref(db, `db/${currentUserUid}`);

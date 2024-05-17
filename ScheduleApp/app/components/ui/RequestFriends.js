@@ -36,7 +36,7 @@ function FriendList({ friend, Add, Reject }) {
             <Text style={styles.userTag}>{"@" + friend.nickname}</Text>
           </View>
 
-          <Pressable style={styles.unfollowBtn} onPress={Add(friend)}>
+          <Pressable style={styles.unfollowBtn} onPress={() => Add(friend)}>
             <Text
               style={{
                 fontSize: 12,
@@ -49,7 +49,7 @@ function FriendList({ friend, Add, Reject }) {
           </Pressable>
           <Pressable
             style={styles.viewScheduleBtn}
-            onPress={Reject(friend)}
+            onPress={() => Reject(friend)}
           >
             <Text
               style={{
