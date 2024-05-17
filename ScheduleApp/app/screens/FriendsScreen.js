@@ -105,6 +105,15 @@ export default function FriendsScreen() {
         const fetchedUsers = [];
         snapshot.forEach((childSnapshot) => {
           const userData = childSnapshot.val();
+          let state = "";
+          // 이미 친구인 경우
+          if (userData.friends && userData.friends.includes(currentUserUid)) {
+            state = 'Friend';
+          }
+            // 이미 친구 요청한 경우
+          if (userData.friendRequests && userData.friendRequests.includes(currentUserUid)) {
+            state = 'Requested';
+          }
           if (childSnapshot.key !== currentUserUid) {
             // Check if user is not the current user
             fetchedUsers.push({
@@ -112,6 +121,7 @@ export default function FriendsScreen() {
               firstName: userData.firstName,
               lastName: userData.lastName,
               uid: childSnapshot.key, // Use userData.uid instead of childSnapshot.key
+              state: state,
             });
           }
         });
