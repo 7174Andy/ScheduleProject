@@ -10,7 +10,7 @@ import {
 import React, { useState } from "react";
 
 import TimeSetter from "../components/ui/TimeSetter";
-import { Picker } from "@react-native-picker/picker";
+import RNPickerSelect from "react-native-picker-select";
 
 function ManageScheduleScreen() {
   const [startShow, setStartShow] = useState(false);
@@ -18,9 +18,10 @@ function ManageScheduleScreen() {
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
   const [twentyfourHour, setTwentyfourHour] = useState(true);
+  const [enrollmentStatus, setEnrollmentStatus] = useState(null);
 
   const placeholder = {
-    label: "Select an option...",
+    label: "Enrollment Status...",
     value: null,
   };
 
@@ -39,7 +40,6 @@ function ManageScheduleScreen() {
       value: "planned",
     },
   ];
-
   const showStartTime = ({ type }, date) => {
     if (type == "set") {
       setStartShow(!startShow);
@@ -91,7 +91,7 @@ function ManageScheduleScreen() {
       </View>
       <View style={styles.timeTextContainer}>
         <Text style={styles.timeText}>
-          {moment(startTime).format("H:mm")} -{moment(endTime).format("H:mm")}{" "}
+          {moment(startTime).format("H:mm")} - {moment(endTime).format("H:mm")}{" "}
         </Text>
       </View>
       <View style={styles.textInputContainer}>
@@ -101,7 +101,34 @@ function ManageScheduleScreen() {
         <TextInput placeholder="Professor Name" style={styles.eventNameInput} />
       </View>
       <View>
-        <Picker placeholder={placeholder} item={enrollmentStatusOptions} />
+        <RNPickerSelect
+          onValueChange={(value) => setEnrollmentStatus(value)}
+          items={enrollmentStatusOptions}
+          placeholder={placeholder}
+          style={{
+            inputIOS: {
+              fontSize: 20,
+              paddingVertical: 12,
+              paddingHorizontal: 10,
+              borderWidth: 1,
+              borderColor: "grey",
+              borderRadius: 7,
+              color: "black",
+              paddingRight: 30,
+              marginVertical: 10,
+            },
+            inputAndroid: {
+              fontSize: 20,
+              paddingVertical: 12,
+              paddingHorizontal: 10,
+              borderWidth: 1,
+              borderColor: "grey",
+              borderRadius: 7,
+              color: "black",
+              paddingRight: 30,
+            },
+          }}
+        />
       </View>
     </View>
   );
