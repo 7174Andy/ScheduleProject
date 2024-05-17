@@ -29,6 +29,7 @@ import { useNavigation } from "@react-navigation/native";
 import { getUserProfilePic } from "../util/http";
 
 import FriendList from "../components/ui/FriendList";
+import RequestFriends from "../components/ui/RequestFriends";
 
 export default function FriendsScreen() {
   const [user, setUser] = useState(null);
@@ -154,19 +155,25 @@ export default function FriendsScreen() {
   );
 
   const renderFriendRequest = (request) => (
-    <View key={request.uid} style={styles.userContainer}>
-      <Text>
-        {request.firstName} {request.lastName}
-      </Text>
-      <Button
-        title="Accept"
-        onPress={() => handleAcceptFriendRequest(request)}
-      />
-      <Button
-        title="Decline"
-        onPress={() => handleDeclineFriendRequest(request)}
-      />
-    </View>
+    <FriendList
+    key={request.uid}
+    friend={request}
+    Add={handleAcceptFriendRequest}
+    Reject={handleDeclineFriendRequest}
+  />
+    // <View key={request.uid} style={styles.userContainer}>
+    //   <Text>
+    //     {request.firstName} {request.lastName}
+    //   </Text>
+    //   <Button
+    //     title="Accept"
+    //     onPress={() => handleAcceptFriendRequest(request)}
+    //   />
+    //   <Button
+    //     title="Decline"
+    //     onPress={() => handleDeclineFriendRequest(request)}
+    //   />
+    // </View>
   );
 
   const handleRemoveFriend = async (friend) => {
