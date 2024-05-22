@@ -1,22 +1,33 @@
 import {
-  SafeAreaView, View, Text, Image, Pressable, Modal, TextInput, Button, StyleSheet, ScrollView
-} from 'react-native';
+  SafeAreaView,
+  View,
+  Text,
+  Image,
+  Pressable,
+  Modal,
+  TextInput,
+  Button,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 
 import colors from "../config/colors";
 import { useEffect } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { getUserData } from "../util/http";
-import * as ImagePicker from 'expo-image-picker';
 import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
-import { launchImageLibraryAsync } from 'expo-image-picker';
 import placeholder from '../assets/user.png';
-import { getStorage, ref, uploadBytes, deleteObject } from "firebase/storage";
 import { app } from "../config/firebaseConfig";
+import { useNavigation } from '@react-navigation/native';
+import { launchImageLibraryAsync } from 'expo-image-picker';
+import { getStorage, ref, uploadBytes, deleteObject } from "firebase/storage";
 import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
 
 const config = require('../config/.config.js');
+
 const currentDate = new Date();
 const today = currentDate.getDay();
 const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
@@ -35,20 +46,20 @@ const Event = ({ name, color, top, height, professorName }) => (
 );
 
 export default function ProfileScreen() {
+  const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [isPicModalVisible, setPicModalVisible] = useState(false);
   const [editData, setEditData] = useState({
-    firstName: '',
-    lastName: '',
-    nickname: '',
-    college: '',
+    firstName: "",
+    lastName: "",
+    nickname: "",
+    college: "",
     majors: [],
     minors: [],
     classLvl: ''
   });
   const [profileImage, setProfileImage] = useState();
-  
 
   const uploadImage = async (mode) => {
     try{
@@ -152,7 +163,7 @@ export default function ProfileScreen() {
         college: user.college,
         majors: user.majors,
         minors: user.minors,
-        classLvl: user.classLvl
+        classLvl: user.classLvl,
       });
     }
     setModalVisible(true);
@@ -160,18 +171,21 @@ export default function ProfileScreen() {
 
   const handleSave = async () => {
     const updatedUser = { ...user, ...editData };
-    await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
+    await AsyncStorage.setItem("userData", JSON.stringify(updatedUser));
     setUser(updatedUser);
     setModalVisible(false);
-    const userId = await AsyncStorage.getItem("uid")
-    const res = await axios.put(`${config.BACKEND_URL}/db/${userId}.json`,updatedUser)
+    const userId = await AsyncStorage.getItem("uid");
+    const res = await axios.put(
+      `${config.BACKEND_URL}/db/${userId}.json`,
+      updatedUser
+    );
   };
 
   const handleChange = (name, value) => {
-    if (name === 'majors' || name === 'minors') {
-      value = value.split(',').map(v => v.trim());  // Assuming input is comma-separated
+    if (name === "majors" || name === "minors") {
+      value = value.split(",").map((v) => v.trim()); // Assuming input is comma-separated
     }
-    setEditData(prev => ({ ...prev, [name]: value }));
+    setEditData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
@@ -270,6 +284,7 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
+
       <View style={styles.profileContainer}>
         <View style={styles.imageContainer}>
           <Image
@@ -284,12 +299,14 @@ export default function ProfileScreen() {
           </Pressable>
         </View>
         <View style={{ alignItems: "flex-start", flexDirection: "column" }}>
-          <Text style={styles.profileName}>{user ? user.firstName + " " + user.lastName : " "}</Text>
+          <Text style={styles.profileName}>
+            {user ? user.firstName + " " + user.lastName : " "}
+          </Text>
           <Text style={styles.profileTag}>@{user ? user.nickname : " "}</Text>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
               style={styles.myCalendarBtn}
-              onPress={openEditModal}
+              onPress={() => navigation.navigate("EditProfile")}
             >
               <Text
                 style={{ fontSize: 15, padding: 7, color: colors.textColor }}
@@ -305,7 +322,9 @@ export default function ProfileScreen() {
           <Text style={styles.hashtagText}># {user ? user.college : ""}</Text>
         </View>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}>{user ? user.majors.map(element => '# ' + element).join(' ') : ""}</Text>
+          <Text style={styles.hashtagText}>
+            {user ? user.majors.map((element) => "# " + element).join(" ") : ""}
+          </Text>
         </View>
       </View>
       <View style={styles.hashtagContainerSecond}>
@@ -313,7 +332,9 @@ export default function ProfileScreen() {
           <Text style={styles.hashtagText}># {user ? user.classLvl : ""}</Text>
         </View>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}>{user ? user.minors.map(element => '# ' + element).join(' ') : ""}</Text>
+          <Text style={styles.hashtagText}>
+            {user ? user.minors.map((element) => "# " + element).join(" ") : ""}
+          </Text>
         </View>
       </View>
       <ScrollView
@@ -328,16 +349,19 @@ export default function ProfileScreen() {
             }`}</Text>
           </TimeSlot>
         ))}
-        {user ? user.hasOwnProperty(dayName) && user[dayName].map((event, index) => (
-          <Event
-            key={index}
-            name={event.course}
-            color={event.color}
-            top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
-            height={(event.endTime - event.startTime) * 60}
-            professorName = {event.professor}
-          />
-        )) : ""}
+        {user
+          ? user.hasOwnProperty(dayName) &&
+            user[dayName].map((event, index) => (
+              <Event
+                key={index}
+                name={event.course}
+                color={event.color}
+                top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
+                height={(event.endTime - event.startTime) * 60}
+                professorName={event.professor}
+              />
+            ))
+          : ""}
       </ScrollView>
     </SafeAreaView>
   );
@@ -351,7 +375,7 @@ const styles = StyleSheet.create({
   // },
   profileContainer: {
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   profileImage: {
     width: 100,
@@ -360,22 +384,22 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   profileTag: {
-    color: 'grey',
+    color: "grey",
   },
   editButton: {
     marginTop: 10,
     padding: 10,
-    backgroundColor: 'lightgrey',
+    backgroundColor: "lightgrey",
     borderRadius: 5,
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
   },
   modalView: {
     margin: 20,
@@ -386,18 +410,18 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   input: {
-    width: '100%',
+    width: "100%",
     marginBottom: 10,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
   },
   background: {
