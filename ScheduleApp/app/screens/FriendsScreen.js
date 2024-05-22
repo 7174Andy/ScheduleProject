@@ -38,6 +38,7 @@ export default function FriendsScreen() {
   const [friends, setFriends] = useState([]); // State for friends list
   const [friendRequests, setFriendRequests] = useState([]);
   const navigation = useNavigation();
+  const [received, setReceived] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -52,6 +53,7 @@ export default function FriendsScreen() {
           } else {
             setFriends([]);
           }
+          setReceived(userData.friendRequests);
           if (userData.friendRequests) {
             fetchFriendRequests(userData.friendRequests); // Fetch friend requests using the list of UIDs
           } else {
@@ -93,6 +95,7 @@ export default function FriendsScreen() {
   const handleSearchInputChange = async (text) => {
     const searchText = text;
     const currentUserUid = await AsyncStorage.getItem("uid");
+
     setSearchInput(searchText);
     if (searchText.trim().length > 0) {
       try {
@@ -110,11 +113,12 @@ export default function FriendsScreen() {
           // 이미 친구인 경우
           if (userData.friends && userData.friends.includes(currentUserUid)) {
             state = 'Friend';
-          }
-            // 이미 친구 요청한 경우
-          if (userData.friendRequests && userData.friendRequests.includes(currentUserUid)) {
+          } else if (userData.friendRequests && userData.friendRequests.includes(currentUserUid)) {
             state = 'Requested';
+          } else if (received && received.includes(childSnapshot.key)) {
+            state = 'Received';
           }
+
           if (childSnapshot.key !== currentUserUid) {
             // Check if user is not the current user
             fetchedUsers.push({

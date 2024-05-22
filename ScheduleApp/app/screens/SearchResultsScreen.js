@@ -38,6 +38,8 @@ export default function SearchResultsScreen({ route }) {
   const handleSearchInputChange = async (text) => {
     const searchText = text;
     const currentUserUid = await AsyncStorage.getItem("uid");
+    const currentUser = await AsyncStorage.getItem("userData");
+
     setSearchInput(searchText);
     if (searchText.trim().length > 0) {
       try {
@@ -62,6 +64,11 @@ export default function SearchResultsScreen({ route }) {
             if (userData.friendRequests && userData.friendRequests.includes(currentUserUid)) {
               state = 'Requested';
             }
+
+            if (currentUser.friendRequests && currentUser.friendRequests.includes(childSnapshot.key)) {
+              state = 'Received';
+            }
+
             const promise = getUserProfilePic(childSnapshot.key).then((profilePicUrl) => ({
               nickname: userData.nickname,
               firstName: userData.firstName,
@@ -99,7 +106,7 @@ export default function SearchResultsScreen({ route }) {
             </Text>
           </View>
           <Pressable>
-            <IconButton icon={user.state === 'Friend' ? 'people-outline' : user.state === 'Requested' ? 'push-outline' : 'add-circle-outline'} 
+            <IconButton icon={user.state === 'Friend' ? 'people-outline' : user.state === 'Requested' ? 'push-outline' : user.state === 'Received' ? 'download-outline' : 'add-circle-outline'} 
               onPress={() => handleButtonClick(user)} color='white' size={20}/>
           </Pressable>
         </View>

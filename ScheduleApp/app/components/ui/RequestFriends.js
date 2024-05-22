@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import colors from "../../config/colors";
 import { getUserProfilePic } from "../../util/http";
 import React, { useState, useEffect } from "react";
+import IconButton from "./IconButton";
 
 
 function FriendList({ friend, Add, Reject }) {
@@ -37,29 +38,13 @@ function FriendList({ friend, Add, Reject }) {
           </View>
 
           <Pressable style={styles.unfollowBtn} onPress={() => Add(friend)}>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.textColor,
-                paddingHorizontal: 5,
-              }}
-            >
-              Add
-            </Text>
+            <IconButton icon='checkmark' color='white' size={20}/>
           </Pressable>
           <Pressable
             style={styles.viewScheduleBtn}
             onPress={() => Reject(friend)}
           >
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.textColor,
-                paddingHorizontal: 5,
-              }}
-            >
-              Reject
-            </Text>
+            <IconButton icon='close' color='white' size={20}/>
           </Pressable>
         </View>
       </View>
@@ -98,7 +83,7 @@ const styles = StyleSheet.create({
 
   userName: {
     color: "#6B6B6B",
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
   },
 
@@ -114,7 +99,7 @@ const styles = StyleSheet.create({
   unfollowBtn: {
     borderRadius: 15,
     backgroundColor: colors.greyBtn,
-    padding: 7,
+    padding: 0,
     justifyContent: "center",
     marginLeft: "15%",
   },
@@ -122,9 +107,14 @@ const styles = StyleSheet.create({
   viewScheduleBtn: {
     borderRadius: 15,
     backgroundColor: colors.greyBtn,
-    padding: 7,
+    padding: 0,
     justifyContent: "center",
     marginHorizontal: 10,
+  },
+
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "flex-end"
   },
 });
 
