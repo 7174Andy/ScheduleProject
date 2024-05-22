@@ -8,11 +8,12 @@ import {
   Platform,
 } from "react-native";
 import React, { useState } from "react";
+import RNPickerSelect from "react-native-picker-select";
+import { ColorPicker } from "react-native-color-picker";
 
 import TimeSetter from "../components/ui/TimeSetter";
-import RNPickerSelect from "react-native-picker-select";
 
-function ManageScheduleScreen() {
+function ManageScheduleScreen({ navigation }) {
   const [startShow, setStartShow] = useState(false);
   const [endShow, setEndShow] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
@@ -130,6 +131,15 @@ function ManageScheduleScreen() {
           }}
         />
       </View>
+      <Pressable style={[styles.pressableBtn, styles.saveBtn]}>
+        <Text style={styles.btnLabel}>Save</Text>
+      </Pressable>
+      <Pressable
+        style={[styles.pressableBtn, styles.cancelBtn]}
+        onPress={() => navigation.goBack()}
+      >
+        <Text style={styles.btnLabel}>Cancel</Text>
+      </Pressable>
     </View>
   );
 }
@@ -182,5 +192,20 @@ const styles = StyleSheet.create({
   },
   textInputContainer: {
     marginVertical: 10,
+  },
+  saveBtn: {
+    backgroundColor: "lightgreen",
+  },
+  pressableBtn: {
+    padding: 10,
+    borderRadius: 5,
+    alignItems: "center",
+    marginVertical: 10,
+  },
+  btnLabel: {
+    fontSize: 20,
+  },
+  cancelBtn: {
+    backgroundColor: "lightcoral",
   },
 });

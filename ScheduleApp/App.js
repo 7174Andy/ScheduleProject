@@ -120,10 +120,6 @@ function ScheduleOverview() {
   );
 }
 
-function ManageSchedule() {
-  return <ManageScheduleScreen />;
-}
-
 function AuthenticatedStack() {
   return (
     <Stack.Navigator>
@@ -134,7 +130,7 @@ function AuthenticatedStack() {
       />
       <Stack.Screen
         name="ManageSchedule"
-        component={ManageSchedule}
+        component={ManageScheduleScreen}
         options={{
           presentation: "modal",
         }}
