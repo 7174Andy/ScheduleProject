@@ -29,6 +29,7 @@ import { useNavigation } from "@react-navigation/native";
 import { getUserProfilePic } from "../util/http";
 
 import FriendList from "../components/ui/FriendList";
+import RequestFriends from "../components/ui/RequestFriends";
 
 export default function FriendsScreen() {
   const [user, setUser] = useState(null);
@@ -37,6 +38,7 @@ export default function FriendsScreen() {
   const [friends, setFriends] = useState([]); // State for friends list
   const [friendRequests, setFriendRequests] = useState([]);
   const navigation = useNavigation();
+  const [received, setReceived] = useState([]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -51,6 +53,7 @@ export default function FriendsScreen() {
           } else {
             setFriends([]);
           }
+          setReceived(userData.friendRequests);
           if (userData.friendRequests) {
             fetchFriendRequests(userData.friendRequests); // Fetch friend requests using the list of UIDs
           } else {
@@ -92,6 +95,7 @@ export default function FriendsScreen() {
   const handleSearchInputChange = async (text) => {
     const searchText = text;
     const currentUserUid = await AsyncStorage.getItem("uid");
+
     setSearchInput(searchText);
     if (searchText.trim().length > 0) {
       try {
@@ -105,6 +109,16 @@ export default function FriendsScreen() {
         const fetchedUsers = [];
         snapshot.forEach((childSnapshot) => {
           const userData = childSnapshot.val();
+          let state = "";
+          // 이미 친구인 경우
+          if (userData.friends && userData.friends.includes(currentUserUid)) {
+            state = 'Friend';
+          } else if (userData.friendRequests && userData.friendRequests.includes(currentUserUid)) {
+            state = 'Requested';
+          } else if (received && received.includes(childSnapshot.key)) {
+            state = 'Received';
+          }
+
           if (childSnapshot.key !== currentUserUid) {
             // Check if user is not the current user
             fetchedUsers.push({
@@ -112,6 +126,7 @@ export default function FriendsScreen() {
               firstName: userData.firstName,
               lastName: userData.lastName,
               uid: childSnapshot.key, // Use userData.uid instead of childSnapshot.key
+              state: state,
             });
           }
         });
@@ -144,24 +159,15 @@ export default function FriendsScreen() {
   );
 
   const renderFriendRequest = (request) => (
-    <View key={request.uid} style={styles.userContainer}>
-      <Text>
-        {request.firstName} {request.lastName}
-      </Text>
-      <Button
-        title="Accept"
-        onPress={() => handleAcceptFriendRequest(request)}
-      />
-      <Button
-        title="Decline"
-        onPress={() => handleDeclineFriendRequest(request)}
-      />
-    </View>
+    <RequestFriends
+      key={request.uid}
+      friend={request}
+      Add={handleAcceptFriendRequest}
+      Reject={handleDeclineFriendRequest}
+    />
   );
 
   const handleRemoveFriend = async (friend) => {
-    // console.log(friend.uid);
-    // console.log(friend.friends);
     try {
       const currentUserUid = await AsyncStorage.getItem("uid");
       const currentUserRef = ref(db, `db/${currentUserUid}`);

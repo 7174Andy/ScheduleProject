@@ -38,6 +38,8 @@ export default function SearchResultsScreen({ route }) {
   const handleSearchInputChange = async (text) => {
     const searchText = text;
     const currentUserUid = await AsyncStorage.getItem("uid");
+    const currentUser = await AsyncStorage.getItem("userData");
+
     setSearchInput(searchText);
     if (searchText.trim().length > 0) {
       try {
@@ -48,18 +50,32 @@ export default function SearchResultsScreen({ route }) {
           endAt(searchText + "\uf8ff")
         );
         const snapshot = await get(queryRef);
-        //const fetchedUsers = [];
 
         const promises = [];
         snapshot.forEach((childSnapshot) => {
           const userData = childSnapshot.val();
           if (childSnapshot.key !== currentUserUid) {
+            let state = "";
+            // 이미 친구인 경우
+            if (userData.friends && userData.friends.includes(currentUserUid)) {
+              state = 'Friend';
+            }
+             // 이미 친구 요청한 경우
+            if (userData.friendRequests && userData.friendRequests.includes(currentUserUid)) {
+              state = 'Requested';
+            }
+
+            if (currentUser.friendRequests && currentUser.friendRequests.includes(childSnapshot.key)) {
+              state = 'Received';
+            }
+
             const promise = getUserProfilePic(childSnapshot.key).then((profilePicUrl) => ({
               nickname: userData.nickname,
               firstName: userData.firstName,
               lastName: userData.lastName,
               uid: childSnapshot.key,
               profilePicUrl: profilePicUrl,
+              state: state,
             }));
             promises.push(promise);
           }
@@ -89,39 +105,44 @@ export default function SearchResultsScreen({ route }) {
               {user.firstName} {user.lastName}
             </Text>
           </View>
-
-          <Button 
-            title="Add" 
-            onPress={() => handleButtonClick(user)} 
-            color="darkgray"
-
-            />
+          <Pressable>
+            <IconButton icon={user.state === 'Friend' ? 'people-outline' : user.state === 'Requested' ? 'push-outline' : user.state === 'Received' ? 'download-outline' : 'add-circle-outline'} 
+              onPress={() => handleButtonClick(user)} color='darkgray' size={20}/>
+          </Pressable>
         </View>
     );
   };
 
   const handleButtonClick = async (clickedUser) => {
     try {
-      const currentUserUid = await AsyncStorage.getItem("uid");
+      if (clickedUser.state === '') {
+        const currentUserUid = await AsyncStorage.getItem("uid");
 
-      // Construct the path to the clicked user's friendRequests list in the database
-      const friendRequestsRef = ref(db, `db/${clickedUser.uid}/friendRequests`);
+        // Construct the path to the clicked user's friendRequests list in the database
+        const friendRequestsRef = ref(db, `db/${clickedUser.uid}/friendRequests`);
 
-      // Check if the current user's UID already exists in the clicked user's friendRequests list
-      const friendRequestsSnapshot = await get(friendRequestsRef);
-      const friendRequests = friendRequestsSnapshot.val() || [];
+        // Check if the current user's UID already exists in the clicked user's friendRequests list
+        const friendRequestsSnapshot = await get(friendRequestsRef);
+        const friendRequests = friendRequestsSnapshot.val() || [];
 
-      if (!friendRequests.includes(currentUserUid)) {
-        // If the current user's UID is not already in the clicked user's friendRequests list,
-        // add it to the list
-        friendRequests.push(currentUserUid);
+        if (!friendRequests.includes(currentUserUid)) {
+          // If the current user's UID is not already in the clicked user's friendRequests list,
+          // add it to the list
+          friendRequests.push(currentUserUid);
 
-        // Update the friendRequests list in the database using the update method
-        await update(ref(db, `db/${clickedUser.uid}`), { friendRequests });
+          // Update the friendRequests list in the database using the update method
+          await update(ref(db, `db/${clickedUser.uid}`), { friendRequests });
 
-        console.log("Friend request sent to user:", clickedUser);
-      } else {
-        console.log("Friend request already sent to user:", clickedUser);
+          console.log("Friend request sent to user:", clickedUser);
+
+          // users 리스트에서 clickedUser와 일치하는 element를 uid를 통해서 찾고, 그 유저의 state를 Requested로 변경
+          const updatedUsers = users.map(user =>
+            user.uid === clickedUser.uid ? { ...user, state: 'Requested' } : user
+          );
+          setUsers(updatedUsers);
+        } else {
+          console.log("Friend request already sent to user:", clickedUser);
+        }
       }
     } catch (error) {
       console.error("Error sending friend request:", error);

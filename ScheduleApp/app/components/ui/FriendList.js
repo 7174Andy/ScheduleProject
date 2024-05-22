@@ -2,6 +2,7 @@ import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import colors from "../../config/colors";
 import { getUserProfilePic } from "../../util/http";
 import React, { useState, useEffect } from "react";
+import IconButton from "./IconButton";
 
 
 function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
@@ -41,29 +42,13 @@ function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
           </View>
 
           <Pressable style={styles.unfollowBtn} onPress={() => handleUnfollow(friend)}>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.textColor,
-                paddingHorizontal: 5,
-              }}
-            >
-              Unfollow
-            </Text>
+            <IconButton icon="person-remove-outline" color="white" size={20} />
           </Pressable>
           <Pressable
             style={styles.viewScheduleBtn}
             onPress={handleViewSchedule}
           >
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.textColor,
-                paddingHorizontal: 5,
-              }}
-            >
-              Schedule
-            </Text>
+            <IconButton icon="calendar" color="white" size={20} />
           </Pressable>
         </View>
       </View>
@@ -102,7 +87,7 @@ const styles = StyleSheet.create({
 
   userName: {
     color: "#6B6B6B",
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
   },
 
@@ -118,7 +103,7 @@ const styles = StyleSheet.create({
   unfollowBtn: {
     borderRadius: 15,
     backgroundColor: colors.greyBtn,
-    padding: 7,
+    padding: 0,
     justifyContent: "center",
     marginLeft: "15%",
   },
@@ -126,7 +111,7 @@ const styles = StyleSheet.create({
   viewScheduleBtn: {
     borderRadius: 15,
     backgroundColor: colors.greyBtn,
-    padding: 7,
+    padding: 0,
     justifyContent: "center",
     marginHorizontal: 10,
   },
