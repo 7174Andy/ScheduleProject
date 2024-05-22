@@ -37,6 +37,35 @@ function EditProfileScreen() {
 
     return (
         <SafeAreaView style={styles.background}>
+            <View style={styles.topContainer}>
+                <Image 
+                style={styles.profileImage}
+                source={require("../assets/user.png")}>
+                </Image>
+
+                <View style={styles.nameButtonContainer}>
+                    <Text style={styles.username}>Username</Text>
+                    <Text style={styles.id}>@username</Text>
+                    
+                    <View style={styles.btnContainer}>
+                        <Pressable 
+                        style={styles.saveBtn}> 
+                        <Text style={{fontSize: 13, color: 'white',marginHorizontal: 5, }}>Save </Text>
+                        </Pressable>
+    
+                        <Pressable 
+                        style={styles.saveBtn}> 
+                        <Text style={{fontSize: 13, color: 'white', paddingHorizontal: 7, }}>Edit </Text>
+                        </Pressable>
+
+                    </View>
+                </View>
+
+            </View>
+
+
+
+        <View>
             <View style={styles.row}>
                 <View style={styles.column}>
                     <View style={styles.category}>
@@ -69,7 +98,7 @@ function EditProfileScreen() {
                             {hashtags.map((hashtag) => (
                                 <View style={styles.oneHashTag}>
                                     <Text style={styles.hashtagText}>{hashtag}</Text>
-                                    <IconButton icon="close" color="white" size={20} onPress={()=>{
+                                    <IconButton icon="close" color="white" size={16} onPress={()=>{
                                         setHashtags(hashtags.filter((item) => item !== hashtag));
                                     }}/>
                                 </View>
@@ -91,6 +120,7 @@ function EditProfileScreen() {
                         </View>
                 </View>
             </View>
+        </View>
         </SafeAreaView>
     )
 }
@@ -104,37 +134,36 @@ const styles = StyleSheet.create({
     },
     row: {
       flexDirection: "row",
+      marginLeft: 30,
     },
     column: {
       flexDirection: "column",
+
     },
     category:{
         color: 'white',
         fontSize: 18,
-        margin: 10,
-        bold: true,
+        margin: 7,
     },
     inputText: {
       color: 'white',
       fontSize: 16,
-      margin: 20,
+      marginLeft: 20,
+      marginBottom: 14,
+      marginTop: 16,
     },
     hashtagContainer: {
         flex: 0,
         flexDirection: "column",
         justifyContent: "center",
-        marginTop: 20,
-        marginLeft: 10,
-    },
-    hashtagText: {
-        color: colors.textColor,
-        fontSize: 15,
+        marginTop: 10,
+        marginLeft: 15,
     },
     oneHashTag: {
         backgroundColor: colors.hashtag,
         borderRadius: 10,
-        padding: 5,
-        margin: 5,
+        padding: 1,
+        marginTop: 5,
         marginRight: 10,
         shadowColor: colors.black,
         shadowOffset: {
@@ -147,6 +176,62 @@ const styles = StyleSheet.create({
     hashtagText: {
         color: 'white',
         fontSize: 16,
-        margin: 5,
+        // margin: 5,
+        marginBottom: 3,
+        padding: 5,
       },
+      topContainer:{
+        flexDirection: "row",
+        alignItems: "flex-start",
+        margin: 25,
+    },
+    profileImage:{
+        width: 130,
+        height: 130,
+        borderRadius: 50,
+        alignSelf: "left",
+        padding: 10,
+        marginRight: 20,
+    },
+
+    nameButtonContainer:{
+        flexDirection: "column",
+        justifyContent: "center",
+    },
+
+    username:{
+        fontSize: 20,
+        fontWeight: "bold",
+        paddingBottom: 3,
+        paddingTop: 20,
+        color: "white",
+    },
+    id:{
+        fontSize: 15,
+        color: "white",
+    },
+    
+    btnContainer:{
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems: "center",
+        margin: 5,
+        marginTop: 10,
+    },
+
+
+    saveBtn:{
+        backgroundColor: "gray",
+        borderRadius: 8,
+        padding: 6,
+        alignItems: "center",  
+        marginRight: 10, 
+    },
+
+    editBtn:{
+        backgroundColor: "gray",
+        borderRadius: 8,
+        padding: 6,
+        alignItems: "center",
+    },
 });
