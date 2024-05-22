@@ -15,6 +15,7 @@ import FriendScheduleScreen from "./app/screens/FriendScheduleScreen";
 import SearchResultsScreen from "./app/screens/SearchResultsScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
+import EditProfileScreen from "./app/screens/EditProfileScreen";
 
 import { Colors } from "./app/constants/styles";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -24,14 +25,43 @@ import IconButton from "./app/components/ui/IconButton";
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const FriendsStack = createNativeStackNavigator();
+const ProfileStack = createNativeStackNavigator();
 
+function ProfileStackNavigator() {
+  return (
+    <ProfileStack.Navigator>
+      <ProfileStack.Screen
+        name="Profile"
+        component={ProfileScreen}
+        options={{ headerShown: false }}
+      />
+      <ProfileStack.Screen
+        name="EditProfile"
+        component={EditProfileScreen}
+        options={{ title: "Edit Profile" }}
+      />
+    </ProfileStack.Navigator>
+  );
+}
 
 function FriendsStackNavigator() {
   return (
     <FriendsStack.Navigator>
-      <FriendsStack.Screen name="FriendsMain" component={FriendsScreen} options={{ headerShown: false }}/>
-      <FriendsStack.Screen name="FriendSchedule" component={FriendScheduleScreen} options={{ headerShown: false }}/>
-      <FriendsStack.Screen name="SearchResults" component={SearchResultsScreen} options={{ headerShown: false}}/>
+      <FriendsStack.Screen
+        name="FriendsMain"
+        component={FriendsScreen}
+        options={{ headerShown: false }}
+      />
+      <FriendsStack.Screen
+        name="FriendSchedule"
+        component={FriendScheduleScreen}
+        options={{ headerShown: false }}
+      />
+      <FriendsStack.Screen
+        name="SearchResults"
+        component={SearchResultsScreen}
+        options={{ headerShown: false }}
+      />
     </FriendsStack.Navigator>
   );
 }
@@ -104,7 +134,7 @@ function AuthenticatedStack() {
       />
       <Tab.Screen
         name="Profile"
-        component={ProfileScreen}
+        component={ProfileStackNavigator}
         options={{
           tabBarLabel: "Profile",
           tabBarIcon: ({ color, size }) => (

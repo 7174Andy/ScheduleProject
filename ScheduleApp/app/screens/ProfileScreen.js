@@ -1,14 +1,25 @@
 import {
-  SafeAreaView, View, Text, Image, Pressable, Modal, TextInput, Button, StyleSheet, ScrollView
-} from 'react-native';
+  SafeAreaView,
+  View,
+  Text,
+  Image,
+  Pressable,
+  Modal,
+  TextInput,
+  Button,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
 
 import colors from "../config/colors";
 import { useEffect } from "react";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { getUserData } from "../util/http";
-import axios from 'axios';
-const config = require('../config/.config.js');
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
+
+const config = require("../config/.config.js");
 
 const currentDate = new Date();
 const today = currentDate.getDay();
@@ -27,28 +38,29 @@ const Event = ({ name, color, top, height, professorName }) => (
 );
 
 export default function ProfileScreen() {
+  const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
   const [editData, setEditData] = useState({
-    firstName: '',
-    lastName: '',
-    nickname: '',
-    college: '',
+    firstName: "",
+    lastName: "",
+    nickname: "",
+    college: "",
     majors: [],
     minors: [],
-    classLvl: ''
+    classLvl: "",
   });
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userDataJson = await AsyncStorage.getItem('userData');
+        const userDataJson = await AsyncStorage.getItem("userData");
         if (userDataJson !== null) {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
         }
       } catch (error) {
-        console.error('Failed to load user data from storage', error);
+        console.error("Failed to load user data from storage", error);
       }
     };
 
@@ -64,7 +76,7 @@ export default function ProfileScreen() {
         college: user.college,
         majors: user.majors,
         minors: user.minors,
-        classLvl: user.classLvl
+        classLvl: user.classLvl,
       });
     }
     setModalVisible(true);
@@ -72,89 +84,39 @@ export default function ProfileScreen() {
 
   const handleSave = async () => {
     const updatedUser = { ...user, ...editData };
-    await AsyncStorage.setItem('userData', JSON.stringify(updatedUser));
+    await AsyncStorage.setItem("userData", JSON.stringify(updatedUser));
     setUser(updatedUser);
     setModalVisible(false);
-    const userId = await AsyncStorage.getItem("uid")
-    const res = await axios.put(`${config.BACKEND_URL}/db/${userId}.json`,updatedUser)
+    const userId = await AsyncStorage.getItem("uid");
+    const res = await axios.put(
+      `${config.BACKEND_URL}/db/${userId}.json`,
+      updatedUser
+    );
   };
 
   const handleChange = (name, value) => {
-    if (name === 'majors' || name === 'minors') {
-      value = value.split(',').map(v => v.trim());  // Assuming input is comma-separated
+    if (name === "majors" || name === "minors") {
+      value = value.split(",").map((v) => v.trim()); // Assuming input is comma-separated
     }
-    setEditData(prev => ({ ...prev, [name]: value }));
+    setEditData((prev) => ({ ...prev, [name]: value }));
   };
 
   return (
     <SafeAreaView style={styles.background}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('firstName', text)}
-              value={editData.firstName}
-              placeholder="First Name"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('lastName', text)}
-              value={editData.lastName}
-              placeholder="Last Name"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('nickname', text)}
-              value={editData.nickname}
-              placeholder="Nickname"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('college', text)}
-              value={editData.college}
-              placeholder="College"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('majors', text)}
-              value={editData.majors.join(', ')}
-              placeholder="Majors (comma separated)"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('minors', text)}
-              value={editData.minors.join(', ')}
-              placeholder="Minors (comma separated)"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('classLvl', text)}
-              value={editData.classLvl}
-              placeholder="Class Level"
-            />
-            <Button title="Save Changes" onPress={handleSave} />
-            <Button title="Cancel" onPress={() => setModalVisible(false)} />
-          </View>
-        </View>
-      </Modal>
       <View style={styles.profileContainer}>
         <Image
           style={styles.profileImage}
           source={require("../assets/user.png")}
         />
         <View style={{ alignItems: "flex-start", flexDirection: "column" }}>
-          <Text style={styles.profileName}>{user ? user.firstName + " " + user.lastName : " "}</Text>
+          <Text style={styles.profileName}>
+            {user ? user.firstName + " " + user.lastName : " "}
+          </Text>
           <Text style={styles.profileTag}>@{user ? user.nickname : " "}</Text>
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
               style={styles.myCalendarBtn}
-              onPress={openEditModal}
+              onPress={() => navigation.navigate("EditProfile")}
             >
               <Text
                 style={{ fontSize: 15, padding: 7, color: colors.textColor }}
@@ -170,7 +132,9 @@ export default function ProfileScreen() {
           <Text style={styles.hashtagText}># {user ? user.college : ""}</Text>
         </View>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}>{user ? user.majors.map(element => '# ' + element).join(' ') : ""}</Text>
+          <Text style={styles.hashtagText}>
+            {user ? user.majors.map((element) => "# " + element).join(" ") : ""}
+          </Text>
         </View>
       </View>
       <View style={styles.hashtagContainerSecond}>
@@ -178,7 +142,9 @@ export default function ProfileScreen() {
           <Text style={styles.hashtagText}># {user ? user.classLvl : ""}</Text>
         </View>
         <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}>{user ? user.minors.map(element => '# ' + element).join(' ') : ""}</Text>
+          <Text style={styles.hashtagText}>
+            {user ? user.minors.map((element) => "# " + element).join(" ") : ""}
+          </Text>
         </View>
       </View>
       <ScrollView
@@ -193,16 +159,19 @@ export default function ProfileScreen() {
             }`}</Text>
           </TimeSlot>
         ))}
-        {user ? user.hasOwnProperty(dayName) && user[dayName].map((event, index) => (
-          <Event
-            key={index}
-            name={event.course}
-            color={event.color}
-            top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
-            height={(event.endTime - event.startTime) * 60}
-            professorName = {event.professor}
-          />
-        )) : ""}
+        {user
+          ? user.hasOwnProperty(dayName) &&
+            user[dayName].map((event, index) => (
+              <Event
+                key={index}
+                name={event.course}
+                color={event.color}
+                top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
+                height={(event.endTime - event.startTime) * 60}
+                professorName={event.professor}
+              />
+            ))
+          : ""}
       </ScrollView>
     </SafeAreaView>
   );
@@ -216,7 +185,7 @@ const styles = StyleSheet.create({
   // },
   profileContainer: {
     padding: 20,
-    alignItems: 'center',
+    alignItems: "center",
   },
   profileImage: {
     width: 100,
@@ -225,22 +194,22 @@ const styles = StyleSheet.create({
   },
   profileName: {
     fontSize: 20,
-    fontWeight: 'bold',
+    fontWeight: "bold",
   },
   profileTag: {
-    color: 'grey',
+    color: "grey",
   },
   editButton: {
     marginTop: 10,
     padding: 10,
-    backgroundColor: 'lightgrey',
+    backgroundColor: "lightgrey",
     borderRadius: 5,
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
   },
   modalView: {
     margin: 20,
@@ -251,18 +220,18 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
+    elevation: 5,
   },
   input: {
-    width: '100%',
+    width: "100%",
     marginBottom: 10,
     padding: 10,
     borderWidth: 1,
-    borderColor: '#ccc',
+    borderColor: "#ccc",
     borderRadius: 5,
   },
   background: {

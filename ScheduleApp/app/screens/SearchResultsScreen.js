@@ -82,7 +82,13 @@ export default function SearchResultsScreen({ route }) {
               {user.firstName} {user.lastName}
             </Text>
           </View>
-          <Button title="Add" onPress={() => handleButtonClick(user)} />
+
+          <Button 
+            title="Add" 
+            onPress={() => handleButtonClick(user)} 
+            color="darkgray"
+
+            />
         </View>
       </>
     );
