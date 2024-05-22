@@ -16,15 +16,14 @@ import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { getUserData } from "../util/http";
-import axios from "axios";
-import { useNavigation } from "@react-navigation/native";
-
-const config = require("../config/.config.js");
+import axios from 'axios';
+const config = require('../config/.config.js');
 
 const currentDate = new Date();
 const today = currentDate.getDay();
 const dayOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const dayName = dayOfWeek[today];
+const storage = getStorage(app);
 
 const TimeSlot = ({ children, style }) => (
   <View style={[styles.timeSlot, style]}>{children}</View>
@@ -41,6 +40,7 @@ export default function ProfileScreen() {
   const navigation = useNavigation();
   const [user, setUser] = useState(null);
   const [isModalVisible, setModalVisible] = useState(false);
+  const [isPicModalVisible, setPicModalVisible] = useState(false);
   const [editData, setEditData] = useState({
     firstName: "",
     lastName: "",
@@ -48,7 +48,7 @@ export default function ProfileScreen() {
     college: "",
     majors: [],
     minors: [],
-    classLvl: "",
+    classLvl: ''
   });
 
   useEffect(() => {
@@ -59,6 +59,8 @@ export default function ProfileScreen() {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
         }
+        const profilePicUri = await AsyncStorage.getItem('profileUri');
+        setProfileImage(profilePicUri);
       } catch (error) {
         console.error("Failed to load user data from storage", error);
       }
@@ -103,11 +105,74 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.background}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={isModalVisible}
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View style={styles.centeredView}>
+          <View style={styles.modalView}>
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('firstName', text)}
+              value={editData.firstName}
+              placeholder="First Name"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('lastName', text)}
+              value={editData.lastName}
+              placeholder="Last Name"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('nickname', text)}
+              value={editData.nickname}
+              placeholder="Nickname"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('college', text)}
+              value={editData.college}
+              placeholder="College"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('majors', text)}
+              value={editData.majors.join(', ')}
+              placeholder="Majors (comma separated)"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('minors', text)}
+              value={editData.minors.join(', ')}
+              placeholder="Minors (comma separated)"
+            />
+            <TextInput
+              style={styles.input}
+              onChangeText={(text) => handleChange('classLvl', text)}
+              value={editData.classLvl}
+              placeholder="Class Level"
+            />
+            <Button title="Save Changes" onPress={handleSave} />
+            <Button title="Cancel" onPress={() => setModalVisible(false)} />
+          </View>
+        </View>
+      </Modal>
       <View style={styles.profileContainer}>
-        <Image
-          style={styles.profileImage}
-          source={require("../assets/user.png")}
-        />
+        <View style={styles.imageContainer}>
+          <Image
+            style={[styles.profileImage, { borderRadius: styles.profileImage.width / 2 }]}
+            source={profileImage ? { uri: profileImage } : placeholder}
+          />
+          <Pressable
+            style={styles.uploadButton}
+            onPress={() => setPicModalVisible(true)}
+          >
+            <FontAwesome name="camera" size={20} color="white" />
+          </Pressable>
+        </View>
         <View style={{ alignItems: "flex-start", flexDirection: "column" }}>
           <Text style={styles.profileName}>
             {user ? user.firstName + " " + user.lastName : " "}
@@ -324,5 +389,40 @@ const styles = StyleSheet.create({
   },
   eventText: {
     color: "white",
+  },
+  uploadButton: {
+    position: 'absolute',
+    bottom: 0,
+    right: 10,
+    backgroundColor: colors.tagColor,
+    borderRadius: 50,
+    padding: 6,
+  },
+  imageContainer: {
+    position: 'relative',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalContent: {
+    backgroundColor: 'white',
+    padding: 20,
+    borderRadius: 10,
+  },
+  buttonsContainer: {
+    flexDirection: 'row', // Align buttons horizontally
+    justifyContent: 'center', // Center buttons horizontally
+    marginTop: 10,
+  },
+  modalButton: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: 'lightgray',
+    padding: 10,
+    borderRadius: 5,
+    marginHorizontal: 5, // Add some horizontal margin between buttons
   },
 });
