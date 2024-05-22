@@ -31,7 +31,7 @@ function ProfileStackNavigator() {
   return (
     <ProfileStack.Navigator>
       <ProfileStack.Screen
-        name="Profile"
+        name="ProfileMain"
         component={ProfileScreen}
         options={{ headerShown: false }}
       />

@@ -17,11 +17,15 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { getUserData } from "../util/http";
 import axios from 'axios';
+import * as ImagePicker from 'expo-image-picker';
 import { FontAwesome } from '@expo/vector-icons';
 import placeholder from '../assets/user.png';
-import { getStorage } from 'firebase/storage';
 import { app } from "../config/firebaseConfig";
 import { useNavigation } from '@react-navigation/native';
+import { launchImageLibraryAsync } from 'expo-image-picker';
+import { getStorage, ref, uploadBytes, deleteObject } from "firebase/storage";
+import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+
 const config = require('../config/.config.js');
 
 const currentDate = new Date();
@@ -57,10 +61,85 @@ export default function ProfileScreen() {
   });
   const [profileImage, setProfileImage] = useState();
 
+  const uploadImage = async (mode) => {
+    try{
+      let result = {};
+
+      if (mode === 'gallery') {
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+        result = await ImagePicker.launchImageLibraryAsync({
+          mediaTypes: ImagePicker.MediaTypeOptions.Images,
+          allowsEditing: true,
+          aspect: [1, 1],
+          quality: 1,
+        });
+      } else {
+        // https://stackoverflow.com/questions/25486080/how-to-access-ios-simulator-camera
+        // Can't simulate using a camera
+        await ImagePicker.requestCameraPermissionsAsync();
+        result = await ImagePicker.launchCameraAsync({
+          // cameraType: ImagePicker.cameraType.front,
+          allowsEditing: true,
+          aspect: [1,1],
+          quality: 1,
+        });
+      }
+
+      if (!result.canceled) {
+        await saveImage(result.assets[0].uri)
+      }
+    } catch (error) {
+      console.error(error);
+      setPicModalVisible(false);
+    }
+  };
+
+  const saveImage = async (image) => {
+    try {
+      setProfileImage(image);
+      
+      const compressedImage = await manipulateAsync(
+        image,
+        [],
+        { compress: 0.1, format: SaveFormat.JPEG } // Compress the image and set the format to JPEG
+      );
+
+      const response = await fetch(compressedImage.uri);
+      const blob = await response.blob();
+
+      const userUid = await AsyncStorage.getItem('uid');
+      const storageRef = ref(storage, userUid);
+
+      uploadBytes(storageRef, blob).then((snapshot) => {
+        console.log('Upload successful');
+      }).catch((error) => {
+        console.error('Error uploading:', error);
+      });
+
+      
+      setPicModalVisible(false);
+
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  const deleteImage = async () => {
+    setProfileImage(null);
+    const userId = await AsyncStorage.getItem('uid');
+    const storageRef = ref(storage, userId);
+    deleteObject(storageRef).then(() => {
+      console.log('delete');
+    }).catch((error) => {
+      console.log(error);
+    })
+    setPicModalVisible(false);
+  }
+
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userDataJson = await AsyncStorage.getItem("userData");
+        const userDataJson = await AsyncStorage.getItem('userData');
         if (userDataJson !== null) {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
@@ -68,7 +147,7 @@ export default function ProfileScreen() {
         const profilePicUri = await AsyncStorage.getItem('profileUri');
         setProfileImage(profilePicUri);
       } catch (error) {
-        console.error("Failed to load user data from storage", error);
+        console.error('Failed to load user data from storage', error);
       }
     };
 
@@ -166,6 +245,46 @@ export default function ProfileScreen() {
           </View>
         </View>
       </Modal>
+
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={isPicModalVisible}
+        onRequestClose={() => setPicModalVisible(false)}>
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <View style={styles.buttonsContainer}>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={() => uploadImage('gallery')}
+                >
+                  <FontAwesome name="image" size={24} color="black" />
+                </Pressable>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={() => uploadImage('camera')}
+                >
+                  <FontAwesome name="camera" size={24} color="black" />
+                </Pressable>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={() => {
+                    deleteImage()
+                  }}
+                >
+                  <FontAwesome name="trash" size={24} color="black" />
+                </Pressable>
+                <Pressable
+                  style={styles.modalButton}
+                  onPress={() => setPicModalVisible(false)}
+                >
+                  <FontAwesome name="times" size={24} color="black" />
+                </Pressable>
+              </View>
+          </View>
+        </View>
+      </Modal>
+
       <View style={styles.profileContainer}>
         <View style={styles.imageContainer}>
           <Image
