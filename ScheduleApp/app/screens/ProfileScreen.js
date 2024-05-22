@@ -17,6 +17,11 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { getUserData } from "../util/http";
 import axios from 'axios';
+import { FontAwesome } from '@expo/vector-icons';
+import placeholder from '../assets/user.png';
+import { getStorage } from 'firebase/storage';
+import { app } from "../config/firebaseConfig";
+import { useNavigation } from '@react-navigation/native';
 const config = require('../config/.config.js');
 
 const currentDate = new Date();
@@ -50,6 +55,7 @@ export default function ProfileScreen() {
     minors: [],
     classLvl: ''
   });
+  const [profileImage, setProfileImage] = useState();
 
   useEffect(() => {
     const fetchUserData = async () => {
