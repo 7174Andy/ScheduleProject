@@ -21,10 +21,7 @@ function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
     fetchUserData();
   }, [friend.uid]);
 
-  function onPressFunction() {
-    handleUnfollow(friend);
   
-  }
 
   return (
     <View style={styles.friendListContainer}>
@@ -42,13 +39,13 @@ function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
           </View>
 
           <Pressable style={styles.unfollowBtn} onPress={() => handleUnfollow(friend)}>
-            <IconButton icon="person-remove-outline" color="white" size={20} />
+            <IconButton icon="person-remove-outline" color="white" size={20} onPress={() => handleUnfollow(friend)}/>
           </Pressable>
           <Pressable
             style={styles.viewScheduleBtn}
             onPress={handleViewSchedule}
           >
-            <IconButton icon="calendar" color="white" size={20} />
+            <IconButton icon="calendar" color="white" size={20} onPress={handleViewSchedule}/>
           </Pressable>
         </View>
       </View>

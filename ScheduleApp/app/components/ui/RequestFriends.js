@@ -38,13 +38,13 @@ function FriendList({ friend, Add, Reject }) {
           </View>
 
           <Pressable style={styles.unfollowBtn} onPress={() => Add(friend)}>
-            <IconButton icon='checkmark' color='white' size={20}/>
+            <IconButton icon='checkmark' color='white' size={20} onPress={() => Add(friend)}/>
           </Pressable>
           <Pressable
             style={styles.viewScheduleBtn}
             onPress={() => Reject(friend)}
           >
-            <IconButton icon='close' color='white' size={20}/>
+            <IconButton icon='close' color='white' size={20} onPress={() => Reject(friend)}/>
           </Pressable>
         </View>
       </View>

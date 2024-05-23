@@ -107,7 +107,7 @@ export default function SearchResultsScreen({ route }) {
           </View>
           <Pressable>
             <IconButton icon={user.state === 'Friend' ? 'people-outline' : user.state === 'Requested' ? 'push-outline' : user.state === 'Received' ? 'download-outline' : 'add-circle-outline'} 
-              onPress={() => handleButtonClick(user)} color='darkgray' size={20}/>
+              onPress={() => handleButtonClick(user)} color='white' size={20}/>
           </Pressable>
         </View>
     );
