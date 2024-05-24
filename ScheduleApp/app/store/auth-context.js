@@ -15,12 +15,17 @@ function AuthContextProvider({ children }) {
     setAuthToken(token);
     AsyncStorage.setItem('token', token);
     AsyncStorage.setItem('uid', uid);
+    
   }
+  
+
 
   function logout() {
     setAuthToken(null);
     AsyncStorage.removeItem('token');
     AsyncStorage.removeItem('uid');
+    AsyncStorage.removeItem('userData');
+    AsyncStorage.removeItem('profileUri');
   }
 
   const value = {

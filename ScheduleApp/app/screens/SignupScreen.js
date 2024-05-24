@@ -5,6 +5,8 @@ import LoadingOverlay from '../components/ui/LoadingOverlay';
 import { Alert } from 'react-native';
 import { AuthContext } from '../store/auth-context';
 import { addUser } from '../util/http';
+import { getUserData } from '../util/http';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 function SignupScreen() {
   const [isAuthenticating, setIsAuthenticating] = useState(false);
@@ -17,6 +19,8 @@ function SignupScreen() {
         const {token, userId} = await createUser(email, password);
         authCtx.authenticate(token, userId);
         await addUser(userId);  // TODO createUser and addUser should be atomic
+        const data = await getUserData(userId);
+        AsyncStorage.setItem('userData', JSON.stringify(data));
     } catch (error) {
         Alert.alert(
             'Authentication failed',
