@@ -1,9 +1,12 @@
 export default {
-  backgroundColor: "#292929",
-  textColor: "#fff",
+  backgroundColor: "#B3C8CF",
+  profileBackgroundColor: "#FFFFFFF",
+  textColor: "#797D7F",
   black: "#000",
   tagColor: "#9C9898",
   marginToProfile: 20,
-  hashtag: "#4F4F4F",
+  hashtag: "#979A9A",
+  hashtagText: "#FFFFFF",
   greyBtn: "#B6B6B6",
+  greyBtnText: "#FFFFFF",
 };

@@ -214,9 +214,9 @@ const styles = StyleSheet.create({
     padding: 10,
     marginVertical: 5,
     borderBottomWidth: 1.5,
-    borderColor: "lightgray",
+    borderColor: "white",
     flexDirection: "row",
-    shadowColor: "#000",
+    shadowColor: "#797D7F",
     shadowOffset: {
       width: 0,
       height: 2,
@@ -247,7 +247,7 @@ const styles = StyleSheet.create({
   },
 
   userFullName: {
-    color: "lightgray",
+    color: "#E5E7E9",
     paddingTop: 1,
   },
 });

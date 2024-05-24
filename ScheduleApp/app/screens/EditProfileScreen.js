@@ -1,12 +1,10 @@
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from 'axios';
-import { useNavigation } from '@react-navigation/native';
+import axios from "axios";
+import { useNavigation } from "@react-navigation/native";
 
-const config = require('../config/.config.js');
-
-
+const config = require("../config/.config.js");
 
 function EditProfileScreen() {
   const [firstName, setFirstName] = useState("");
@@ -29,14 +27,13 @@ function EditProfileScreen() {
       `${config.BACKEND_URL}/db/${userId}.json`,
       user
     );
-    navigation.navigate("ProfileMain")
+    navigation.navigate("ProfileMain");
   };
-
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userDataJson = await AsyncStorage.getItem('userData');
+        const userDataJson = await AsyncStorage.getItem("userData");
         if (userDataJson !== null) {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
@@ -45,7 +42,7 @@ function EditProfileScreen() {
           setNickname(userData.nickname);
         }
       } catch (error) {
-        console.error('Failed to load user data from storage', error);
+        console.error("Failed to load user data from storage", error);
       }
     };
 
@@ -89,30 +86,32 @@ function EditProfileScreen() {
 export default EditProfileScreen;
 
 const styles = StyleSheet.create({
-    rootContainer: {
-        flex: 1,
-        padding: 32,
-    },
-    title: {
-        fontSize: 20,
-        fontWeight: "bold",
-        marginBottom: 16,
-    },
-    input: {
-        height: 40,
-        borderColor: "gray",
-        borderWidth: 1,
-        marginBottom: 16,
-        padding: 8,
-    },
-    saveButton: {
-        backgroundColor: "blue",
-        padding: 16,
-        borderRadius: 8,
-        alignItems: "center",
-    },
-    saveButtonText: {
-        color: "white",
-        fontWeight: "bold",
-    },
-})
+  rootContainer: {
+    flex: 1,
+    padding: 32,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: "bold",
+    marginBottom: 16,
+    color: "black",
+  },
+  input: {
+    height: 40,
+    backgroundColor: "white",
+    marginBottom: 16,
+    padding: 8,
+    color: "7B7D7D",
+    borderRadius: 8,
+  },
+  saveButton: {
+    backgroundColor: "#B3C8CF",
+    padding: 16,
+    borderRadius: 8,
+    alignItems: "center",
+  },
+  saveButtonText: {
+    color: "white",
+    fontWeight: "bold",
+  },
+});

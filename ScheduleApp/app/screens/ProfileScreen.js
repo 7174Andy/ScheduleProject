@@ -189,7 +189,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.background}>
+    <SafeAreaView style={styles.ProfileBackground}>
       <Modal
         animationType="slide"
         transparent={true}
@@ -309,7 +309,7 @@ export default function ProfileScreen() {
               onPress={() => navigation.navigate("EditProfile")}
             >
               <Text
-                style={{ fontSize: 15, padding: 7, color: colors.textColor }}
+                style={{ fontSize: 15, padding: 7, color: colors.greyBtnText }}
               >
                 Edit
               </Text>
@@ -392,7 +392,7 @@ const styles = StyleSheet.create({
   editButton: {
     marginTop: 10,
     padding: 10,
-    backgroundColor: "lightgrey",
+    backgroundColor: colors.greyBtn,
     borderRadius: 5,
   },
   centeredView: {
@@ -450,7 +450,7 @@ const styles = StyleSheet.create({
     marginLeft: 10,
   },
   hashtagText: {
-    color: colors.textColor,
+    color: colors.hashtagText,
     fontSize: 15,
   },
   myCalendarBtn: {
