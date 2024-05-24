@@ -1,15 +1,56 @@
 import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import axios from 'axios';
+import { useNavigation } from '@react-navigation/native';
+
+const config = require('../config/.config.js');
+
+
 
 function EditProfileScreen() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [nickname, setNickname] = useState("");
   const [hashtag, setHashtag] = useState("");
+  const [user, setUser] = useState(null);
+  const navigation = useNavigation();
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Save the user's profile information
+    user.firstName = firstName;
+    user.lastName = lastName;
+    user.nickname = nickname;
+
+    await AsyncStorage.setItem("userData", JSON.stringify(user));
+    setUser(user);
+    const userId = await AsyncStorage.getItem("uid");
+    const res = await axios.put(
+      `${config.BACKEND_URL}/db/${userId}.json`,
+      user
+    );
+    navigation.navigate("ProfileMain")
   };
+
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDataJson = await AsyncStorage.getItem('userData');
+        if (userDataJson !== null) {
+          const userData = JSON.parse(userDataJson);
+          setUser(userData);
+          setFirstName(userData.firstName);
+          setLastName(userData.lastName);
+          setNickname(userData.nickname);
+        }
+      } catch (error) {
+        console.error('Failed to load user data from storage', error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <View style={styles.rootContainer}>

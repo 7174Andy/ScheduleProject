@@ -152,7 +152,7 @@ export default function ProfileScreen() {
     };
 
     fetchUserData();
-  }, []);
+  }, [user]);
 
   const openEditModal = () => {
     if (user) {
