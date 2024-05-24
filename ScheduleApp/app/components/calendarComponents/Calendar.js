@@ -9,6 +9,9 @@ import React, { useState, useRef } from "react";
 import Swiper from "react-native-swiper";
 import moment from "moment";
 
+import TimeSlot from "./TimeSlot";
+import Event from "./Event";
+
 function Calendar({ weeklyEvents }) {
   // States
   const [selectedDate, setSelectedDate] = useState(new Date());
@@ -18,17 +21,6 @@ function Calendar({ weeklyEvents }) {
   // Refs
   const swiper = React.useRef();
   const scrollViewRef = useRef(null);
-
-  // Components
-  const TimeSlot = ({ children, style }) => (
-    <View style={[styles.timeSlot, style]}>{children}</View>
-  );
-
-  const Event = ({ name, color, top, height }) => (
-    <View style={[styles.event, { backgroundColor: color, top, height }]}>
-      <Text style={styles.eventText}>{name}</Text>
-    </View>
-  );
 
   // Helper Functions
   const handleSelectDate = (date) => {
@@ -198,32 +190,8 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   eventsContainer: {
-    borderWidth: 4,
-    borderColor: "white",
-    borderRadius: 10,
     paddingHorizontal: 10,
     flex: 1,
-    borderStyle: "dashed",
-  },
-  timeSlot: {
-    height: 60, // Each slot is 60 pixels high
-    justifyContent: "center",
-    paddingLeft: 5,
-    borderBottomWidth: 1,
-    borderBottomColor: "white",
-  },
-  event: {
-    position: "absolute",
-    left: "15%",
-    width: "85%",
-    justifyContent: "center",
-    alignItems: "center",
-    borderRadius: 10,
-    padding: 5,
-  },
-  eventText: {
-    color: "white",
-    fontSize: 17,
   },
   contentContainer: {
     paddingBottom: 20,

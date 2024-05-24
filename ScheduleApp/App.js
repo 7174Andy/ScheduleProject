@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState, useCallback } from "react";
 import { StatusBar } from "expo-status-bar";
-import { SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
@@ -15,6 +15,7 @@ import FriendScheduleScreen from "./app/screens/FriendScheduleScreen";
 import SearchResultsScreen from "./app/screens/SearchResultsScreen";
 import LoginScreen from "./app/screens/LoginScreen";
 import SignupScreen from "./app/screens/SignupScreen";
+import ManageScheduleScreen from "./app/screens/ManageScheduleScreen";
 import EditProfileScreen from "./app/screens/EditProfileScreen";
 
 import { Colors } from "./app/constants/styles";
@@ -22,6 +23,7 @@ import colors from './app/config/colors';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthContextProvider, { AuthContext } from "./app/store/auth-context";
 import IconButton from "./app/components/ui/IconButton";
+import Button from "./app/components/ui/Button";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -82,7 +84,7 @@ function AuthStack() {
   );
 }
 
-function AuthenticatedStack() {
+function ScheduleOverview() {
   const authCtx = useContext(AuthContext);
 
   return (
@@ -96,20 +98,28 @@ function AuthenticatedStack() {
       <Tab.Screen
         name="Home"
         component={Schedule}
-        options={{
+        options={({ navigation }) => ({
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
             <MaterialCommunityIcons name="home" color={color} size={size} />
           ),
           headerRight: ({ tintColor }) => (
-            <IconButton
-              icon="exit"
-              color={tintColor}
-              size={24}
-              onPress={authCtx.logout}
-            ></IconButton>
+            <View style={{ flexDirection: "row" }}>
+              <IconButton
+                icon="exit"
+                color={tintColor}
+                size={28}
+                onPress={authCtx.logout}
+              />
+              <IconButton
+                icon="add"
+                color={tintColor}
+                size={28}
+                onPress={() => navigation.navigate("ManageSchedule")}
+              />
+            </View>
           ),
-        }}
+        })}
       />
       <Tab.Screen
         name="Friends"
@@ -152,6 +162,25 @@ function AuthenticatedStack() {
         }}
       />
     </Tab.Navigator>
+  );
+}
+
+function AuthenticatedStack() {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen
+        name="ScheduleOverview"
+        component={ScheduleOverview}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="ManageSchedule"
+        component={ManageScheduleScreen}
+        options={{
+          presentation: "modal",
+        }}
+      />
+    </Stack.Navigator>
   );
 }
 
