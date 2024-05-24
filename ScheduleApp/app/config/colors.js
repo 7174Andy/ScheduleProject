@@ -1,5 +1,6 @@
 export default {
-  backgroundColor: "#292929",
+  backgroundColor: "#B3C8CF",
+  headerBackgroundColor: "#B3C8CF",
   textColor: "#fff",
   black: "#000",
   tagColor: "#9C9898",
