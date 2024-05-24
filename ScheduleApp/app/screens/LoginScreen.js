@@ -4,6 +4,7 @@ import LoadingOverlay from '../components/ui/LoadingOverlay';
 import { login } from '../util/auth';
 import { Alert } from 'react-native';
 import { AuthContext } from '../store/auth-context';
+import { Text } from 'react-native';
 import { getUserData } from '../util/http';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { app } from "../config/firebaseConfig";
@@ -40,7 +41,7 @@ function LoginScreen() {
     } catch (error) {
         console.log(error)
         Alert.alert('Authentication failed!',
-            'Could not log you in. Please check your credentials or try later!'
+          <Text>Could not log you in. Please check your credentials or try later!</Text>
         );
         setIsAuthenticating(false);
     }
@@ -50,7 +51,7 @@ function LoginScreen() {
     return <LoadingOverlay message="Logging you in..."/>
   }
   
-  return <AuthContent isLogin onAuthenticate={loginHandler}/>;
+  return <AuthContent isLogin onAuthenticate={loginHandler}/>
 }
 
 export default LoginScreen;

@@ -18,6 +18,7 @@ import SignupScreen from "./app/screens/SignupScreen";
 import EditProfileScreen from "./app/screens/EditProfileScreen";
 
 import { Colors } from "./app/constants/styles";
+import colors from './app/config/colors';
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthContextProvider, { AuthContext } from "./app/store/auth-context";
 import IconButton from "./app/components/ui/IconButton";
@@ -70,9 +71,9 @@ function AuthStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: Colors.primary500 },
-        headerTintColor: "white",
-        contentStyle: { backgroundColor: Colors.primary100 },
+        headerStyle: { backgroundColor: colors.headerBackgroundColor},
+        headerTintColor: "black",
+        contentStyle: { backgroundColor: colors.backgroundColor },
       }}
     >
       <Stack.Screen name="Login" component={LoginScreen} />
@@ -208,7 +209,7 @@ function Root() {
 export default function App() {
   return (
     <>
-      <StatusBar style="light" />
+      <StatusBar style="gray" />
       <AuthContextProvider>
         <Root />
       </AuthContextProvider>
