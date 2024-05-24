@@ -34,6 +34,12 @@ function EditProfileScreen() {
         setnewHashtag(false);
     }
 
+    const handleHashtagChange = (text) => {
+        const MAX_LENGTH = 15;
+        if (text.length <= MAX_LENGTH) {
+          setTemporaryHashtag(text);
+        }
+      };
 
     return (
         <SafeAreaView style={styles.background}>
@@ -52,15 +58,9 @@ function EditProfileScreen() {
                         style={styles.saveBtn}> 
                         <Text style={{fontSize: 13, color: 'white',marginHorizontal: 5, }}>Save </Text>
                         </Pressable>
-    
-                        <Pressable 
-                        style={styles.saveBtn}> 
-                        <Text style={{fontSize: 13, color: 'white', paddingHorizontal: 7, }}>Edit </Text>
-                        </Pressable>
 
                     </View>
                 </View>
-
             </View>
 
 
@@ -113,7 +113,7 @@ function EditProfileScreen() {
                                     style={styles.hashtagText}
                                     placeholder="Enter Hashtag"
                                     placeholderTextColor="grey"
-                                    onChangeText={setTemporaryHashtag}/>
+                                    onChangeText={handleHashtagChange}/>
                                 <IconButton icon="add" color="white" size={20} onPress={addNewHashtag}/>
                             </View>
                             }
@@ -145,6 +145,7 @@ const styles = StyleSheet.create({
         fontSize: 18,
         margin: 7,
     },
+
     inputText: {
       color: 'white',
       fontSize: 16,
@@ -152,6 +153,7 @@ const styles = StyleSheet.create({
       marginBottom: 14,
       marginTop: 16,
     },
+
     hashtagContainer: {
         flex: 0,
         flexDirection: "column",
@@ -173,6 +175,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         flexDirection: "row",
     },
+
     hashtagText: {
         color: 'white',
         fontSize: 16,
@@ -213,12 +216,10 @@ const styles = StyleSheet.create({
     
     btnContainer:{
         flexDirection: "row",
-        justifyContent: "center",
         alignItems: "center",
         margin: 5,
         marginTop: 10,
     },
-
 
     saveBtn:{
         backgroundColor: "gray",
