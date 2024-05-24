@@ -18,8 +18,45 @@ function ManageScheduleScreen({ navigation }) {
   const [endShow, setEndShow] = useState(false);
   const [startTime, setStartTime] = useState(new Date());
   const [endTime, setEndTime] = useState(new Date());
-  const [twentyfourHour, setTwentyfourHour] = useState(true);
+  const [twentyfourHour, setTwentyfourHour] = useState(true); // TODO: Later implementation: add options for 24 representation
   const [enrollmentStatus, setEnrollmentStatus] = useState(null);
+  const [selectedDay, setSelectedDay] = useState(null);
+
+  const placeholderDay = {
+    label: "Select Day...",
+    value: null,
+  };
+
+  const dayOptions = [
+    {
+      label: "Monday",
+      value: "Mon",
+    },
+    {
+      label: "Tuesday",
+      value: "Tue",
+    },
+    {
+      label: "Wednesday",
+      value: "Wed",
+    },
+    {
+      label: "Thursday",
+      value: "Thu",
+    },
+    {
+      label: "Friday",
+      value: "Fri",
+    },
+    {
+      label: "Saturday",
+      value: "Sat",
+    },
+    {
+      label: "Sunday",
+      value: "Sun",
+    },
+  ];
 
   const placeholder = {
     label: "Enrollment Status...",
@@ -59,6 +96,10 @@ function ManageScheduleScreen({ navigation }) {
     setEndShow(!endShow);
   };
 
+  const handleSubmit = () => {
+    console.log("Submit");
+  };
+
   return (
     <View style={styles.container}>
       <View>
@@ -90,9 +131,41 @@ function ManageScheduleScreen({ navigation }) {
           twentyfourHour={twentyfourHour}
         />
       </View>
+      <View style={styles.endTimeContainer}>
+        <Text style={styles.timeLabel}>Day: </Text>
+        <RNPickerSelect
+          onValueChange={(value) => setSelectedDay(value)}
+          items={dayOptions}
+          placeholder={placeholderDay}
+          style={{
+            inputIOS: {
+              fontSize: 18,
+              paddingVertical: 10,
+              paddingHorizontal: 17,
+              borderWidth: 1,
+              borderColor: "black",
+              borderRadius: 7,
+              color: "black",
+              marginVertical: 10,
+              backgroundColor: "white",
+            },
+            inputAndroid: {
+              fontSize: 18,
+              paddingVertical: 10,
+              paddingHorizontal: 17,
+              borderWidth: 1,
+              borderColor: "black",
+              borderRadius: 7,
+              color: "black",
+              paddingRight: 30,
+            },
+          }}
+        />
+      </View>
       <View style={styles.timeTextContainer}>
         <Text style={styles.timeText}>
           {moment(startTime).format("H:mm")} - {moment(endTime).format("H:mm")}{" "}
+          {selectedDay}
         </Text>
       </View>
       <View style={styles.textInputContainer}>
@@ -131,7 +204,10 @@ function ManageScheduleScreen({ navigation }) {
           }}
         />
       </View>
-      <Pressable style={[styles.pressableBtn, styles.saveBtn]}>
+      <Pressable
+        style={[styles.pressableBtn, styles.saveBtn]}
+        onPress={handleSubmit}
+      >
         <Text style={styles.btnLabel}>Save</Text>
       </Pressable>
       <Pressable
@@ -179,6 +255,13 @@ const styles = StyleSheet.create({
   showBtn: {
     padding: 10,
     paddingHorizontal: 25,
+    borderRadius: 7,
+    backgroundColor: "white",
+    borderWidth: 1,
+  },
+  showDayBtn: {
+    padding: 10,
+    paddingHorizontal: 15,
     borderRadius: 7,
     backgroundColor: "white",
     borderWidth: 1,
