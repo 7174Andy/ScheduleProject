@@ -1,14 +1,35 @@
 import { StyleSheet, Text, View, Image, Pressable } from "react-native";
 import colors from "../../config/colors";
+import { getUserProfilePic } from "../../util/http";
+import React, { useState, useEffect } from "react";
+import IconButton from "./IconButton";
+
 
 function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
+  const [userData, setUserData] = useState(null);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const data = await getUserProfilePic(friend.uid);
+        setUserData(data);
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchUserData();
+  }, [friend.uid]);
+
+  
+
   return (
     <View style={styles.friendListContainer}>
       <View style={styles.friendListInfo}>
         <View style={styles.friendsUserContainer}>
           <Image
-            style={styles.userImage}
-            source={require("../../assets/user.png")}
+            style={[styles.userImage, { borderRadius: styles.userImage.width / 2 }]}
+            source={userData ? { uri: userData } : require("../../assets/user.png")}
           />
           <View style={styles.userNameID}>
             <Text style={styles.userName}>
@@ -17,30 +38,14 @@ function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
             <Text style={styles.userTag}>{"@" + friend.nickname}</Text>
           </View>
 
-          <Pressable style={styles.unfollowBtn} onPress={handleUnfollow}>
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.textColor,
-                paddingHorizontal: 5,
-              }}
-            >
-              Unfollow
-            </Text>
+          <Pressable style={styles.unfollowBtn} onPress={() => handleUnfollow(friend)}>
+            <IconButton icon="person-remove-outline" color="white" size={20} onPress={() => handleUnfollow(friend)}/>
           </Pressable>
           <Pressable
             style={styles.viewScheduleBtn}
             onPress={handleViewSchedule}
           >
-            <Text
-              style={{
-                fontSize: 12,
-                color: colors.textColor,
-                paddingHorizontal: 5,
-              }}
-            >
-              Schedule
-            </Text>
+            <IconButton icon="calendar" color="white" size={20} onPress={handleViewSchedule}/>
           </Pressable>
         </View>
       </View>
@@ -79,7 +84,7 @@ const styles = StyleSheet.create({
 
   userName: {
     color: "#6B6B6B",
-    fontSize: 18,
+    fontSize: 15,
     fontWeight: "bold",
   },
 
@@ -95,7 +100,7 @@ const styles = StyleSheet.create({
   unfollowBtn: {
     borderRadius: 15,
     backgroundColor: colors.greyBtn,
-    padding: 7,
+    padding: 0,
     justifyContent: "center",
     marginLeft: "15%",
   },
@@ -103,7 +108,7 @@ const styles = StyleSheet.create({
   viewScheduleBtn: {
     borderRadius: 15,
     backgroundColor: colors.greyBtn,
-    padding: 7,
+    padding: 0,
     justifyContent: "center",
     marginHorizontal: 10,
   },
