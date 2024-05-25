@@ -306,7 +306,9 @@ export default function ProfileScreen() {
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
               style={styles.myCalendarBtn}
-              onPress={() => navigation.navigate("EditProfile")}
+              onPress={() => navigation.navigate("EditProfile", {
+                profileImage: profileImage,
+              })}
             >
               <Text
                 style={{ fontSize: 15, padding: 7, color: colors.textColor }}

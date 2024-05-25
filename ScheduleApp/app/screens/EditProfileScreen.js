@@ -4,20 +4,27 @@ import {
     Text,
     View,
     Image,
-    Button,
     Pressable,
-    ScrollView,
     TextInput,
   } from "react-native";
-  import colors from "../config/colors";
-  import IconButton from "../components/ui/IconButton";
-  import { useState } from "react";
+import colors from "../config/colors";
+import IconButton from "../components/ui/IconButton";
+import { useEffect, useState } from "react";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import placeholder from '../assets/user.png';
+import axios from 'axios';
+const config = require('../config/.config.js');
+import { useNavigation } from '@react-navigation/native';
 
 
-function EditProfileScreen() {
-
-
+function EditProfileScreen({ route }) {
+    const navigation = useNavigation();
     const [newHashtag, setnewHashtag] = useState(false);
+    const [firstName, setFirstName] = useState("");
+    const { profileImage } = route.params;
+    const [user, setUser] = useState(null);
+    const [lastName, setLastName] = useState("");
+    const [nickname, setNickname] = useState("");
 
     const addHashtag = () => {
         setnewHashtag(true);
@@ -40,42 +47,77 @@ function EditProfileScreen() {
           setTemporaryHashtag(text);
         }
       };
+    
+    const handleSave = async () => {
+      // Save the user's profile information
+      user.firstName = firstName;
+      user.lastName = lastName;
+      user.nickname = nickname;
+  
+      await AsyncStorage.setItem("userData", JSON.stringify(user));
+      setUser(user);
+      const userId = await AsyncStorage.getItem("uid");
+      const res = await axios.put(
+        `${config.BACKEND_URL}/db/${userId}.json`,
+        user
+      );
+      navigation.navigate("ProfileMain")
+    };
+
+    useEffect(() => {
+      const fetchUserData = async () => {
+        try {
+          const userDataJson = await AsyncStorage.getItem('userData');
+          if (userDataJson !== null) {
+            const userData = JSON.parse(userDataJson);
+            setUser(userData);
+            setFirstName(userData.firstName);
+            setLastName(userData.lastName);
+            setNickname(userData.nickname);
+          }
+        } catch (error) {
+          console.error('Failed to load user data from storage', error);
+        }
+      };
+
+      fetchUserData();
+    }, []);
 
     return (
         <SafeAreaView style={styles.background}>
+          <View style={styles.profileContainer}>
             <View style={styles.topContainer}>
-                <Image 
-                style={styles.profileImage}
-                source={require("../assets/user.png")}>
-                </Image>
+                <Image
+                style={[styles.profileImage, { borderRadius: styles.profileImage.width / 2 }]}
+                source={profileImage ? { uri: profileImage } : placeholder}
+              />
 
                 <View style={styles.nameButtonContainer}>
-                    <Text style={styles.username}>Username</Text>
-                    <Text style={styles.id}>@username</Text>
+                    <Text style={styles.username}>{firstName} {lastName}</Text>
+                    <Text style={styles.id}>@{nickname}</Text>
                     
                     <View style={styles.btnContainer}>
-                        <Pressable 
-                        style={styles.saveBtn}> 
-                        <Text style={{fontSize: 13, color: 'white',marginHorizontal: 5, }}>Save </Text>
+                        <Pressable
+                          onPress={handleSave} 
+                          style={styles.saveBtn}> 
+                        <Text style={{fontSize: 13, color: 'white',marginHorizontal: 5, }}>Save</Text>
                         </Pressable>
 
                     </View>
                 </View>
             </View>
 
-
-
         <View>
             <View style={styles.row}>
                 <View style={styles.column}>
                     <View style={styles.category}>
-                        <Text style={styles.category}>Name</Text>
+                        <Text style={styles.category}>First Name</Text>
+                    </View>
+                    <View style={styles.category}>
+                        <Text style={styles.category}>Last Name</Text>
                     </View>
                     <View style={styles.category}>
                         <Text style={styles.category}>Username</Text>
-                    </View>
-                    <View style={styles.category}>
-                        <Text style={styles.category}>Password</Text>
                     </View>
                     <View style={styles.category}>
                         <Text style={styles.category}>Hashtag</Text>
@@ -84,19 +126,28 @@ function EditProfileScreen() {
                 <View style={styles.column}>
                          <TextInput
                         style={styles.inputText}
-                        placeholder="Enter Name"
+                        placeholder="Enter First Name"
+                        value={firstName}
+                        color='grey'
+                        placeholderTextColor="grey"
+                        onChangeText={setFirstName}/>
+                        <TextInput
+                        style={styles.inputText}
+                        placeholder="Enter Last Name"
+                        value={lastName}
+                        color='grey'
+                        onChangeText={setLastName}
                         placeholderTextColor="grey"/>
                         <TextInput
                         style={styles.inputText}
                         placeholder="Enter Username"
-                        placeholderTextColor="grey"/>
-                        <TextInput
-                        style={styles.inputText}
-                        placeholder="Enter Password"
+                        value={nickname}
+                        color='grey'
+                        onChangeText={setNickname}
                         placeholderTextColor="grey"/>
                         <View style={styles.hashtagContainer}>
-                            {hashtags.map((hashtag) => (
-                                <View style={styles.oneHashTag}>
+                            {hashtags.map((hashtag, index) => (
+                                <View key={index} style={styles.oneHashTag}>
                                     <Text style={styles.hashtagText}>{hashtag}</Text>
                                     <IconButton icon="close" color="white" size={16} onPress={()=>{
                                         setHashtags(hashtags.filter((item) => item !== hashtag));
@@ -121,96 +172,10 @@ function EditProfileScreen() {
                 </View>
             </View>
         </View>
+        </View>
         </SafeAreaView>
     )
 };
-
-// import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
-// import React, { useEffect, useState } from "react";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-// import axios from 'axios';
-// import { useNavigation } from '@react-navigation/native';
-
-// const config = require('../config/.config.js');
-
-
-
-// function EditProfileScreen() {
-//   const [firstName, setFirstName] = useState("");
-//   const [lastName, setLastName] = useState("");
-//   const [nickname, setNickname] = useState("");
-//   const [hashtag, setHashtag] = useState("");
-//   const [user, setUser] = useState(null);
-//   const navigation = useNavigation();
-
-//   const handleSave = async () => {
-//     // Save the user's profile information
-//     user.firstName = firstName;
-//     user.lastName = lastName;
-//     user.nickname = nickname;
-
-//     await AsyncStorage.setItem("userData", JSON.stringify(user));
-//     setUser(user);
-//     const userId = await AsyncStorage.getItem("uid");
-//     const res = await axios.put(
-//       `${config.BACKEND_URL}/db/${userId}.json`,
-//       user
-//     );
-//     navigation.navigate("ProfileMain")
-//   };
-
-
-//   useEffect(() => {
-//     const fetchUserData = async () => {
-//       try {
-//         const userDataJson = await AsyncStorage.getItem('userData');
-//         if (userDataJson !== null) {
-//           const userData = JSON.parse(userDataJson);
-//           setUser(userData);
-//           setFirstName(userData.firstName);
-//           setLastName(userData.lastName);
-//           setNickname(userData.nickname);
-//         }
-//       } catch (error) {
-//         console.error('Failed to load user data from storage', error);
-//       }
-//     };
-
-//     fetchUserData();
-//   }, []);
-
-//   return (
-//     <View style={styles.rootContainer}>
-//       <Text style={styles.title}>Edit Profile</Text>
-//       <TextInput
-//         style={styles.input}
-//         placeholder="First Name"
-//         value={firstName}
-//         onChangeText={setFirstName}
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Last Name"
-//         value={lastName}
-//         onChangeText={setLastName}
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Nickname"
-//         value={nickname}
-//         onChangeText={setNickname}
-//       />
-//       <TextInput
-//         style={styles.input}
-//         placeholder="Hashtag #"
-//         value={hashtag}
-//         onChangeText={setHashtag}
-//       />
-//       <Pressable style={styles.saveButton} onPress={handleSave}>
-//         <Text style={styles.saveButtonText}>Save</Text>
-//       </Pressable>
-//     </View>
-//   );
 
 export default EditProfileScreen;
 
@@ -263,6 +228,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
     },
 
+    profileContainer: {
+      padding: 20,
+      alignItems: "center",
+    },
+
     hashtagText: {
         color: 'white',
         fontSize: 16,
@@ -279,7 +249,6 @@ const styles = StyleSheet.create({
         width: 130,
         height: 130,
         borderRadius: 50,
-        alignSelf: "left",
         padding: 10,
         marginRight: 20,
     },
@@ -323,32 +292,3 @@ const styles = StyleSheet.create({
         alignItems: "center",
     },
 });
-
-//     rootContainer: {
-//         flex: 1,
-//         padding: 32,
-//     },
-//     title: {
-//         fontSize: 20,
-//         fontWeight: "bold",
-//         marginBottom: 16,
-//     },
-//     input: {
-//         height: 40,
-//         borderColor: "gray",
-//         borderWidth: 1,
-//         marginBottom: 16,
-//         padding: 8,
-//     },
-//     saveButton: {
-//         backgroundColor: "blue",
-//         padding: 16,
-//         borderRadius: 8,
-//         alignItems: "center",
-//     },
-//     saveButtonText: {
-//         color: "white",
-//         fontWeight: "bold",
-//     },
-// })
-// >>>>>>> main
