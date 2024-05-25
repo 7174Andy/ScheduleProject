@@ -41,7 +41,7 @@ function ProfileStackNavigator() {
       <ProfileStack.Screen
         name="EditProfile"
         component={EditProfileScreen}
-        options={{ title: "Edit Profile" }}
+        options={{ title: "Edit Profile", headerShown: false }}
       />
     </ProfileStack.Navigator>
   );

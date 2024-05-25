@@ -1,118 +1,294 @@
-import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
-import React, { useEffect, useState } from "react";
+import {
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    Pressable,
+    TextInput,
+  } from "react-native";
+import colors from "../config/colors";
+import IconButton from "../components/ui/IconButton";
+import { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import placeholder from '../assets/user.png';
 import axios from 'axios';
+const config = require('../config/.config.js');
 import { useNavigation } from '@react-navigation/native';
 
-const config = require('../config/.config.js');
 
+function EditProfileScreen({ route }) {
+    const navigation = useNavigation();
+    const [newHashtag, setnewHashtag] = useState(false);
+    const [firstName, setFirstName] = useState("");
+    const { profileImage } = route.params;
+    const [user, setUser] = useState(null);
+    const [lastName, setLastName] = useState("");
+    const [nickname, setNickname] = useState("");
 
+    const addHashtag = () => {
+        setnewHashtag(true);
+    }
 
-function EditProfileScreen() {
-  const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
-  const [nickname, setNickname] = useState("");
-  const [hashtag, setHashtag] = useState("");
-  const [user, setUser] = useState(null);
-  const navigation = useNavigation();
+    const [hashtags, setHashtags] = useState(["#hashtag1", "#hashtag2", "#hashtag3"]); 
 
-  const handleSave = async () => {
-    // Save the user's profile information
-    user.firstName = firstName;
-    user.lastName = lastName;
-    user.nickname = nickname;
+    const [temporaryHashtag, setTemporaryHashtag] = useState("");
 
-    await AsyncStorage.setItem("userData", JSON.stringify(user));
-    setUser(user);
-    const userId = await AsyncStorage.getItem("uid");
-    const res = await axios.put(
-      `${config.BACKEND_URL}/db/${userId}.json`,
-      user
-    );
-    navigation.navigate("ProfileMain")
-  };
+    const addNewHashtag = () => {
+        setHashtags([...hashtags, temporaryHashtag]);
+        console.log(temporaryHashtag);
+        setTemporaryHashtag("");
+        setnewHashtag(false);
+    }
 
-
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        const userDataJson = await AsyncStorage.getItem('userData');
-        if (userDataJson !== null) {
-          const userData = JSON.parse(userDataJson);
-          setUser(userData);
-          setFirstName(userData.firstName);
-          setLastName(userData.lastName);
-          setNickname(userData.nickname);
+    const handleHashtagChange = (text) => {
+        const MAX_LENGTH = 15;
+        if (text.length <= MAX_LENGTH) {
+          setTemporaryHashtag(text);
         }
-      } catch (error) {
-        console.error('Failed to load user data from storage', error);
-      }
+      };
+    
+    const handleSave = async () => {
+      // Save the user's profile information
+      user.firstName = firstName;
+      user.lastName = lastName;
+      user.nickname = nickname;
+  
+      await AsyncStorage.setItem("userData", JSON.stringify(user));
+      setUser(user);
+      const userId = await AsyncStorage.getItem("uid");
+      const res = await axios.put(
+        `${config.BACKEND_URL}/db/${userId}.json`,
+        user
+      );
+      navigation.navigate("ProfileMain")
     };
 
-    fetchUserData();
-  }, []);
+    useEffect(() => {
+      const fetchUserData = async () => {
+        try {
+          const userDataJson = await AsyncStorage.getItem('userData');
+          if (userDataJson !== null) {
+            const userData = JSON.parse(userDataJson);
+            setUser(userData);
+            setFirstName(userData.firstName);
+            setLastName(userData.lastName);
+            setNickname(userData.nickname);
+          }
+        } catch (error) {
+          console.error('Failed to load user data from storage', error);
+        }
+      };
 
-  return (
-    <View style={styles.rootContainer}>
-      <Text style={styles.title}>Edit Profile</Text>
-      <TextInput
-        style={styles.input}
-        placeholder="First Name"
-        value={firstName}
-        onChangeText={setFirstName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Last Name"
-        value={lastName}
-        onChangeText={setLastName}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Nickname"
-        value={nickname}
-        onChangeText={setNickname}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Hashtag #"
-        value={hashtag}
-        onChangeText={setHashtag}
-      />
-      <Pressable style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Save</Text>
-      </Pressable>
-    </View>
-  );
-}
+      fetchUserData();
+    }, []);
+
+    return (
+        <SafeAreaView style={styles.background}>
+          <View style={styles.profileContainer}>
+            <View style={styles.topContainer}>
+                <Image
+                style={[styles.profileImage, { borderRadius: styles.profileImage.width / 2 }]}
+                source={profileImage ? { uri: profileImage } : placeholder}
+              />
+
+                <View style={styles.nameButtonContainer}>
+                    <Text style={styles.username}>{firstName} {lastName}</Text>
+                    <Text style={styles.id}>@{nickname}</Text>
+                    
+                    <View style={styles.btnContainer}>
+                        <Pressable
+                          onPress={handleSave} 
+                          style={styles.saveBtn}> 
+                        <Text style={{fontSize: 13, color: 'white',marginHorizontal: 5, }}>Save</Text>
+                        </Pressable>
+
+                    </View>
+                </View>
+            </View>
+
+        <View>
+            <View style={styles.row}>
+                <View style={styles.column}>
+                    <View style={styles.category}>
+                        <Text style={styles.category}>First Name</Text>
+                    </View>
+                    <View style={styles.category}>
+                        <Text style={styles.category}>Last Name</Text>
+                    </View>
+                    <View style={styles.category}>
+                        <Text style={styles.category}>Username</Text>
+                    </View>
+                    <View style={styles.category}>
+                        <Text style={styles.category}>Hashtag</Text>
+                    </View>
+                </View>
+                <View style={styles.column}>
+                         <TextInput
+                        style={styles.inputText}
+                        placeholder="Enter First Name"
+                        value={firstName}
+                        color='grey'
+                        placeholderTextColor="grey"
+                        onChangeText={setFirstName}/>
+                        <TextInput
+                        style={styles.inputText}
+                        placeholder="Enter Last Name"
+                        value={lastName}
+                        color='grey'
+                        onChangeText={setLastName}
+                        placeholderTextColor="grey"/>
+                        <TextInput
+                        style={styles.inputText}
+                        placeholder="Enter Username"
+                        value={nickname}
+                        color='grey'
+                        onChangeText={setNickname}
+                        placeholderTextColor="grey"/>
+                        <View style={styles.hashtagContainer}>
+                            {hashtags.map((hashtag, index) => (
+                                <View key={index} style={styles.oneHashTag}>
+                                    <Text style={styles.hashtagText}>{hashtag}</Text>
+                                    <IconButton icon="close" color="white" size={16} onPress={()=>{
+                                        setHashtags(hashtags.filter((item) => item !== hashtag));
+                                    }}/>
+                                </View>
+                            ))}
+                            {!newHashtag
+                            ?
+                            <IconButton icon="add" color="white" size={20} onPress={()=>{addHashtag(true)}}/>
+                            :
+                            <View style={styles.row}>
+                                <TextInput
+                                    value={temporaryHashtag}
+                                    style={styles.hashtagText}
+                                    placeholder="Enter Hashtag"
+                                    placeholderTextColor="grey"
+                                    onChangeText={handleHashtagChange}/>
+                                <IconButton icon="add" color="white" size={20} onPress={addNewHashtag}/>
+                            </View>
+                            }
+                        </View>
+                </View>
+            </View>
+        </View>
+        </View>
+        </SafeAreaView>
+    )
+};
 
 export default EditProfileScreen;
 
 const styles = StyleSheet.create({
-    rootContainer: {
-        flex: 1,
-        padding: 32,
+    background: {
+      backgroundColor: colors.backgroundColor,
+      flex: 1,
     },
-    title: {
+    row: {
+      flexDirection: "row",
+      marginLeft: 30,
+    },
+    column: {
+      flexDirection: "column",
+
+    },
+    category:{
+        color: 'white',
+        fontSize: 18,
+        margin: 7,
+    },
+
+    inputText: {
+      color: 'white',
+      fontSize: 16,
+      marginLeft: 20,
+      marginBottom: 14,
+      marginTop: 16,
+    },
+
+    hashtagContainer: {
+        flex: 0,
+        flexDirection: "column",
+        justifyContent: "center",
+        marginTop: 10,
+        marginLeft: 15,
+    },
+    oneHashTag: {
+        backgroundColor: colors.hashtag,
+        borderRadius: 10,
+        padding: 1,
+        marginTop: 5,
+        marginRight: 10,
+        shadowColor: colors.black,
+        shadowOffset: {
+          width: 0,
+          height: 2,
+        },
+        justifyContent: "center",
+        flexDirection: "row",
+    },
+
+    profileContainer: {
+      padding: 20,
+      alignItems: "center",
+    },
+
+    hashtagText: {
+        color: 'white',
+        fontSize: 16,
+        // margin: 5,
+        marginBottom: 3,
+        padding: 5,
+      },
+      topContainer:{
+        flexDirection: "row",
+        alignItems: "flex-start",
+        margin: 25,
+    },
+    profileImage:{
+        width: 130,
+        height: 130,
+        borderRadius: 50,
+        padding: 10,
+        marginRight: 20,
+    },
+
+    nameButtonContainer:{
+        flexDirection: "column",
+        justifyContent: "center",
+    },
+
+    username:{
         fontSize: 20,
         fontWeight: "bold",
-        marginBottom: 16,
+        paddingBottom: 3,
+        paddingTop: 20,
+        color: "white",
     },
-    input: {
-        height: 40,
-        borderColor: "gray",
-        borderWidth: 1,
-        marginBottom: 16,
-        padding: 8,
+    id:{
+        fontSize: 15,
+        color: "white",
     },
-    saveButton: {
-        backgroundColor: "blue",
-        padding: 16,
+    
+    btnContainer:{
+        flexDirection: "row",
+        alignItems: "center",
+        margin: 5,
+        marginTop: 10,
+    },
+
+    saveBtn:{
+        backgroundColor: "gray",
         borderRadius: 8,
+        padding: 6,
+        alignItems: "center",  
+        marginRight: 10, 
+    },
+
+    editBtn:{
+        backgroundColor: "gray",
+        borderRadius: 8,
+        padding: 6,
         alignItems: "center",
     },
-    saveButtonText: {
-        color: "white",
-        fontWeight: "bold",
-    },
-})
+});
