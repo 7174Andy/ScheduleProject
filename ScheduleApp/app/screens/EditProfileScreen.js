@@ -6,6 +6,7 @@ import {
     Image,
     Pressable,
     TextInput,
+    ScrollView,
   } from "react-native";
 import colors from "../config/colors";
 import IconButton from "../components/ui/IconButton";
@@ -30,13 +31,12 @@ function EditProfileScreen({ route }) {
         setnewHashtag(true);
     }
 
-    const [hashtags, setHashtags] = useState(["#hashtag1", "#hashtag2", "#hashtag3"]); 
+    const [hashtags, setHashtags] = useState([]); 
 
     const [temporaryHashtag, setTemporaryHashtag] = useState("");
 
     const addNewHashtag = () => {
         setHashtags([...hashtags, temporaryHashtag]);
-        console.log(temporaryHashtag);
         setTemporaryHashtag("");
         setnewHashtag(false);
     }
@@ -53,6 +53,7 @@ function EditProfileScreen({ route }) {
       user.firstName = firstName;
       user.lastName = lastName;
       user.nickname = nickname;
+      user.hashtags = hashtags;
   
       await AsyncStorage.setItem("userData", JSON.stringify(user));
       setUser(user);
@@ -74,6 +75,7 @@ function EditProfileScreen({ route }) {
             setFirstName(userData.firstName);
             setLastName(userData.lastName);
             setNickname(userData.nickname);
+            setHashtags(userData.hashtags);
           }
         } catch (error) {
           console.error('Failed to load user data from storage', error);
@@ -85,6 +87,7 @@ function EditProfileScreen({ route }) {
 
     return (
         <SafeAreaView style={styles.background}>
+          <ScrollView>
           <View style={styles.profileContainer}>
             <View style={styles.topContainer}>
                 <Image
@@ -173,6 +176,7 @@ function EditProfileScreen({ route }) {
             </View>
         </View>
         </View>
+        </ScrollView>
         </SafeAreaView>
     )
 };

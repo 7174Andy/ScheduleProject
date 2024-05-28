@@ -154,97 +154,8 @@ export default function ProfileScreen() {
     fetchUserData();
   }, [user]);
 
-  const openEditModal = () => {
-    if (user) {
-      setEditData({
-        firstName: user.firstName,
-        lastName: user.lastName,
-        nickname: user.nickname,
-        college: user.college,
-        majors: user.majors,
-        minors: user.minors,
-        classLvl: user.classLvl,
-      });
-    }
-    setModalVisible(true);
-  };
-
-  const handleSave = async () => {
-    const updatedUser = { ...user, ...editData };
-    await AsyncStorage.setItem("userData", JSON.stringify(updatedUser));
-    setUser(updatedUser);
-    setModalVisible(false);
-    const userId = await AsyncStorage.getItem("uid");
-    const res = await axios.put(
-      `${config.BACKEND_URL}/db/${userId}.json`,
-      updatedUser
-    );
-  };
-
-  const handleChange = (name, value) => {
-    if (name === "majors" || name === "minors") {
-      value = value.split(",").map((v) => v.trim()); // Assuming input is comma-separated
-    }
-    setEditData((prev) => ({ ...prev, [name]: value }));
-  };
-
   return (
     <SafeAreaView style={styles.background}>
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={isModalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.centeredView}>
-          <View style={styles.modalView}>
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('firstName', text)}
-              value={editData.firstName}
-              placeholder="First Name"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('lastName', text)}
-              value={editData.lastName}
-              placeholder="Last Name"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('nickname', text)}
-              value={editData.nickname}
-              placeholder="Nickname"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('college', text)}
-              value={editData.college}
-              placeholder="College"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('majors', text)}
-              value={editData.majors.join(', ')}
-              placeholder="Majors (comma separated)"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('minors', text)}
-              value={editData.minors.join(', ')}
-              placeholder="Minors (comma separated)"
-            />
-            <TextInput
-              style={styles.input}
-              onChangeText={(text) => handleChange('classLvl', text)}
-              value={editData.classLvl}
-              placeholder="Class Level"
-            />
-            <Button title="Save Changes" onPress={handleSave} />
-            <Button title="Cancel" onPress={() => setModalVisible(false)} />
-          </View>
-        </View>
-      </Modal>
 
       <Modal
         animationType="fade"
@@ -319,24 +230,15 @@ export default function ProfileScreen() {
           </View>
         </View>
       </View>
-      <View style={styles.hashtagContainer}>
-        <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}># {user ? user.college : ""}</Text>
-        </View>
-        <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}>
-            {user ? user.majors.map((element) => "# " + element).join(" ") : ""}
-          </Text>
-        </View>
-      </View>
-      <View style={styles.hashtagContainerSecond}>
-        <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}># {user ? user.classLvl : ""}</Text>
-        </View>
-        <View style={styles.oneHashTag}>
-          <Text style={styles.hashtagText}>
-            {user ? user.minors.map((element) => "# " + element).join(" ") : ""}
-          </Text>
+      <View>
+        <View style={styles.hashtagContainer}>
+          {user && user.hashtags && user.hashtags.length > 0 ? (
+            user.hashtags.map((hashtag, index) => (
+              <View style={styles.oneHashTag} key={index}>
+                <Text style={styles.hashtagText}># {hashtag}</Text>
+              </View>
+            ))
+          ) : null}
         </View>
       </View>
       <ScrollView
@@ -370,11 +272,6 @@ export default function ProfileScreen() {
 }
 
 const styles = StyleSheet.create({
-  // background: {
-  //   flex: 1,
-  //   alignItems: 'center',
-  //   justifyContent: 'center',
-  // },
   profileContainer: {
     padding: 20,
     alignItems: "center",
@@ -440,6 +337,7 @@ const styles = StyleSheet.create({
   hashtagContainer: {
     flex: 0,
     flexDirection: "row",
+    flexWrap: 'wrap',
     justifyContent: "center",
     marginTop: 15,
     marginLeft: 10,
