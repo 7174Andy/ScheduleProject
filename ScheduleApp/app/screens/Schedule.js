@@ -11,6 +11,7 @@ export default function Schedule() {
     [],
     [
       {
+        id: 1,
         course: "CSE 102",
         startTime: 8,
         endTime: 8.5,
@@ -19,6 +20,7 @@ export default function Schedule() {
         color: "purple",
       },
       {
+        id: 2,
         course: "Math 154 Midterm",
         startTime: 18,
         endTime: 20,
@@ -29,6 +31,7 @@ export default function Schedule() {
     ],
     [
       {
+        id: 3,
         course: "Math 154",
         startTime: 14,
         endTime: 15,
@@ -39,6 +42,7 @@ export default function Schedule() {
     ],
     [
       {
+        id: 4,
         course: "CSE 102",
         startTime: 8,
         endTime: 9.5,
@@ -49,6 +53,7 @@ export default function Schedule() {
     ],
     [
       {
+        id: 5,
         course: "ECE 109",
         startTime: 9,
         endTime: 10,
@@ -57,6 +62,7 @@ export default function Schedule() {
         color: "blue",
       },
       {
+        id: 6,
         course: "Math 154",
         startTime: 14,
         endTime: 15,

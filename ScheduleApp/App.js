@@ -19,7 +19,7 @@ import ManageScheduleScreen from "./app/screens/ManageScheduleScreen";
 import EditProfileScreen from "./app/screens/EditProfileScreen";
 
 import { Colors } from "./app/constants/styles";
-import colors from './app/config/colors';
+import colors from "./app/config/colors";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import AuthContextProvider, { AuthContext } from "./app/store/auth-context";
 import IconButton from "./app/components/ui/IconButton";
@@ -29,6 +29,24 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const FriendsStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
+const EventStack = createNativeStackNavigator();
+
+function EventNavigator() {
+  return (
+    <EventStack.Navigator>
+      <Stack.Screen
+        name="EventMain"
+        component={Schedule}
+        options={{ headerShown: false }}
+      />
+      <EventStack.Screen
+        name="EventDetails"
+        component={ManageScheduleScreen}
+        options={{ title: "Event Details", headerShown: false }}
+      />
+    </EventStack.Navigator>
+  );
+}
 
 function ProfileStackNavigator() {
   return (
@@ -73,7 +91,7 @@ function AuthStack() {
   return (
     <Stack.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: colors.headerBackgroundColor},
+        headerStyle: { backgroundColor: colors.headerBackgroundColor },
         headerTintColor: "black",
         contentStyle: { backgroundColor: colors.backgroundColor },
       }}
@@ -90,14 +108,14 @@ function ScheduleOverview() {
   return (
     <Tab.Navigator
       screenOptions={{
-        headerStyle: { backgroundColor: colors.headerBackgroundColor},
+        headerStyle: { backgroundColor: colors.headerBackgroundColor },
         headerTintColor: "black",
         contentStyle: { backgroundColor: colors.backgroundColor },
       }}
     >
       <Tab.Screen
         name="Home"
-        component={Schedule}
+        component={EventNavigator}
         options={({ navigation }) => ({
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
