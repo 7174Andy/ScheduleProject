@@ -1,7 +1,7 @@
 export default {
   backgroundColor: "#B3C8CF",
   profileBackgroundColor: "#FFFFFFF",
-  textColor: "#797D7F",
+  textColor: "#454545",
   black: "#000",
   tagColor: "#9C9898",
   marginToProfile: 20,

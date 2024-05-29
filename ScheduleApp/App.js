@@ -31,7 +31,7 @@ function ProfileStackNavigator() {
   return (
     <ProfileStack.Navigator>
       <ProfileStack.Screen
-        name="ProfileMain"
+        name="Profile"
         component={ProfileScreen}
         options={{ headerShown: false }}
       />
@@ -87,6 +87,8 @@ function AuthenticatedStack() {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarActiveTintColor: "black",
+        tabBarInactiveColor: "gray",
         headerStyle: { backgroundColor: Colors.primary500 },
         headerTintColor: "white",
         contentStyle: { backgroundColor: Colors.primary100 },
