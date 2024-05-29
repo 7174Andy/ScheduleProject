@@ -108,6 +108,8 @@ function ScheduleOverview() {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarActiveTintColor: "black",
+        tabBarInactiveColor: "gray",
         headerStyle: { backgroundColor: colors.headerBackgroundColor },
         headerTintColor: "black",
         contentStyle: { backgroundColor: colors.backgroundColor },
