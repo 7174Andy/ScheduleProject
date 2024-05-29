@@ -133,12 +133,13 @@ function Calendar({ weeklyEvents }) {
           ))}
           {weeklyEvents[selectedWeekDay].map((event, index) => (
             <Event
-              id={index}
+              id={event.eid}
               key={index}
               name={event.course}
               top={event.startTime * 60} // Assuming each hour slot is 60 pixels high
               height={(event.endTime - event.startTime) * 60}
               color={event.color}
+              professorName={event.professor}
             />
           ))}
         </ScrollView>

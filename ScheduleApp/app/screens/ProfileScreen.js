@@ -264,6 +264,7 @@ export default function ProfileScreen() {
           ? user.hasOwnProperty(dayName) &&
             user[dayName].map((event, index) => (
               <Event
+                id={event.eid}
                 key={index}
                 name={event.course}
                 color={event.color}

@@ -1,7 +1,7 @@
 import { Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/native";
 
-function Event({ id, name, color, top, height }) {
+function Event({ id, name, color, top, height, professorName }) {
   const navigation = useNavigation();
 
   function handleDeleteEvent(id) {
@@ -31,6 +31,7 @@ function Event({ id, name, color, top, height }) {
       onPress={handleEventPress}
     >
       <Text style={styles.eventText}>{name}</Text>
+      <Text style={styles.eventText}>{professorName}</Text>
     </TouchableOpacity>
   );
 }

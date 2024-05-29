@@ -11,11 +11,11 @@ export async function addUser(userId) {
         lastName: 'lastName',
         friends: [],
         hashtags: ['college', 'classLvl', 'major', 'minor'],
-        Mon: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
-        Tue: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
-        Wed: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
-        Thu: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
-        Fri: [{startTime: 10, endTime: 20, course: 'MATH18', enrollmentStatus: 'waitlist', professor: 'p1', color: 'blue'}],
+        Mon: [],
+        Tue: [],
+        Wed: [],
+        Thu: [],
+        Fri: [],
         friendRequests: [],
     });
 }
