@@ -6,7 +6,6 @@ function Event({ id, name, color, top, height }) {
 
   function handleDeleteEvent(id) {
     console.log("Delete", id);
-    s;
   }
 
   function handleEventPress() {
