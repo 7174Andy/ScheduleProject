@@ -155,6 +155,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     flexDirection: "row",
     alignItems: "center",
+    backgroundcolor: "white",
   },
   dateRow: {
     marginButton: 10,
@@ -186,7 +187,7 @@ const styles = StyleSheet.create({
   contentDateText: {
     fontSize: 17,
     fontWeight: "600",
-    color: "#999",
+    color: "#ffff",
     marginBottom: 10,
   },
   eventsContainer: {

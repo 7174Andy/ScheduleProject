@@ -16,17 +16,17 @@ import { useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { useState } from "react";
 import { getUserData } from "../util/http";
-import axios from 'axios';
-import * as ImagePicker from 'expo-image-picker';
-import { FontAwesome } from '@expo/vector-icons';
-import placeholder from '../assets/user.png';
+import axios from "axios";
+import * as ImagePicker from "expo-image-picker";
+import { FontAwesome } from "@expo/vector-icons";
+import placeholder from "../assets/user.png";
 import { app } from "../config/firebaseConfig";
-import { useNavigation } from '@react-navigation/native';
-import { launchImageLibraryAsync } from 'expo-image-picker';
+import { useNavigation } from "@react-navigation/native";
+import { launchImageLibraryAsync } from "expo-image-picker";
 import { getStorage, ref, uploadBytes, deleteObject } from "firebase/storage";
-import { manipulateAsync, SaveFormat } from 'expo-image-manipulator';
+import { manipulateAsync, SaveFormat } from "expo-image-manipulator";
 
-const config = require('../config/.config.js');
+const config = require("../config/.config.js");
 
 const currentDate = new Date();
 const today = currentDate.getDay();
@@ -57,15 +57,15 @@ export default function ProfileScreen() {
     college: "",
     majors: [],
     minors: [],
-    classLvl: ''
+    classLvl: "",
   });
   const [profileImage, setProfileImage] = useState();
 
   const uploadImage = async (mode) => {
-    try{
+    try {
       let result = {};
 
-      if (mode === 'gallery') {
+      if (mode === "gallery") {
         await ImagePicker.requestMediaLibraryPermissionsAsync();
         result = await ImagePicker.launchImageLibraryAsync({
           mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -80,13 +80,13 @@ export default function ProfileScreen() {
         result = await ImagePicker.launchCameraAsync({
           // cameraType: ImagePicker.cameraType.front,
           allowsEditing: true,
-          aspect: [1,1],
+          aspect: [1, 1],
           quality: 1,
         });
       }
 
       if (!result.canceled) {
-        await saveImage(result.assets[0].uri)
+        await saveImage(result.assets[0].uri);
       }
     } catch (error) {
       console.error(error);
@@ -97,7 +97,7 @@ export default function ProfileScreen() {
   const saveImage = async (image) => {
     try {
       setProfileImage(image);
-      
+
       const compressedImage = await manipulateAsync(
         image,
         [],
@@ -107,47 +107,49 @@ export default function ProfileScreen() {
       const response = await fetch(compressedImage.uri);
       const blob = await response.blob();
 
-      const userUid = await AsyncStorage.getItem('uid');
+      const userUid = await AsyncStorage.getItem("uid");
       const storageRef = ref(storage, userUid);
 
-      uploadBytes(storageRef, blob).then((snapshot) => {
-        console.log('Upload successful');
-      }).catch((error) => {
-        console.error('Error uploading:', error);
-      });
+      uploadBytes(storageRef, blob)
+        .then((snapshot) => {
+          console.log("Upload successful");
+        })
+        .catch((error) => {
+          console.error("Error uploading:", error);
+        });
 
-      
       setPicModalVisible(false);
-
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const deleteImage = async () => {
     setProfileImage(null);
-    const userId = await AsyncStorage.getItem('uid');
+    const userId = await AsyncStorage.getItem("uid");
     const storageRef = ref(storage, userId);
-    deleteObject(storageRef).then(() => {
-      console.log('delete');
-    }).catch((error) => {
-      console.log(error);
-    })
+    deleteObject(storageRef)
+      .then(() => {
+        console.log("delete");
+      })
+      .catch((error) => {
+        console.log(error);
+      });
     setPicModalVisible(false);
-  }
+  };
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userDataJson = await AsyncStorage.getItem('userData');
+        const userDataJson = await AsyncStorage.getItem("userData");
         if (userDataJson !== null) {
           const userData = JSON.parse(userDataJson);
           setUser(userData);
         }
-        const profilePicUri = await AsyncStorage.getItem('profileUri');
+        const profilePicUri = await AsyncStorage.getItem("profileUri");
         setProfileImage(profilePicUri);
       } catch (error) {
-        console.error('Failed to load user data from storage', error);
+        console.error("Failed to load user data from storage", error);
       }
     };
 
@@ -156,42 +158,42 @@ export default function ProfileScreen() {
 
   return (
     <SafeAreaView style={styles.background}>
-
       <Modal
         animationType="fade"
         transparent={true}
         visible={isPicModalVisible}
-        onRequestClose={() => setPicModalVisible(false)}>
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <View style={styles.buttonsContainer}>
-                <Pressable
-                  style={styles.modalButton}
-                  onPress={() => uploadImage('gallery')}
-                >
-                  <FontAwesome name="image" size={24} color="black" />
-                </Pressable>
-                <Pressable
-                  style={styles.modalButton}
-                  onPress={() => uploadImage('camera')}
-                >
-                  <FontAwesome name="camera" size={24} color="black" />
-                </Pressable>
-                <Pressable
-                  style={styles.modalButton}
-                  onPress={() => {
-                    deleteImage()
-                  }}
-                >
-                  <FontAwesome name="trash" size={24} color="black" />
-                </Pressable>
-                <Pressable
-                  style={styles.modalButton}
-                  onPress={() => setPicModalVisible(false)}
-                >
-                  <FontAwesome name="times" size={24} color="black" />
-                </Pressable>
-              </View>
+        onRequestClose={() => setPicModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <View style={styles.buttonsContainer}>
+              <Pressable
+                style={styles.modalButton}
+                onPress={() => uploadImage("gallery")}
+              >
+                <FontAwesome name="image" size={24} color="black" />
+              </Pressable>
+              <Pressable
+                style={styles.modalButton}
+                onPress={() => uploadImage("camera")}
+              >
+                <FontAwesome name="camera" size={24} color="black" />
+              </Pressable>
+              <Pressable
+                style={styles.modalButton}
+                onPress={() => {
+                  deleteImage();
+                }}
+              >
+                <FontAwesome name="trash" size={24} color="black" />
+              </Pressable>
+              <Pressable
+                style={styles.modalButton}
+                onPress={() => setPicModalVisible(false)}
+              >
+                <FontAwesome name="times" size={24} color="black" />
+              </Pressable>
+            </View>
           </View>
         </View>
       </Modal>
@@ -199,7 +201,10 @@ export default function ProfileScreen() {
       <View style={styles.profileContainer}>
         <View style={styles.imageContainer}>
           <Image
-            style={[styles.profileImage, { borderRadius: styles.profileImage.width / 2 }]}
+            style={[
+              styles.profileImage,
+              { borderRadius: styles.profileImage.width / 2 },
+            ]}
             source={profileImage ? { uri: profileImage } : placeholder}
           />
           <Pressable
@@ -217,12 +222,14 @@ export default function ProfileScreen() {
           <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <Pressable
               style={styles.myCalendarBtn}
-              onPress={() => navigation.navigate("EditProfile", {
-                profileImage: profileImage,
-              })}
+              onPress={() =>
+                navigation.navigate("EditProfile", {
+                  profileImage: profileImage,
+                })
+              }
             >
               <Text
-                style={{ fontSize: 15, padding: 7, color: colors.textColor }}
+                style={{ fontSize: 15, padding: 7, color: colors.greyBtnText }}
               >
                 Edit
               </Text>
@@ -232,13 +239,13 @@ export default function ProfileScreen() {
       </View>
       <View>
         <View style={styles.hashtagContainer}>
-          {user && user.hashtags && user.hashtags.length > 0 ? (
-            user.hashtags.map((hashtag, index) => (
-              <View style={styles.oneHashTag} key={index}>
-                <Text style={styles.hashtagText}># {hashtag}</Text>
-              </View>
-            ))
-          ) : null}
+          {user && user.hashtags && user.hashtags.length > 0
+            ? user.hashtags.map((hashtag, index) => (
+                <View style={styles.oneHashTag} key={index}>
+                  <Text style={styles.hashtagText}># {hashtag}</Text>
+                </View>
+              ))
+            : null}
         </View>
       </View>
       <ScrollView
@@ -337,7 +344,7 @@ const styles = StyleSheet.create({
   hashtagContainer: {
     flex: 0,
     flexDirection: "row",
-    flexWrap: 'wrap',
+    flexWrap: "wrap",
     justifyContent: "center",
     marginTop: 15,
     marginLeft: 10,
@@ -416,7 +423,7 @@ const styles = StyleSheet.create({
     color: "white",
   },
   uploadButton: {
-    position: 'absolute',
+    position: "absolute",
     bottom: 0,
     right: 10,
     backgroundColor: colors.tagColor,
@@ -424,28 +431,28 @@ const styles = StyleSheet.create({
     padding: 6,
   },
   imageContainer: {
-    position: 'relative',
+    position: "relative",
   },
   modalContainer: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
-    backgroundColor: 'white',
+    backgroundColor: "white",
     padding: 20,
     borderRadius: 10,
   },
   buttonsContainer: {
-    flexDirection: 'row', // Align buttons horizontally
-    justifyContent: 'center', // Center buttons horizontally
+    flexDirection: "row", // Align buttons horizontally
+    justifyContent: "center", // Center buttons horizontally
     marginTop: 10,
   },
   modalButton: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: 'lightgray',
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "lightgray",
     padding: 10,
     borderRadius: 5,
     marginHorizontal: 5, // Add some horizontal margin between buttons
