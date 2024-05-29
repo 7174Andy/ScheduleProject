@@ -133,6 +133,7 @@ function Calendar({ weeklyEvents }) {
           ))}
           {weeklyEvents[selectedWeekDay].map((event, index) => (
             <Event
+              id={index}
               key={index}
               name={event.course}
               top={event.startTime * 60} // Assuming each hour slot is 60 pixels high

@@ -1,10 +1,37 @@
-import { Text, View, StyleSheet } from "react-native";
+import { Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
+import { useNavigation } from "@react-navigation/native";
 
-function Event({ name, color, top, height }) {
+function Event({ id, name, color, top, height }) {
+  const navigation = useNavigation();
+
+  function handleDeleteEvent(id) {
+    console.log("Delete", id);
+  }
+
+  function handleEventPress() {
+    Alert.alert("Event Pressed", `Event: ${name}`, [
+      {
+        text: "Delete",
+        onPress: handleDeleteEvent(id),
+      },
+      {
+        text: "Edit",
+        onPress: () => navigation.navigate("EventDetails", { eventId: id }),
+      },
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+    ]);
+  }
+
   return (
-    <View style={[styles.event, { backgroundColor: color, top, height }]}>
+    <TouchableOpacity
+      style={[styles.event, { backgroundColor: color, top, height }]}
+      onPress={handleEventPress}
+    >
       <Text style={styles.eventText}>{name}</Text>
-    </View>
+    </TouchableOpacity>
   );
 }
 

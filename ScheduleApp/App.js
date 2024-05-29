@@ -29,6 +29,24 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 const FriendsStack = createNativeStackNavigator();
 const ProfileStack = createNativeStackNavigator();
+const EventStack = createNativeStackNavigator();
+
+function EventNavigator() {
+  return (
+    <EventStack.Navigator>
+      <Stack.Screen
+        name="EventMain"
+        component={Schedule}
+        options={{ headerShown: false }}
+      />
+      <EventStack.Screen
+        name="EventDetails"
+        component={ManageScheduleScreen}
+        options={{ title: "Event Details", headerShown: false }}
+      />
+    </EventStack.Navigator>
+  );
+}
 
 function ProfileStackNavigator() {
   return (
@@ -99,7 +117,7 @@ function ScheduleOverview() {
     >
       <Tab.Screen
         name="Home"
-        component={Schedule}
+        component={EventNavigator}
         options={({ navigation }) => ({
           tabBarLabel: "Home",
           tabBarIcon: ({ color, size }) => (
