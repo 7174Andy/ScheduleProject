@@ -37,7 +37,8 @@ function FriendList({ friend, handleUnfollow, handleViewSchedule }) {
             </Text>
             <Text style={styles.userTag}>{"@" + friend.nickname}</Text>
           </View>
-
+        </View>
+        <View style={styles.buttonsContainer}>
           <Pressable style={styles.unfollowBtn} onPress={() => handleUnfollow(friend)}>
             <IconButton icon="person-remove-outline" color="white" size={20} onPress={() => handleUnfollow(friend)}/>
           </Pressable>
@@ -57,61 +58,57 @@ const styles = StyleSheet.create({
   friendListContainer: {
     backgroundColor: "#ffffff",
     width: "100%",
-    height: 60,
-    justifyContent: "space-around",
+    justifyContent: "center",
     padding: 10,
     marginBottom: 5,
     borderRadius: 5,
   },
   friendListInfo: {
-    color: "#000000",
-    flexDirection: "row",
-    justifyContent: "space-between",
-    fontSize: 15,
-  },
-  friendsUserContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
-    justifyContent: "auto",
+  },
+  friendsUserContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    flex: 1,
   },
   userImage: {
     height: 45,
     width: 45,
-    padding: 5,
     marginRight: 10,
   },
-
   userName: {
     color: "#6B6B6B",
     fontSize: 15,
     fontWeight: "bold",
   },
-
   userNameID: {
     flexDirection: "column",
   },
-
   userTag: {
     color: colors.greyBtn,
     fontSize: 13,
   },
-
   unfollowBtn: {
     borderRadius: 15,
     backgroundColor: colors.greyBtn,
     padding: 0,
     justifyContent: "center",
-    marginLeft: "15%",
+    marginHorizontal: 5,
   },
-
   viewScheduleBtn: {
     borderRadius: 15,
     backgroundColor: colors.greyBtn,
     padding: 0,
     justifyContent: "center",
-    marginHorizontal: 10,
+    marginHorizontal: 5,
   },
+  buttonsContainer: {
+    flexDirection: "row",
+    marginLeft: 'auto',
+  },
+ 
 });
 
 export default FriendList;
