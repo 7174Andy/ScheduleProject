@@ -184,7 +184,7 @@ const styles = StyleSheet.create({
     width: "80%",
   },
   background: {
-    backgroundColor: colors.backgroundColor,
+    backgroundColor: "#B3C8CF",
     flex: 1,
   },
   hashtagInput: {

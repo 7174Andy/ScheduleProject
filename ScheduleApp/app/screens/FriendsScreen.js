@@ -331,7 +331,7 @@ export default function FriendsScreen() {
 
 const styles = StyleSheet.create({
   background: {
-    backgroundColor: colors.backgroundColor,
+    backgroundColor: "#B3C8CF",
     flex: 1,
   },
   title: {
@@ -345,14 +345,14 @@ const styles = StyleSheet.create({
     flexDirection: "row",
   },
   hashtagInput: {
+    backgroundColor: "#ADADAD",
     marginLeft: 10,
     marginBottom: 10,
     marginTop: 25,
     padding: 8,
     borderWidth: 1,
-    borderColor: "white",
+    borderColor: "#ADADAD",
     borderRadius: 25,
-    color: "white",
     flex: 7,
   },
   containerContainer: {
@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   containerTitle: {
-    color: "black",
+    color: "#717171",
     fontSize: 16,
     fontWeight: "700",
     marginTop: 2,
