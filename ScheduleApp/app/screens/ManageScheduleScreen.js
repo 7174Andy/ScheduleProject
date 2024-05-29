@@ -10,8 +10,13 @@ import {
 import React, { useState } from "react";
 import RNPickerSelect from "react-native-picker-select";
 import { ColorPicker } from "react-native-color-picker";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import TimeSetter from "../components/ui/TimeSetter";
+import {app} from '../config/firebaseConfig';
+import { getDatabase, ref, get, update } from "firebase/database";
+
+const db = getDatabase(app);
 
 function ManageScheduleScreen({ navigation }) {
   const [startShow, setStartShow] = useState(false);
@@ -21,6 +26,9 @@ function ManageScheduleScreen({ navigation }) {
   const [twentyfourHour, setTwentyfourHour] = useState(true); // TODO: Later implementation: add options for 24 representation
   const [enrollmentStatus, setEnrollmentStatus] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [location, setLocation] = useState('');
+  const [professorName, setProfessorName] = useState('');
+  const [eventName, setEventName] = useState('');
 
   const placeholderDay = {
     label: "Select Day...",
@@ -96,14 +104,71 @@ function ManageScheduleScreen({ navigation }) {
     setEndShow(!endShow);
   };
 
-  const handleSubmit = () => {
-    console.log("Submit");
+  const changeUtcToPct = (time) => {
+    const utcDate = new Date(time);
+    const options = { timeZone: 'America/Los_Angeles', hour: '2-digit', minute: '2-digit', hour12: false };
+    const pacificTime = utcDate.toLocaleTimeString('en-US', options);
+    const [hour, minute] = pacificTime.split(':').map(Number);
+    const fractionalMinute = minute / 60;
+    const convertedTime = hour + fractionalMinute;
+    return convertedTime;
+  }
+
+  const handleSubmit = async() => {
+    
+    const currentUserUid = await AsyncStorage.getItem("uid");
+
+    const dateRequestsRef = ref(db, `db/${currentUserUid}/${selectedDay}`);
+
+    // Check if the current user's UID already exists in the clicked user's friendRequests list
+    const dateRequestsSnapshot = await get(dateRequestsRef);
+    const dateRequests = dateRequestsSnapshot.val() || [];
+    
+    let maxEid = 0;
+    for (let i =0; i < dateRequests.length; i++) {
+      if (dateRequests[i].eid >= maxEid) {
+        maxEid = dateRequests[i].eid;
+      }
+    }
+
+    // loop로 돌리면서 max eid 구하고
+
+    const schedule = {
+      color: "blue",
+      course: eventName,
+      endTime: changeUtcToPct(endTime),
+      enrollmentStatus: enrollmentStatus,
+      location: location,
+      professor: professorName,
+      startTime: changeUtcToPct(startTime),
+      eid: maxEid + 1,
+    }
+    // If the current user's UID is not already in the clicked user's friendRequests list,
+    // add it to the list
+    dateRequests.push(schedule);
+
+    // Update the friendRequests list in the database using the update method
+    const userRef = ref(db, `db/${currentUserUid}`);
+    const updates = {};
+    updates[selectedDay] = dateRequests;
+
+    await update(userRef, updates);
+
+    // AsyncStorage도 변경
+
+    navigation.navigate("ScheduleOverview");
+    // console.log("Date request sent to the database:", dateRequests);
   };
 
   return (
     <View style={styles.container}>
       <View>
-        <TextInput placeholder="Event Name" style={styles.eventNameInput} />
+        <TextInput placeholder="Event Name"
+                   style={styles.eventNameInput}
+                   value={eventName}
+                   textColor="grey"
+                   onChangeText={setEventName}
+                   />
       </View>
       <View style={styles.startTimeContainer}>
         <Text style={styles.timeLabel}>Starts: </Text>
@@ -169,10 +234,18 @@ function ManageScheduleScreen({ navigation }) {
         </Text>
       </View>
       <View style={styles.textInputContainer}>
-        <TextInput placeholder="Location" style={styles.eventNameInput} />
+        <TextInput style={styles.eventNameInput}
+                   value={location}
+                   placeholder="Location"
+                   textColor="grey"
+                   onChangeText={setLocation}/>
       </View>
       <View style={styles.textInputContainer}>
-        <TextInput placeholder="Professor Name" style={styles.eventNameInput} />
+        <TextInput style = {styles.eventNameInput}
+                   value = {professorName}
+                   placeholder="Professor Name"
+                   textColor = "grey"
+                   onChangeText={setProfessorName}/>
       </View>
       <View>
         <RNPickerSelect
