@@ -21,6 +21,7 @@ function ManageScheduleScreen({ navigation }) {
   const [twentyfourHour, setTwentyfourHour] = useState(true); // TODO: Later implementation: add options for 24 representation
   const [enrollmentStatus, setEnrollmentStatus] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
+  const [location, setLocation] = useState('');
 
   const placeholderDay = {
     label: "Select Day...",
@@ -98,6 +99,7 @@ function ManageScheduleScreen({ navigation }) {
 
   const handleSubmit = () => {
     console.log("Submit");
+    console.log(location);
   };
 
   return (
@@ -169,7 +171,11 @@ function ManageScheduleScreen({ navigation }) {
         </Text>
       </View>
       <View style={styles.textInputContainer}>
-        <TextInput placeholder="Location" style={styles.eventNameInput} />
+        <TextInput style={styles.eventNameInput}
+                   value={location}
+                   placeholder="Location"
+                   textColor="grey"
+                   onChangeText={setLocation}/>
       </View>
       <View style={styles.textInputContainer}>
         <TextInput placeholder="Professor Name" style={styles.eventNameInput} />
