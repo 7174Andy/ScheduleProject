@@ -7,7 +7,7 @@ import {
   TouchableOpacity,
   Platform,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import RNPickerSelect from "react-native-picker-select";
 import { ColorPicker } from "react-native-color-picker";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -26,9 +26,10 @@ function ManageScheduleScreen({ navigation }) {
   const [twentyfourHour, setTwentyfourHour] = useState(true); // TODO: Later implementation: add options for 24 representation
   const [enrollmentStatus, setEnrollmentStatus] = useState(null);
   const [selectedDay, setSelectedDay] = useState(null);
-  const [location, setLocation] = useState("");
-  const [professorName, setProfessorName] = useState("");
-  const [eventName, setEventName] = useState("");
+  const [location, setLocation] = useState('');
+  const [professorName, setProfessorName] = useState('');
+  const [eventName, setEventName] = useState('');
+  const [user, setUser] = useState(null);
 
   const placeholderDay = {
     label: "Select Day...",
@@ -159,10 +160,31 @@ function ManageScheduleScreen({ navigation }) {
     await update(userRef, updates);
 
     // AsyncStorage도 변경
+    // userData 가져오고
+    user[selectedDay] = dateRequests;
+    AsyncStorage.setItem("userData", JSON.stringify(user));
 
-    navigation.navigate("ScheduleOverview");
-    // console.log("Date request sent to the database:", dateRequests);
+    // updates[selectedDay] = dateRequests; userData에 업데이트
+    // AsyncStorage.setItem 
+
+    navigation.navigate("ScheduleOverview", { user });
   };
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      try {
+        const userDataJson = await AsyncStorage.getItem("userData");
+        if (userDataJson !== null) {
+          const userData = JSON.parse(userDataJson);
+          setUser(userData);
+        }
+      } catch (error) {
+        console.error("Failed to load user data from storage", error);
+      }
+    };
+
+    fetchUserData();
+  }, []);
 
   return (
     <View style={styles.container}>

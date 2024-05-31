@@ -25,12 +25,12 @@ function LoginScreen() {
     try {
         const { token, userId } = await login(email, password);
         authCtx.authenticate(token, userId);
-        
+
         const data = await getUserData(userId);
-        AsyncStorage.setItem('userData', JSON.stringify(data));
+        await AsyncStorage.setItem('userData', JSON.stringify(data));
 
         const pathReference = ref(storage, userId);
-        getDownloadURL(pathReference)
+        await getDownloadURL(pathReference)
           .then((url) => {
             AsyncStorage.setItem('profileUri', url);
           })

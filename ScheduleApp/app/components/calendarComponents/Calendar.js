@@ -5,7 +5,7 @@ import {
   View,
   ScrollView,
 } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import Swiper from "react-native-swiper";
 import moment from "moment";
 
