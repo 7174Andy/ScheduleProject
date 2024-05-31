@@ -17,7 +17,7 @@ export default function Schedule() {
         endTime: 8.5,
         enrollmentStatus: "enrolled",
         professor: "Prof. Smith",
-        color: "purple",
+        color: "#748DA6",
       },
       {
         id: 2,
@@ -26,7 +26,7 @@ export default function Schedule() {
         endTime: 20,
         enrollmentStatus: "enrolled",
         professor: "Prof. Johnson",
-        color: "orange",
+        color: "#898AA6",
       },
     ],
     [
@@ -37,7 +37,7 @@ export default function Schedule() {
         endTime: 15,
         enrollmentStatus: "enrolled",
         professor: "Prof. Johnson",
-        color: "orange",
+        color: "#85BB65",
       },
     ],
     [
@@ -48,7 +48,7 @@ export default function Schedule() {
         endTime: 9.5,
         enrollmentStatus: "enrolled",
         professor: "Prof. Smith",
-        color: "purple",
+        color: "#616D7E",
       },
     ],
     [
@@ -59,7 +59,7 @@ export default function Schedule() {
         endTime: 10,
         enrollmentStatus: "enrolled",
         professor: "Prof. Smith",
-        color: "blue",
+        color: "#7575CF",
       },
       {
         id: 6,
@@ -68,7 +68,7 @@ export default function Schedule() {
         endTime: 15,
         enrollmentStatus: "enrolled",
         professor: "Prof. Johnson",
-        color: "orange",
+        color: "#6667AB",
       },
     ],
     [],
@@ -80,7 +80,7 @@ export default function Schedule() {
       <View style={styles.container}>
         <Text style={styles.title}>Weekly Schedule</Text>
         <View style={styles.calendarContainer}>
-          <Calendar weeklyEvents={events} isSelf={true}/>
+          <Calendar weeklyEvents={events} isSelf={true} />
         </View>
       </View>
     </SafeAreaView>
