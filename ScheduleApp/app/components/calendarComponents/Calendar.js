@@ -12,7 +12,7 @@ import moment from "moment";
 import TimeSlot from "./TimeSlot";
 import Event from "./Event";
 
-function Calendar({ weeklyEvents }) {
+function Calendar({ weeklyEvents, isSelf }) {
   // States
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [week, setWeek] = useState(0);
@@ -140,6 +140,7 @@ function Calendar({ weeklyEvents }) {
               height={(event.endTime - event.startTime) * 60}
               color={event.color}
               professorName={event.professor}
+              isSelf={isSelf}
             />
           ))}
         </ScrollView>

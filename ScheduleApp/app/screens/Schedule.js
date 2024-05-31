@@ -80,7 +80,7 @@ export default function Schedule() {
       <View style={styles.container}>
         <Text style={styles.title}>Weekly Schedule</Text>
         <View style={styles.calendarContainer}>
-          <Calendar weeklyEvents={events} />
+          <Calendar weeklyEvents={events} isSelf={true}/>
         </View>
       </View>
     </SafeAreaView>

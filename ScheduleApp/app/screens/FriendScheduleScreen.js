@@ -44,7 +44,7 @@ export default function FriendScheduleScreen({ route, navigation }) {
           {friendData ? friendData.nickname + " Weekly Schedule" : ""}
         </Text>
         <View style={styles.calendarContainer}>
-          {schedule && <Calendar weeklyEvents={schedule} />}
+          {schedule && <Calendar weeklyEvents={schedule} isSelf={false} />}
         </View>
       </View>
     </SafeAreaView>
