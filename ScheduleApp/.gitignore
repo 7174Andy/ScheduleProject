@@ -36,3 +36,5 @@ yarn-error.*
 
 # Ignore configuration files
 app/config/.config.js
+
+../.DS_Store
